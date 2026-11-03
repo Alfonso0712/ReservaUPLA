@@ -1,0 +1,89 @@
+/* REEMPLAZAR por HEX oficial del Manual de Marca UPLA pág. 17 */
+:root {
+  --color-primario: #0A3D91;
+  --color-primario-oscuro: #072B66;
+  --color-primario-claro: #E8EEF9;
+  --color-superficie: #FFFFFF;
+  --color-fondo: #F4F6FA;
+  --color-texto: #1A1F2B;
+  --color-texto-secundario: #4A5568;
+  --color-borde: #D1D5DB;
+  --color-focus: #0056B3;
+
+  /* Estados semanticos (Shneiderman 3 / Contraste AA) */
+  --estado-pendiente-texto: #92400E;
+  --estado-pendiente-fondo: #FEF3C7;
+  --estado-pendiente-borde: #F59E0B;
+
+  --estado-aprobada-texto: #065F46;
+  --estado-aprobada-fondo: #D1FAE5;
+  --estado-aprobada-borde: #10B981;
+
+  --estado-rechazada-texto: #991B1B;
+  --estado-rechazada-fondo: #FEE2E2;
+  --estado-rechazada-borde: #EF4444;
+
+  --estado-cancelada-texto: #374151;
+  --estado-cancelada-fondo: #F3F4F6;
+  --estado-cancelada-borde: #9CA3AF;
+
+  --fuente-principal: "Geomanist", "Montserrat", "Segoe UI", Arial, sans-serif;
+  --radio-borde: 8px;
+  --sombra-tarjeta: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+[data-tema="dark"] {
+  --color-primario: #3B82F6;
+  --color-primario-oscuro: #1D4ED8;
+  --color-primario-claro: #1E293B;
+  --color-superficie: #1E293B;
+  --color-fondo: #0F172A;
+  --color-texto: #F8FAFC;
+  --color-texto-secundario: #CBD5E1;
+  --color-borde: #475569;
+  --color-focus: #60A5FA;
+
+  --estado-pendiente-texto: #FDE68A;
+  --estado-pendiente-fondo: #78350F;
+  --estado-pendiente-borde: #D97706;
+
+  --estado-aprobada-texto: #A7F3D0;
+  --estado-aprobada-fondo: #064E3B;
+  --estado-aprobada-borde: #059669;
+
+  --estado-rechazada-texto: #FECACA;
+  --estado-rechazada-fondo: #7F1D1D;
+  --estado-rechazada-borde: #DC2626;
+
+  --estado-cancelada-texto: #E5E7EB;
+  --estado-cancelada-fondo: #374151;
+  --estado-cancelada-borde: #6B7280;
+
+  --sombra-tarjeta: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--fuente-principal);
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  line-height: 1.5;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
