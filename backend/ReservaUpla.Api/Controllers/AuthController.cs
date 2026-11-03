@@ -40,7 +40,9 @@ public class AuthController : ControllerBase
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+        var principal = new ClaimsPrincipal(identity);
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
         return Ok(usuario);
     }
@@ -57,13 +59,13 @@ public class AuthController : ControllerBase
     [Authorize]
     public ActionResult<UsuarioDto> ObtenerUsuarioActual()
     {
-        var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (!Guid.TryParse(idStr, out var id))
+        var id = User.GetUserId();
+        if (id == Guid.Empty)
             return Unauthorized();
 
         var nombre = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
         var correo = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
-        var rol = User.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
+        var rol = User.GetUserRole().ToString();
 
         return Ok(new UsuarioDto(id, nombre, correo, rol, true));
     }

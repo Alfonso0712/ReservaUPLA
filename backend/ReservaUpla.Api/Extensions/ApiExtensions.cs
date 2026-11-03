@@ -1,4 +1,5 @@
 using System;
+using System.Security.Claims;
 using System.Threading.RateLimiting;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ReservaUpla.Domain.Enums;
 
 namespace ReservaUpla.Api.Extensions;
 
@@ -15,6 +17,18 @@ public static class ApiExtensions
 {
     public const string CorsPolicyName = "FrontendCors";
     public const string LoginRateLimiterPolicy = "LoginLimiter";
+
+    public static Guid GetUserId(this ClaimsPrincipal user)
+    {
+        var idStr = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
+    }
+
+    public static RolUsuario GetUserRole(this ClaimsPrincipal user)
+    {
+        var rolStr = user.FindFirstValue(ClaimTypes.Role);
+        return Enum.TryParse<RolUsuario>(rolStr, true, out var rol) ? rol : RolUsuario.Solicitante;
+    }
 
     public static IServiceCollection AddFrontendCors(this IServiceCollection services)
     {
