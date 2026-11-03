@@ -73,7 +73,7 @@ export default function LoginPage({
             <h2 className="login-form-titulo">
               Iniciar <span className="login-titulo-acento">sesión</span>
             </h2>
-            <p className="login-form-bajada">Ingrese su usuario y contraseña para acceder al sistema institucional.</p>
+            <p className="login-form-bajada">Ingrese sus credenciales para continuar.</p>
           </div>
 
           <AlertMessage tipo="error" mensaje={error} />
