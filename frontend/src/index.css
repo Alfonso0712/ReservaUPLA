@@ -114,28 +114,177 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
+  background-color: #0b131e;
 }
 
+/* Panel izquierdo decorativo con imagen de fondo UPLA (60-65% width) */
+.login-panel-decorativo {
+  flex: 1.35;
+  min-height: 100vh;
+  background-image: linear-gradient(135deg, rgba(6, 32, 68, 0.90) 0%, rgba(2, 16, 36, 0.84) 100%), url('./assets/login-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 56px 64px;
+  color: #ffffff;
+  position: relative;
+}
+
+.login-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.login-brand-badge {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.login-brand-logo {
+  width: 50px;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.login-brand-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.login-brand-institucion {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+.login-brand-lema {
+  font-size: 11px;
+  letter-spacing: 1.2px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.login-hero-container {
+  max-width: 600px;
+  margin: auto 0;
+}
+
+.login-hero-tag {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #f59e0b;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.login-hero-title {
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1.08;
+  margin-bottom: 20px;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.login-hero-desc {
+  font-size: 17px;
+  line-height: 1.65;
+  color: #cbd5e1;
+  max-width: 540px;
+}
+
+.login-panel-pie {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #94a3b8;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 24px;
+}
+
+/* Panel derecho con el formulario (35-40% width) */
 .login-panel-formulario {
-  width: 35%;
-  min-width: 320px;
-  background-color: var(--color-superficie);
-  padding: 48px 36px;
+  width: 480px;
+  min-width: 380px;
+  max-width: 520px;
+  background-color: #1a1e24;
+  color: #f8fafc;
+  padding: 48px 44px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
+  z-index: 2;
 }
 
-.login-titulo {
-  font-size: 26px;
-  color: var(--color-primario);
-  margin-top: 16px;
+.login-form-wrapper {
+  width: 100%;
+  max-width: 380px;
 }
 
-.login-subtitulo {
-  font-size: 14px;
-  color: var(--color-texto-secundario);
+.login-form-encabezado {
   margin-bottom: 24px;
+}
+
+.login-sub-tag {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.login-form-titulo {
+  font-size: 30px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.login-form-bajada {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.login-panel-formulario .campo-etiqueta {
+  color: #e2e8f0;
+  font-size: 14px;
+}
+
+.login-panel-formulario .control-base {
+  background-color: #272d36;
+  border: 1px solid #374151;
+  color: #ffffff;
+}
+
+.login-panel-formulario .control-base:focus {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.3);
+  outline: none;
+}
+
+.login-panel-formulario .control-base::placeholder {
+  color: #64748b;
 }
 
 .login-form {
@@ -157,19 +306,20 @@
   gap: 8px;
   cursor: pointer;
   min-height: 44px;
+  color: #cbd5e1;
 }
 
 .login-pie {
   text-align: center;
   font-size: 14px;
-  color: var(--color-texto-secundario);
+  color: #94a3b8;
   margin-top: 8px;
 }
 
 .enlace-texto {
   background: none;
   border: none;
-  color: var(--color-primario);
+  color: #38bdf8;
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
@@ -178,41 +328,70 @@
   min-height: 44px;
 }
 
-.login-panel-decorativo {
-  flex: 1;
-  background: linear-gradient(135deg, var(--color-primario-oscuro) 0%, var(--color-primario) 100%);
-  color: #FFFFFF;
+/* Panel de acceso rápido de demostración */
+.login-demo-panel {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+}
+
+.login-demo-header {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px;
-}
-
-.tarjeta-decorativa {
-  max-width: 480px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-  padding: 36px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.tarjeta-decorativa h2 {
-  font-size: 24px;
+  flex-direction: column;
+  gap: 2px;
   margin-bottom: 12px;
 }
 
-.tarjeta-decorativa p {
-  color: #E2E8F0;
-  line-height: 1.6;
-  margin-bottom: 24px;
+.demo-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f1f5f9;
 }
 
-.decorativa-lista {
-  list-style: none;
+.demo-sub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.login-demo-actions {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+}
+
+.demo-chip {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.demo-chip:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.chip-admin {
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
+}
+
+.chip-resp {
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #a7f3d0;
+}
+
+.chip-solic {
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fde68a;
 }
 
 /* Formularios y Campos */
@@ -567,7 +746,7 @@
 }
 
 /* Responsividad estricta */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .shell-contenedor {
     flex-direction: column;
   }
@@ -579,12 +758,22 @@
   .login-pantalla {
     flex-direction: column;
   }
+  .login-panel-decorativo {
+    padding: 32px 24px;
+    min-height: auto;
+    flex: none;
+  }
+  .login-hero-title {
+    font-size: 32px;
+  }
+  .login-panel-pie {
+    display: none;
+  }
   .login-panel-formulario {
     width: 100%;
+    max-width: 100%;
     padding: 32px 20px;
-  }
-  .login-panel-decorativo {
-    display: none;
+    box-shadow: none;
   }
 }
 
