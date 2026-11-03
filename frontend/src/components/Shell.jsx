@@ -1,6 +1,7 @@
 import Logo from './Logo';
 import Button from './Button';
 import ShellNav from './ShellNav';
+import { IconoSol, IconoLuna } from './Iconos';
 
 // Shell principal · Nielsen 3 · Shneiderman 2 · ISO 9241-11
 export default function Shell({
@@ -36,7 +37,15 @@ export default function Shell({
               onClick={alAlternarTema}
               aria-label={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
             >
-              {tema === 'dark' ? '☀️ Claro' : '🌙 Oscuro'}
+              {tema === 'dark' ? (
+                <>
+                  <IconoSol size={16} /> Claro
+                </>
+              ) : (
+                <>
+                  <IconoLuna size={16} /> Oscuro
+                </>
+              )}
             </button>
             <Button variante="secundario" onClick={alCerrarSesion}>
               Cerrar sesión
