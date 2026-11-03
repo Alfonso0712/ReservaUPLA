@@ -1,9 +1,22 @@
 import logoUpla from '../assets/logo-upla.png';
 
-// Panel decorativo institucional con recuadro enmarcado para apreciar la imagen de fondo
-export default function LoginPanelDecorativo() {
+// Panel decorativo institucional con fondo fotográfico y contenido transparente integrado
+export default function LoginPanelDecorativo({ tema = 'light', alAlternarTema }) {
   return (
     <aside className="login-panel-decorativo" aria-label="Información institucional ReservaUPLA">
+      {/* Botón para alternar tema en la esquina superior sobre la imagen */}
+      {alAlternarTema && (
+        <button
+          type="button"
+          className="boton-tema-imagen"
+          onClick={alAlternarTema}
+          aria-label={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+          title={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+        >
+          {tema === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
+        </button>
+      )}
+
       {/* Cabecera institucional superior */}
       <div className="login-brand-header">
         <div className="login-brand-badge">
@@ -15,7 +28,7 @@ export default function LoginPanelDecorativo() {
         </div>
       </div>
 
-      {/* Recuadro enmarcado que contiene el texto para destacar y apreciar la foto */}
+      {/* Contenido transparente integrado naturalmente con la fotografía */}
       <div className="login-hero-card">
         <span className="login-hero-tag">SISTEMA INSTITUCIONAL</span>
         <h1 className="login-hero-title" aria-label="ReservaUPLA">
