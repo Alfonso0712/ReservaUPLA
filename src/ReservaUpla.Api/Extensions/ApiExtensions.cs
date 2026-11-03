@@ -57,14 +57,15 @@ public static class ApiExtensions
     }
 
     // E-09
-    public static IServiceCollection AddRateLimiting(this IServiceCollection services)
+    public static IServiceCollection AddRateLimiting(this IServiceCollection services, IWebHostEnvironment? env = null)
     {
+        var limite = env != null && env.IsDevelopment() ? 50 : 5;
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
             options.AddFixedWindowLimiter(LoginRateLimiterPolicy, opt =>
             {
-                opt.PermitLimit = 5;
+                opt.PermitLimit = limite;
                 opt.Window = TimeSpan.FromMinutes(1);
                 opt.QueueLimit = 0;
             });

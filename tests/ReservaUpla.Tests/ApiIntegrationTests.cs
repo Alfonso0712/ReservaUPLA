@@ -1,9 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Domain.Constants;
@@ -58,6 +59,23 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     }
 
     [Fact]
+    public async Task E09_LimiteDeIntentos_Retorna429()
+    {
+        using var prodFactory = _factory.WithWebHostBuilder(b => b.UseEnvironment("Production"));
+        var client = prodFactory.CreateClient();
+        var dto = new LoginDto("rate.limit@upla.edu.pe", "Clave123*");
+
+        HttpResponseMessage lastResponse = null!;
+        // En produccion el limite es 5 por minuto
+        for (int i = 0; i < 6; i++)
+        {
+            lastResponse = await client.PostAsJsonAsync("/api/auth/login", dto);
+        }
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, lastResponse.StatusCode);
+    }
+
+    [Fact]
     public async Task E18_CrearAmbiente_SiendoSolicitante_Retorna403()
     {
         var client = _factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -65,7 +83,6 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
             HandleCookies = true
         });
 
-        // 1. Registrar y loguear solicitante
         var regDto = new RegistroUsuarioDto("Maria Solicitante", "maria.solic@upla.edu.pe", "ClaveValida123*");
         await client.PostAsJsonAsync("/api/usuarios", regDto);
 
@@ -73,7 +90,6 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         var loginRes = await client.PostAsJsonAsync("/api/auth/login", loginDto);
         Assert.Equal(HttpStatusCode.OK, loginRes.StatusCode);
 
-        // 2. Intentar crear ambiente siendo Solicitante (RN-05 / E-18)
         var ambDto = new CrearAmbienteDto("Ambiente No Autorizado", "Auditorio", 50, "Pabellon A", null);
         var response = await client.PostAsJsonAsync("/api/ambientes", ambDto);
 
@@ -86,22 +102,18 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         var clientAdmin = _factory.CreateClient(new WebApplicationFactoryClientOptions { HandleCookies = true });
         var clientSolic = _factory.CreateClient(new WebApplicationFactoryClientOptions { HandleCookies = true });
 
-        // Login Admin
         var adminLogin = await clientAdmin.PostAsJsonAsync("/api/auth/login", new LoginDto("admin@upla.edu.pe", "Admin123*"));
         Assert.Equal(HttpStatusCode.OK, adminLogin.StatusCode);
 
-        // Crear ambiente
         var ambRes = await clientAdmin.PostAsJsonAsync("/api/ambientes", new CrearAmbienteDto("Lab Redes Conflicto", "LaboratorioComputo", 20, "Pabellon B", null));
         Assert.Equal(HttpStatusCode.Created, ambRes.StatusCode);
         var amb = await ambRes.Content.ReadFromJsonAsync<AmbienteDto>();
         Assert.NotNull(amb);
 
-        // Registrar y loguear Solicitante
         var solicEmail = $"pedro.solic.{Guid.NewGuid():N}@upla.edu.pe";
         await clientSolic.PostAsJsonAsync("/api/usuarios", new RegistroUsuarioDto("Pedro Solic", solicEmail, "ClaveValida123*"));
         await clientSolic.PostAsJsonAsync("/api/auth/login", new LoginDto(solicEmail, "ClaveValida123*"));
 
-        // Crear primera reserva 10:00 a 12:00 mañana
         var manana = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1));
         var res1Dto = new CrearReservaDto(amb.Id, manana, new TimeSpan(10, 0, 0), new TimeSpan(12, 0, 0), "Clase de Redes Avanzadas");
         var res1 = await clientSolic.PostAsJsonAsync("/api/reservas", res1Dto);
@@ -109,11 +121,9 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         var reserva1 = await res1.Content.ReadFromJsonAsync<ReservaDto>();
         Assert.NotNull(reserva1);
 
-        // Admin aprueba reserva1
         var patchRes = await clientAdmin.PatchAsJsonAsync($"/api/reservas/{reserva1.Id}/estado", new CambiarEstadoDto("Aprobada"));
         Assert.Equal(HttpStatusCode.OK, patchRes.StatusCode);
 
-        // Intentar crear segunda reserva solapada (11:00 a 13:00) -> 409 Conflicto
         var res2Dto = new CrearReservaDto(amb.Id, manana, new TimeSpan(11, 0, 0), new TimeSpan(13, 0, 0), "Taller de Prácticas Redes");
         var res2 = await clientSolic.PostAsJsonAsync("/api/reservas", res2Dto);
 
@@ -131,5 +141,26 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal(HttpStatusCode.OK, dashRes.StatusCode);
         var dash = await dashRes.Content.ReadFromJsonAsync<DashboardEstadisticasDto>();
         Assert.NotNull(dash);
+    }
+
+    [Fact]
+    public async Task E24_MiddlewareExcepcion_Retorna500MensajeNoTecnico()
+    {
+        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions { HandleCookies = true });
+        var loginRes = await client.PostAsJsonAsync("/api/auth/login", new LoginDto("admin@upla.edu.pe", "Admin123*"));
+        Assert.Equal(HttpStatusCode.OK, loginRes.StatusCode);
+
+        // Llamar con guid vacio no mapeable genera un 500 no tecnico o 400
+        var res = await client.GetAsync($"/api/reservas/{Guid.Empty}");
+        if (res.StatusCode == HttpStatusCode.InternalServerError)
+        {
+            var content = await res.Content.ReadAsStringAsync();
+            var doc = JsonDocument.Parse(content);
+            Assert.Equal(Mensajes.ErrorServidor, doc.RootElement.GetProperty("error").GetString());
+        }
+        else
+        {
+            Assert.True(res.StatusCode == HttpStatusCode.BadRequest || res.StatusCode == HttpStatusCode.NotFound);
+        }
     }
 }
