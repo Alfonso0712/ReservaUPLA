@@ -29,9 +29,20 @@ export default function App() {
 
   if (!usuario) {
     return pantallaAuth === 'login' ? (
-      <LoginPage {...loginProps} alEnviar={loginProps.iniciarSesion} alIrARegistro={() => setPantallaAuth('registro')} />
+      <LoginPage
+        {...loginProps}
+        alEnviar={loginProps.iniciarSesion}
+        alIrARegistro={() => setPantallaAuth('registro')}
+        tema={tema}
+        alAlternarTema={alternarTema}
+      />
     ) : (
-      <RegistroSolicitantePage alRegistrarExitoso={() => setPantallaAuth('login')} alIrALogin={() => setPantallaAuth('login')} />
+      <RegistroSolicitantePage
+        alRegistrarExitoso={() => setPantallaAuth('login')}
+        alIrALogin={() => setPantallaAuth('login')}
+        tema={tema}
+        alAlternarTema={alternarTema}
+      />
     );
   }
 
