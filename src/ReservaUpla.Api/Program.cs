@@ -18,7 +18,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddFrontendCors();
 builder.Services.AddAuthCookie(builder.Environment);
-builder.Services.AddRateLimiting();
+builder.Services.AddRateLimiting(builder.Environment);
 
 var app = builder.Build();
 
