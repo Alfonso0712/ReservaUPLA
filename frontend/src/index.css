@@ -196,12 +196,17 @@
 }
 
 .login-hero-tag {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  color: #f59e0b;
-  margin-bottom: 6px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.32);
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-bottom: 8px;
   text-transform: uppercase;
 }
 
@@ -212,6 +217,11 @@
   margin: 0 0 10px 0;
   color: #ffffff;
   letter-spacing: -0.5px;
+}
+
+.titulo-upla-acento {
+  color: #38bdf8;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
 }
 
 .login-hero-desc {
@@ -285,8 +295,10 @@
   flex-direction: column;
 }
 
-.login-form-encabezado {
-  text-align: center;
+.login-header-marca-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
   margin-bottom: 12px;
 }
 
@@ -296,7 +308,6 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 0 auto 8px auto;
   padding: 5px 14px;
   background: var(--color-primario-claro);
   border: 1px solid var(--color-borde);
@@ -318,11 +329,26 @@
   color: var(--color-primario);
 }
 
+.login-form-encabezado {
+  text-align: left;
+  margin-bottom: 12px;
+  width: 100%;
+}
+
 .login-form-titulo {
   font-size: 24px;
   font-weight: 800;
   color: var(--color-texto);
   margin: 0 0 4px 0;
+  text-align: left;
+}
+
+.login-titulo-acento {
+  color: var(--color-primario);
+}
+
+[data-tema="dark"] .login-titulo-acento {
+  color: #60a5fa;
 }
 
 .login-form-bajada {
@@ -330,6 +356,7 @@
   color: var(--color-texto-secundario);
   margin: 0;
   line-height: 1.4;
+  text-align: left;
 }
 
 .login-form {
@@ -383,7 +410,7 @@
 }
 
 .login-pie {
-  text-align: center;
+  text-align: left;
   font-size: 12.5px;
   color: var(--color-texto-secundario);
   margin: 4px 0 0 0;
@@ -511,12 +538,22 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  min-height: 44px;
-  min-width: 44px;
+  min-height: 38px;
+  min-width: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  color: var(--color-texto-secundario);
+  transition: color 0.15s ease;
+  padding: 0;
+}
+
+.input-con-accion .boton-icono:hover {
+  color: var(--color-primario);
+}
+
+[data-tema="dark"] .input-con-accion .boton-icono:hover {
+  color: #60a5fa;
 }
 
 .campo-ayuda {

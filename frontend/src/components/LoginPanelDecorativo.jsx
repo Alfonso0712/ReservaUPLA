@@ -18,7 +18,9 @@ export default function LoginPanelDecorativo() {
       {/* Recuadro enmarcado que contiene el texto para destacar y apreciar la foto */}
       <div className="login-hero-card">
         <span className="login-hero-tag">SISTEMA INSTITUCIONAL</span>
-        <h1 className="login-hero-title">ReservaUPLA</h1>
+        <h1 className="login-hero-title" aria-label="ReservaUPLA">
+          Reserva<span className="titulo-upla-acento">UPLA</span>
+        </h1>
         <p className="login-hero-desc">
           Plataforma oficial para la gestión, reserva y trazabilidad en tiempo real 
           de laboratorios de cómputo, auditorios y salas académicas especializadas.

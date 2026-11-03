@@ -13,10 +13,10 @@ export default function LoginPage({
   contrasena = '',
   setContrasena,
   alCambiarContrasena = setContrasena,
-  recordar = false,
-  recordarCorreo = recordar,
-  setRecordar,
-  alCambiarRecordarCorreo = setRecordar,
+  recordar: _recordar = false,
+  recordarCorreo: _recordarCorreo = _recordar,
+  setRecordar: _setRecordar,
+  alCambiarRecordarCorreo: _alCambiarRecordarCorreo = _setRecordar,
   alEnviar,
   iniciarSesion = alEnviar,
   cargando = false,
@@ -60,14 +60,19 @@ export default function LoginPage({
         )}
 
         <div className="login-form-wrapper">
-          <div className="login-form-encabezado">
-            {/* Logo y siglas UPLA centradito en recuadro en lugar de texto plano */}
+          {/* Solo UPLA con su logo centrado */}
+          <div className="login-header-marca-wrapper">
             <div className="login-header-marca">
               <img src={logoUpla} alt="Logo UPLA" className="login-header-logo" />
               <span className="login-header-siglas">UPLA</span>
             </div>
+          </div>
 
-            <h2 className="login-form-titulo">Iniciar sesión</h2>
+          {/* Iniciar sesión y su contenido alineado a la izquierda */}
+          <div className="login-form-encabezado">
+            <h2 className="login-form-titulo">
+              Iniciar <span className="login-titulo-acento">sesión</span>
+            </h2>
             <p className="login-form-bajada">Ingrese su usuario y contraseña para acceder al sistema institucional.</p>
           </div>
 
@@ -105,18 +110,6 @@ export default function LoginPage({
             />
 
             {bloqMayusActivo && <p className="aviso-bloq-mayus" role="status">⚠️ Bloq Mayús está activado</p>}
-
-            <div className="login-opciones">
-              <label className="checkbox-etiqueta">
-                <input
-                  type="checkbox"
-                  checked={recordarCorreo}
-                  onChange={(e) => alCambiarRecordarCorreo?.(e.target.checked)}
-                  disabled={cargando}
-                />
-                <span>Recordar solo correo</span>
-              </label>
-            </div>
 
             <Button type="submit" cargando={cargando} anchoCompleto>
               Iniciar sesión
