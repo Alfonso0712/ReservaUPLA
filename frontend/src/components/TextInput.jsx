@@ -16,6 +16,7 @@ export default function TextInput({
   autoComplete,
   inputMode,
   readOnly = false,
+  autoFocus = false,
   inputRef
 }) {
   const [mostrarClave, setMostrarClave] = useState(false);
@@ -40,6 +41,7 @@ export default function TextInput({
           autoComplete={autoComplete}
           inputMode={inputMode}
           readOnly={readOnly}
+          autoFocus={autoFocus}
           aria-invalid={Boolean(error)}
           aria-describedby={descripcionIds}
           className="control-base"
