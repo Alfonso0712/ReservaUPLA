@@ -4,10 +4,11 @@ import TimeInput from '../components/TimeInput';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import AlertMessage from '../components/AlertMessage';
+import PanelAyuda from '../components/PanelAyuda';
 import { useReservaForm } from '../hooks/useReservaForm';
 import { useAmbientes } from '../hooks/useAmbientes';
 
-// RF-03 · RF-04 · RN-01 a RN-04 · Shneiderman 8 · E-12 a E-17
+// RF-03 · RF-04 · RN-01 a RN-04 · Nielsen 10 · Shneiderman 8 · E-12 a E-17
 export default function NuevaReservaPage({ alCrearExitoso, ambienteIdInicial = '' }) {
   const { ambientes } = useAmbientes();
   const {
@@ -29,6 +30,7 @@ export default function NuevaReservaPage({ alCrearExitoso, ambienteIdInicial = '
   return (
     <div className="pagina-formulario-reserva">
       <h1 className="pagina-titulo">Solicitud de Reserva de Ambiente</h1>
+      <PanelAyuda id="ayuda-nueva-reserva" titulo="Guía de horarios permitidos (07:00 a 22:00)" />
       <AlertMessage tipo="error" mensaje={errorGeneral} />
       <div className="panel-division">
         <form onSubmit={(e) => { e.preventDefault(); enviar(); }} noValidate className="form-reserva">
