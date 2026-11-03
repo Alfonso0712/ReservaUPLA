@@ -6,16 +6,21 @@ import LoginPanelDecorativo from '../components/LoginPanelDecorativo';
 
 // Nielsen 1 a 10 · Shneiderman 1 a 8 · ISO 9241-11 · E-07 · E-08 · E-09
 export default function LoginPage({
-  correo,
-  alCambiarCorreo,
-  contrasena,
-  alCambiarContrasena,
-  recordarCorreo,
-  alCambiarRecordarCorreo,
+  correo = '',
+  setCorreo,
+  alCambiarCorreo = setCorreo,
+  contrasena = '',
+  setContrasena,
+  alCambiarContrasena = setContrasena,
+  recordar = false,
+  recordarCorreo = recordar,
+  setRecordar,
+  alCambiarRecordarCorreo = setRecordar,
   alEnviar,
-  cargando,
-  error,
-  bloqMayusActivo,
+  iniciarSesion = alEnviar,
+  cargando = false,
+  error = '',
+  bloqMayusActivo = false,
   alVerificarBloqMayus,
   correoRef,
   contrasenaRef,
@@ -23,7 +28,7 @@ export default function LoginPage({
 }) {
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!cargando) alEnviar();
+    if (!cargando) (alEnviar || iniciarSesion)?.();
   };
 
   return (
@@ -39,7 +44,7 @@ export default function LoginPage({
             label="Correo institucional"
             type="email"
             value={correo}
-            onChange={(e) => alCambiarCorreo(e.target.value)}
+            onChange={(e) => alCambiarCorreo?.(e.target.value)}
             obligatorio
             ayuda="Ejemplo: usuario@upla.edu.pe"
             autoComplete="email"
@@ -52,7 +57,7 @@ export default function LoginPage({
             label="Contraseña"
             type="password"
             value={contrasena}
-            onChange={(e) => alCambiarContrasena(e.target.value)}
+            onChange={(e) => alCambiarContrasena?.(e.target.value)}
             onKeyDown={alVerificarBloqMayus}
             obligatorio
             ayuda="Mínimo 8 caracteres"
@@ -63,7 +68,7 @@ export default function LoginPage({
           {bloqMayusActivo && <p className="aviso-bloq-mayus" role="status">⚠️ Bloq Mayús está activado</p>}
           <div className="login-opciones">
             <label className="checkbox-etiqueta">
-              <input type="checkbox" checked={recordarCorreo} onChange={(e) => alCambiarRecordarCorreo(e.target.checked)} disabled={cargando} />
+              <input type="checkbox" checked={recordarCorreo} onChange={(e) => alCambiarRecordarCorreo?.(e.target.checked)} disabled={cargando} />
               <span>Recordar solo correo</span>
             </label>
           </div>

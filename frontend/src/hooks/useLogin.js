@@ -41,12 +41,12 @@ export function useLogin({ alIniciarExitoso }) {
   };
 
   return {
-    correo, setCorreo,
-    contrasena, setContrasena,
-    recordar, setRecordar,
+    correo, setCorreo, alCambiarCorreo: setCorreo,
+    contrasena, setContrasena, alCambiarContrasena: setContrasena,
+    recordar, setRecordar, recordarCorreo: recordar, alCambiarRecordarCorreo: setRecordar,
     cargando, error, setError,
-    bloqMayusActivo, verificarBloqMayus,
+    bloqMayusActivo, verificarBloqMayus, alVerificarBloqMayus: verificarBloqMayus,
     correoRef, contrasenaRef,
-    iniciarSesion
+    iniciarSesion, alEnviar: iniciarSesion
   };
 }
