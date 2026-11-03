@@ -1,4 +1,5 @@
 import logoUpla from '../assets/logo-upla.png';
+import { IconoSol, IconoLuna } from './Iconos';
 
 // Panel decorativo institucional con fondo fotográfico y contenido transparente integrado
 export default function LoginPanelDecorativo({ tema = 'light', alAlternarTema }) {
@@ -13,7 +14,15 @@ export default function LoginPanelDecorativo({ tema = 'light', alAlternarTema })
           aria-label={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
           title={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
         >
-          {tema === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
+          {tema === 'dark' ? (
+            <>
+              <IconoSol size={15} /> Modo Claro
+            </>
+          ) : (
+            <>
+              <IconoLuna size={15} /> Modo Oscuro
+            </>
+          )}
         </button>
       )}
 

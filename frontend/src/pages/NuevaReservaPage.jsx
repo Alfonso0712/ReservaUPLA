@@ -5,6 +5,7 @@ import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import AlertMessage from '../components/AlertMessage';
 import PanelAyuda from '../components/PanelAyuda';
+import { IconoCheckCirculo, IconoCandado } from '../components/Iconos';
 import { useReservaForm } from '../hooks/useReservaForm';
 import { useAmbientes } from '../hooks/useAmbientes';
 
@@ -48,12 +49,12 @@ export default function NuevaReservaPage({ alCrearExitoso, ambienteIdInicial = '
           <h3>Disponibilidad del día</h3>
           {cargandoDisponibilidad && <p role="status">Consultando horarios ocupados...</p>}
           {!cargandoDisponibilidad && disponibilidad && disponibilidad.length === 0 && (
-            <p className="texto-disponible">✅ Ambiente totalmente disponible en esta fecha.</p>
+            <p className="texto-disponible"><IconoCheckCirculo size={16} /> Ambiente totalmente disponible en esta fecha.</p>
           )}
           {!cargandoDisponibilidad && disponibilidad && disponibilidad.length > 0 && (
             <ul className="lista-horarios-ocupados">
               {disponibilidad.map((b, i) => (
-                <li key={i}>🔒 Ocupado: {b.horaInicio} - {b.horaFin} ({b.motivo || 'Reservado'})</li>
+                <li key={i}><IconoCandado size={14} /> Ocupado: {b.horaInicio} - {b.horaFin} ({b.motivo || 'Reservado'})</li>
               ))}
             </ul>
           )}

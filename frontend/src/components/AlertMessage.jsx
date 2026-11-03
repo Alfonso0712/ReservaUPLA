@@ -1,3 +1,5 @@
+import { IconoAlerta, IconoCheckCirculo, IconoCruz } from './Iconos';
+
 // Nielsen 9 · Shneiderman 3 · E-23 · E-24
 export default function AlertMessage({
   tipo = 'error',
@@ -20,7 +22,7 @@ export default function AlertMessage({
       style={{ outline: 'none' }}
     >
       <span className="alerta-icono" aria-hidden="true">
-        {esError ? '⚠️' : '✅'}
+        {esError ? <IconoAlerta size={18} /> : <IconoCheckCirculo size={18} />}
       </span>
       <span className="alerta-mensaje">{mensaje}</span>
       {onCerrar && (
@@ -31,7 +33,7 @@ export default function AlertMessage({
           aria-label="Cerrar notificación"
           style={{ minHeight: '44px', minWidth: '44px' }}
         >
-          ✕
+          <IconoCruz size={16} />
         </button>
       )}
     </div>
