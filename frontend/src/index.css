@@ -181,17 +181,16 @@
   font-weight: 600;
 }
 
-/* Recuadro enmarcado superior que deja libre el resto del aula de computo */
+/* Contenido hero transparente integrado directamente con la fotografía de fondo */
 .login-hero-card {
-  background: rgba(6, 32, 68, 0.76);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 14px;
-  padding: 20px 24px;
-  max-width: 480px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
-  margin-top: 10px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  padding: 0;
+  max-width: 520px;
+  margin-top: 16px;
   margin-bottom: auto;
 }
 
@@ -211,24 +210,26 @@
 }
 
 .login-hero-title {
-  font-size: 38px;
+  font-size: 40px;
   font-weight: 900;
   line-height: 1.1;
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
   color: #ffffff;
   letter-spacing: -0.5px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.65);
 }
 
 .titulo-upla-acento {
   color: #38bdf8;
-  text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+  text-shadow: 0 0 22px rgba(56, 189, 248, 0.45), 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .login-hero-desc {
-  font-size: 14px;
-  line-height: 1.55;
-  color: #cbd5e1;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #e2e8f0;
   margin: 0;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.65);
 }
 
 .login-panel-pie {
@@ -263,29 +264,34 @@
   z-index: 2;
 }
 
-/* Botón alternador de tema en el login */
-.boton-tema-login {
+/* Botón alternador de tema en la esquina superior de la imagen */
+.boton-tema-imagen {
   position: absolute;
-  top: 16px;
-  right: 18px;
-  background: var(--color-superficie);
-  border: 1px solid var(--color-borde);
+  top: 32px;
+  right: 40px;
+  background: rgba(6, 32, 68, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 20px;
-  padding: 5px 11px;
+  padding: 6px 14px;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
-  color: var(--color-texto);
+  color: #ffffff;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   transition: all 0.2s ease;
-  z-index: 5;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
-.boton-tema-login:hover {
-  border-color: var(--color-primario);
-  color: var(--color-primario);
+.boton-tema-imagen:hover {
+  background: rgba(10, 61, 145, 0.85);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  transform: translateY(-1px);
 }
 
 .login-form-wrapper {

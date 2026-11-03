@@ -41,24 +41,11 @@ export default function LoginPage({
 
   return (
     <div className="login-pantalla">
-      {/* Panel izquierdo decorativo con foto y recuadro enmarcado */}
-      <LoginPanelDecorativo />
+      {/* Panel izquierdo decorativo con foto y alternador de tema en esquina superior */}
+      <LoginPanelDecorativo tema={tema} alAlternarTema={alAlternarTema} />
 
       {/* Panel derecho con el formulario que respeta modo claro / oscuro */}
       <div className="login-panel-formulario">
-        {/* Botón para alternar modo claro / oscuro en el login */}
-        {alAlternarTema && (
-          <button
-            type="button"
-            className="boton-tema-login"
-            onClick={alAlternarTema}
-            aria-label={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-            title={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-          >
-            {tema === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
-          </button>
-        )}
-
         <div className="login-form-wrapper">
           {/* Solo UPLA con su logo centrado */}
           <div className="login-header-marca-wrapper">
