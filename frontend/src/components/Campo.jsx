@@ -16,7 +16,7 @@ export default function Campo({
     <div className={`campo-grupo ${error ? 'campo-error' : ''}`}>
       <label htmlFor={id} className="campo-etiqueta">
         {label}
-        {obligatorio && <span className="campo-obligatorio" aria-hidden="true"> (obligatorio)</span>}
+        {obligatorio && <span className="campo-obligatorio" aria-hidden="true"> *</span>}
       </label>
       <div className="campo-control-envoltura" data-describedby={descripcionIds}>
         {children}
