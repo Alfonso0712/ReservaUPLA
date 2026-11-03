@@ -35,7 +35,10 @@ export default [
         console: 'readonly',
         setTimeout: 'readonly',
         clearTimeout: 'readonly',
-        AbortController: 'readonly'
+        AbortController: 'readonly',
+        Headers: 'readonly',
+        URLSearchParams: 'readonly',
+        globalThis: 'readonly'
       }
     },
     rules: {
