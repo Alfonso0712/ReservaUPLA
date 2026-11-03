@@ -1,0 +1,6 @@
+@ReservaUpla.Api_HostAddress = http://localhost:5263
+
+GET {{ReservaUpla.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
