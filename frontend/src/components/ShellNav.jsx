@@ -1,3 +1,5 @@
+import { IconoDashboard, IconoReservas, IconoMas, IconoAmbiente } from './Iconos';
+
 // Navegacion lateral de Shell segmentada por rol
 export default function ShellNav({ rol, vistaActiva, alCambiarVista }) {
   return (
@@ -8,7 +10,8 @@ export default function ShellNav({ rol, vistaActiva, alCambiarVista }) {
         onClick={() => alCambiarVista('dashboard')}
         aria-current={vistaActiva === 'dashboard' ? 'page' : undefined}
       >
-        📊 Dashboard
+        <IconoDashboard size={18} />
+        <span>Dashboard</span>
       </button>
       <button
         type="button"
@@ -16,7 +19,8 @@ export default function ShellNav({ rol, vistaActiva, alCambiarVista }) {
         onClick={() => alCambiarVista('reservas')}
         aria-current={vistaActiva === 'reservas' ? 'page' : undefined}
       >
-        📋 {rol === 'Solicitante' ? 'Mis Reservas' : 'Listado Reservas'}
+        <IconoReservas size={18} />
+        <span>{rol === 'Solicitante' ? 'Mis Reservas' : 'Listado Reservas'}</span>
       </button>
       {rol === 'Solicitante' && (
         <button
@@ -25,7 +29,8 @@ export default function ShellNav({ rol, vistaActiva, alCambiarVista }) {
           onClick={() => alCambiarVista('nueva-reserva')}
           aria-current={vistaActiva === 'nueva-reserva' ? 'page' : undefined}
         >
-          ➕ Nueva Reserva
+          <IconoMas size={18} />
+          <span>Nueva Reserva</span>
         </button>
       )}
       <button
@@ -34,7 +39,8 @@ export default function ShellNav({ rol, vistaActiva, alCambiarVista }) {
         onClick={() => alCambiarVista('ambientes')}
         aria-current={vistaActiva === 'ambientes' ? 'page' : undefined}
       >
-        🏛️ Ambientes
+        <IconoAmbiente size={18} />
+        <span>Ambientes</span>
       </button>
     </nav>
   );

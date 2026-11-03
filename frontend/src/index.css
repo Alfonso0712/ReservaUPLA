@@ -93,7 +93,10 @@
 }
 
 .boton-tema {
-  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
   border: 1px solid var(--color-borde);
   border-radius: var(--radio-borde);
   background-color: var(--color-superficie);
@@ -101,6 +104,7 @@
   cursor: pointer;
   min-height: 44px;
   font-family: inherit;
+  font-weight: 500;
 }
 
 .shell-contenido {
@@ -829,6 +833,62 @@
   font-size: 28px;
   font-weight: 700;
   color: var(--color-texto);
+}
+
+.card-indicador-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background-color: var(--color-fondo);
+  color: var(--color-primario);
+  flex-shrink: 0;
+}
+
+.card-indicador-pendiente .card-indicador-icono {
+  color: #D97706;
+  background-color: rgba(217, 119, 6, 0.12);
+}
+
+.card-indicador-aprobada .card-indicador-icono {
+  color: #059669;
+  background-color: rgba(5, 150, 105, 0.12);
+}
+
+.card-indicador-rechazada .card-indicador-icono {
+  color: #DC2626;
+  background-color: rgba(220, 38, 38, 0.12);
+}
+
+.card-indicador-cancelada .card-indicador-icono {
+  color: #6B7280;
+  background-color: rgba(107, 114, 128, 0.12);
+}
+
+.panel-ayuda-titulo-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.texto-disponible {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lista-horarios-ocupados li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detalle-encabezado .boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Insignias Semánticas */

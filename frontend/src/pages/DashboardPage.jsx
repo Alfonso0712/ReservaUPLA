@@ -1,6 +1,14 @@
 import CardIndicador from '../components/CardIndicador';
 import AlertMessage from '../components/AlertMessage';
 import { useDashboard } from '../hooks/useDashboard';
+import {
+  IconoDashboard,
+  IconoReloj,
+  IconoCheckCirculo,
+  IconoError,
+  IconoProhibido,
+  IconoAmbiente
+} from '../components/Iconos';
 
 // RF-08 · E-30
 export default function DashboardPage() {
@@ -13,16 +21,16 @@ export default function DashboardPage() {
       {cargando && <p role="status">Cargando métricas...</p>}
       {estadisticas && (
         <div className="cuadricula-cards">
-          <CardIndicador titulo="Total Reservas" valor={estadisticas.totalReservas} icono="📊" />
-          <CardIndicador titulo="Pendientes" valor={estadisticas.reservasPendientes} icono="⏳" tipo="pendiente" />
-          <CardIndicador titulo="Aprobadas" valor={estadisticas.reservasAprobadas} icono="✅" tipo="aprobada" />
-          <CardIndicador titulo="Rechazadas" valor={estadisticas.reservasRechazadas} icono="❌" tipo="rechazada" />
-          <CardIndicador titulo="Canceladas" valor={estadisticas.reservasCanceladas} icono="🚫" tipo="cancelada" />
+          <CardIndicador titulo="Total Reservas" valor={estadisticas.totalReservas} icono={<IconoDashboard size={22} />} />
+          <CardIndicador titulo="Pendientes" valor={estadisticas.reservasPendientes} icono={<IconoReloj size={22} />} tipo="pendiente" />
+          <CardIndicador titulo="Aprobadas" valor={estadisticas.reservasAprobadas} icono={<IconoCheckCirculo size={22} />} tipo="aprobada" />
+          <CardIndicador titulo="Rechazadas" valor={estadisticas.reservasRechazadas} icono={<IconoError size={22} />} tipo="rechazada" />
+          <CardIndicador titulo="Canceladas" valor={estadisticas.reservasCanceladas} icono={<IconoProhibido size={22} />} tipo="cancelada" />
           <CardIndicador
             titulo="Ambiente Más Solicitado"
             valor={estadisticas.ambienteMasUtilizado}
             descripcion={`${estadisticas.cantidadUsoAmbienteMasUtilizado} reservas registradas`}
-            icono="🏛️"
+            icono={<IconoAmbiente size={22} />}
           />
         </div>
       )}

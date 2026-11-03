@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import Button from '../components/Button';
 import AlertMessage from '../components/AlertMessage';
 import ModalConfirmacion from '../components/ModalConfirmacion';
+import { IconoFlechaIzquierda } from '../components/Iconos';
 import { reservaService } from '../services/reservaService';
 import { interpretarRespuesta } from '../utils/interpretarRespuesta';
 
@@ -37,7 +38,7 @@ export default function DetalleReservaPage({ id, rol, usuarioId, alVolver }) {
   return (
     <div className="pagina-detalle-reserva">
       <div className="detalle-encabezado">
-        <Button variante="secundario" onClick={alVolver}>← Volver</Button>
+        <Button variante="secundario" onClick={alVolver}><IconoFlechaIzquierda size={16} /> Volver</Button>
         <h1>Detalle de Reserva</h1>
       </div>
       <AlertMessage tipo="error" mensaje={error} />

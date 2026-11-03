@@ -4,6 +4,7 @@ import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import AlertMessage from '../components/AlertMessage';
 import LoginPanelDecorativo from '../components/LoginPanelDecorativo';
+import { IconoAlerta } from '../components/Iconos';
 
 // Nielsen 1 a 10 · Shneiderman 1 a 8 · ISO 9241-11 · E-07 · E-08 · E-09
 export default function LoginPage({
@@ -96,7 +97,7 @@ export default function LoginPage({
               inputRef={contrasenaRef}
             />
 
-            {bloqMayusActivo && <p className="aviso-bloq-mayus" role="status">⚠️ Bloq Mayús está activado</p>}
+            {bloqMayusActivo && <p className="aviso-bloq-mayus" role="status"><IconoAlerta size={14} /> Bloq Mayús está activado</p>}
 
             <Button type="submit" cargando={cargando} anchoCompleto>
               Iniciar sesión

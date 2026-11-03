@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { IconoInfo, IconoFlechaArriba, IconoFlechaAbajo } from './Iconos';
 
 // Nielsen 10 · Shneiderman 8 · Panel de ayuda accesible con aria-expanded y aria-controls
 export default function PanelAyuda({
@@ -20,8 +21,12 @@ export default function PanelAyuda({
         onClick={() => setExpandido((prev) => !prev)}
         style={{ minHeight: '44px' }}
       >
-        <span>ℹ️ {titulo}</span>
-        <span aria-hidden="true">{expandido ? ' ▲' : ' ▼'}</span>
+        <span className="panel-ayuda-titulo-wrap">
+          <IconoInfo size={16} /> {titulo}
+        </span>
+        <span aria-hidden="true">
+          {expandido ? <IconoFlechaArriba size={16} /> : <IconoFlechaAbajo size={16} />}
+        </span>
       </button>
 
       {expandido && (
