@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReservaUpla.Api.Extensions;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
 using ReservaUpla.Domain.Enums;
@@ -36,13 +36,8 @@ public class AmbientesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IReadOnlyList<AmbienteDto>>> ListarAmbientes(CancellationToken ct)
     {
-        var rol = User.FindFirstValue(ClaimTypes.Role);
-        Guid? responsableId = null;
-
-        if (rol == RolUsuario.Responsable.ToString() && Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out var id))
-        {
-            responsableId = id;
-        }
+        var rol = User.GetUserRole();
+        Guid? responsableId = rol == RolUsuario.Responsable ? User.GetUserId() : null;
 
         var lista = await _ambienteService.ListarAmbientesAsync(responsableId, ct);
         return Ok(lista);

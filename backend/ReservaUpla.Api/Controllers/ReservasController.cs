@@ -1,9 +1,9 @@
 using System;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReservaUpla.Api.Extensions;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
 using ReservaUpla.Domain.Constants;
@@ -29,8 +29,7 @@ public class ReservasController : ControllerBase
     [Authorize(Roles = "Solicitante")]
     public async Task<ActionResult<ReservaDto>> CrearReserva([FromBody] CrearReservaDto dto, CancellationToken ct)
     {
-        var usuarioId = ObtenerUsuarioId();
-        var creada = await _reservaService.CrearReservaAsync(dto, usuarioId, ct);
+        var creada = await _reservaService.CrearReservaAsync(dto, User.GetUserId(), ct);
         return CreatedAtAction(nameof(ObtenerDetalle), new { id = creada.Id }, creada);
     }
 
@@ -45,7 +44,7 @@ public class ReservasController : ControllerBase
         CancellationToken ct = default)
     {
         var filtro = new FiltroReservasDto(estado, ambienteId, fecha, pagina, tamanoPagina);
-        var resultado = await _reservaService.ListarReservasAsync(filtro, ObtenerUsuarioId(), ObtenerRolUsuario(), ct);
+        var resultado = await _reservaService.ListarReservasAsync(filtro, User.GetUserId(), User.GetUserRole(), ct);
         return Ok(resultado);
     }
 
@@ -53,7 +52,7 @@ public class ReservasController : ControllerBase
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ReservaDetalleDto>> ObtenerDetalle(Guid id, CancellationToken ct)
     {
-        var detalle = await _reservaService.ObtenerDetalleAsync(id, ObtenerUsuarioId(), ObtenerRolUsuario(), ct);
+        var detalle = await _reservaService.ObtenerDetalleAsync(id, User.GetUserId(), User.GetUserRole(), ct);
         return Ok(detalle);
     }
 
@@ -67,20 +66,7 @@ public class ReservasController : ControllerBase
         if (!Enum.TryParse<EstadoReserva>(dto.Estado, true, out var nuevoEstado))
             throw new DomainException(Mensajes.TransicionEstadoInvalida);
 
-        var rol = ObtenerRolUsuario();
-        var actualizada = await _reservaService.CambiarEstadoAsync(id, nuevoEstado, ObtenerUsuarioId(), rol, ct);
+        var actualizada = await _reservaService.CambiarEstadoAsync(id, nuevoEstado, User.GetUserId(), User.GetUserRole(), ct);
         return Ok(actualizada);
-    }
-
-    private Guid ObtenerUsuarioId()
-    {
-        var idStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return Guid.TryParse(idStr, out var id) ? id : Guid.Empty;
-    }
-
-    private RolUsuario ObtenerRolUsuario()
-    {
-        var rolStr = User.FindFirstValue(ClaimTypes.Role);
-        return Enum.TryParse<RolUsuario>(rolStr, true, out var rol) ? rol : RolUsuario.Solicitante;
     }
 }
