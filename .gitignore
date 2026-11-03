@@ -1,0 +1,26 @@
+## Build and binary directories
+bin/
+obj/
+node_modules/
+dist/
+coverage/
+
+## IDE and editor directories
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Environment and sensitive files
+appsettings.*.local.json
+.env
+.env.*
+secrets.json
+
+## Logs and OS artifacts
+*.log
+Thumbs.db
+[Ee]xpress/
