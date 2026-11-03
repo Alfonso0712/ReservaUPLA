@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import logoUpla from '../assets/logo-upla.png';
 import TextInput from '../components/TextInput';
 import Button from '../components/Button';
 import AlertMessage from '../components/AlertMessage';
@@ -24,7 +25,9 @@ export default function LoginPage({
   alVerificarBloqMayus,
   correoRef,
   contrasenaRef,
-  alIrARegistro
+  alIrARegistro,
+  tema = 'light',
+  alAlternarTema
 }) {
   // Asegura que al cargar la pantalla el foco siempre aparezca en el correo institucional
   useEffect(() => {
@@ -38,16 +41,34 @@ export default function LoginPage({
 
   return (
     <div className="login-pantalla">
-      {/* Panel izquierdo decorativo con imagen de fondo UPLA */}
+      {/* Panel izquierdo decorativo con foto y recuadro enmarcado */}
       <LoginPanelDecorativo />
 
-      {/* Panel derecho con el formulario de acceso */}
+      {/* Panel derecho con el formulario que respeta modo claro / oscuro */}
       <div className="login-panel-formulario">
+        {/* Botón para alternar modo claro / oscuro en el login */}
+        {alAlternarTema && (
+          <button
+            type="button"
+            className="boton-tema-login"
+            onClick={alAlternarTema}
+            aria-label={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            title={tema === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+          >
+            {tema === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
+          </button>
+        )}
+
         <div className="login-form-wrapper">
           <div className="login-form-encabezado">
-            <span className="login-sub-tag">BIENVENIDO</span>
+            {/* Logo y siglas UPLA centradito en recuadro en lugar de texto plano */}
+            <div className="login-header-marca">
+              <img src={logoUpla} alt="Logo UPLA" className="login-header-logo" />
+              <span className="login-header-siglas">UPLA</span>
+            </div>
+
             <h2 className="login-form-titulo">Iniciar sesión</h2>
-            <p className="login-form-bajada">Ingrese su usuario y contraseña para acceder al sistema.</p>
+            <p className="login-form-bajada">Ingrese su usuario y contraseña para acceder al sistema institucional.</p>
           </div>
 
           <AlertMessage tipo="error" mensaje={error} />
@@ -108,7 +129,7 @@ export default function LoginPage({
               </button>
             </p>
 
-            {/* Acceso de demostración rápido (según diseño de referencia) */}
+            {/* Acceso de demostración rápido */}
             <div className="login-demo-panel">
               <div className="login-demo-header">
                 <span className="demo-titulo">Acceso de demostración</span>
