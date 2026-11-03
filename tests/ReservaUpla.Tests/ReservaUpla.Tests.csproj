@@ -24,10 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ReservaUpla.Domain\ReservaUpla.Domain.csproj" />
-    <ProjectReference Include="..\..\src\ReservaUpla.Application\ReservaUpla.Application.csproj" />
-    <ProjectReference Include="..\..\src\ReservaUpla.Infrastructure\ReservaUpla.Infrastructure.csproj" />
-    <ProjectReference Include="..\..\src\ReservaUpla.Api\ReservaUpla.Api.csproj" />
+    <ProjectReference Include="..\..\backend\ReservaUpla.Domain\ReservaUpla.Domain.csproj" />
+    <ProjectReference Include="..\..\backend\ReservaUpla.Application\ReservaUpla.Application.csproj" />
+    <ProjectReference Include="..\..\backend\ReservaUpla.Infrastructure\ReservaUpla.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\backend\ReservaUpla.Api\ReservaUpla.Api.csproj" />
   </ItemGroup>
 
 </Project>
