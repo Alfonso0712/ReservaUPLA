@@ -1,10 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe('App', () => {
-  it('renderiza el titulo principal de ReservaUPLA', () => {
+  it('renderiza la pantalla de autenticacion de ReservaUPLA', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: false,
+      status: 401,
+      headers: new Headers(),
+      json: async () => ({})
+    });
+
     render(<App />);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('ReservaUPLA');
+    expect(await screen.findByRole('heading', { name: /ReservaUPLA/i })).toBeInTheDocument();
   });
 });
