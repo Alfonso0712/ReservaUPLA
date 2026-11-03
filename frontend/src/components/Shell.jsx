@@ -1,5 +1,6 @@
 import Logo from './Logo';
 import Button from './Button';
+import ShellNav from './ShellNav';
 
 // Shell principal · Nielsen 3 · Shneiderman 2 · ISO 9241-11
 export default function Shell({
@@ -19,42 +20,7 @@ export default function Shell({
         <div className="shell-logo">
           <Logo ancho={110} />
         </div>
-        <nav className="shell-nav">
-          <button
-            type="button"
-            className={`nav-enlace ${vistaActiva === 'dashboard' ? 'nav-activo' : ''}`}
-            onClick={() => alCambiarVista('dashboard')}
-            aria-current={vistaActiva === 'dashboard' ? 'page' : undefined}
-          >
-            📊 Dashboard
-          </button>
-          <button
-            type="button"
-            className={`nav-enlace ${vistaActiva === 'reservas' ? 'nav-activo' : ''}`}
-            onClick={() => alCambiarVista('reservas')}
-            aria-current={vistaActiva === 'reservas' ? 'page' : undefined}
-          >
-            📋 {rol === 'Solicitante' ? 'Mis Reservas' : 'Listado Reservas'}
-          </button>
-          {rol === 'Solicitante' && (
-            <button
-              type="button"
-              className={`nav-enlace ${vistaActiva === 'nueva-reserva' ? 'nav-activo' : ''}`}
-              onClick={() => alCambiarVista('nueva-reserva')}
-              aria-current={vistaActiva === 'nueva-reserva' ? 'page' : undefined}
-            >
-              ➕ Nueva Reserva
-            </button>
-          )}
-          <button
-            type="button"
-            className={`nav-enlace ${vistaActiva === 'ambientes' ? 'nav-activo' : ''}`}
-            onClick={() => alCambiarVista('ambientes')}
-            aria-current={vistaActiva === 'ambientes' ? 'page' : undefined}
-          >
-            🏛️ Ambientes
-          </button>
-        </nav>
+        <ShellNav rol={rol} vistaActiva={vistaActiva} alCambiarVista={alCambiarVista} />
       </aside>
 
       <div className="shell-principal">

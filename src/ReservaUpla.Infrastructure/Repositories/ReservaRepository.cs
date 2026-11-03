@@ -109,23 +109,23 @@ public class ReservaRepository : IReservaRepository
         var rechazadas = await query.CountAsync(r => r.Est_Reserva == EstadoReserva.Rechazada, ct);
         var canceladas = await query.CountAsync(r => r.Est_Reserva == EstadoReserva.Cancelada, ct);
 
-        var topAmbiente = await query
+        var (nombreAmbienteMasUsado, usoMaximo) = await ObtenerAmbienteMasUtilizadoAsync(query, ct);
+
+        return new DashboardEstadisticasDto(total, pendientes, aprobadas, rechazadas, canceladas, nombreAmbienteMasUsado, usoMaximo);
+    }
+
+    private async Task<(string Nombre, int Cantidad)> ObtenerAmbienteMasUtilizadoAsync(IQueryable<Reserva> query, CancellationToken ct)
+    {
+        var top = await query
             .GroupBy(r => r.Ida_Reserva)
             .Select(g => new { AmbienteId = g.Key, Cantidad = g.Count() })
             .OrderByDescending(x => x.Cantidad)
             .FirstOrDefaultAsync(ct);
 
-        string nombreAmbienteMasUsado = "Sin registros";
-        int usoMaximo = 0;
+        if (top == null) return ("Sin registros", 0);
 
-        if (topAmbiente != null)
-        {
-            var ambiente = await _context.Ambientes.AsNoTracking().FirstOrDefaultAsync(a => a.Id_Ambiente == topAmbiente.AmbienteId, ct);
-            nombreAmbienteMasUsado = ambiente?.Nom_Ambiente ?? "Desconocido";
-            usoMaximo = topAmbiente.Cantidad;
-        }
-
-        return new DashboardEstadisticasDto(total, pendientes, aprobadas, rechazadas, canceladas, nombreAmbienteMasUsado, usoMaximo);
+        var ambiente = await _context.Ambientes.AsNoTracking().FirstOrDefaultAsync(a => a.Id_Ambiente == top.AmbienteId, ct);
+        return (ambiente?.Nom_Ambiente ?? "Desconocido", top.Cantidad);
     }
 
     private IQueryable<Reserva> ConstruirFiltro(
