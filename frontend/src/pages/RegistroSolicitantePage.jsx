@@ -109,8 +109,6 @@ export default function RegistroSolicitantePage({
           </form>
         </div>
 
-        {/* Espaciador inferior para balancear con el diseño del login */}
-        <div className="login-registro-pie" aria-hidden="true" />
       </div>
     </div>
   );
