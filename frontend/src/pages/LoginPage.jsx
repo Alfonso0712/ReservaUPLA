@@ -46,16 +46,16 @@ export default function LoginPage({
 
       {/* Panel derecho con el formulario que respeta modo claro / oscuro */}
       <div className="login-panel-formulario">
-        <div className="login-form-wrapper">
-          {/* Solo UPLA con su logo centrado */}
-          <div className="login-header-marca-wrapper">
-            <div className="login-header-marca">
-              <img src={logoUpla} alt="Logo UPLA" className="login-header-logo" />
-              <span className="login-header-siglas">UPLA</span>
-            </div>
+        {/* Marca UPLA superior sin fondo, más grande y ubicada arriba */}
+        <div className="login-header-marca-wrapper">
+          <div className="login-header-marca">
+            <img src={logoUpla} alt="Logo UPLA" className="login-header-logo" />
+            <span className="login-header-siglas">UPLA</span>
           </div>
+        </div>
 
-          {/* Iniciar sesión y su contenido alineado a la izquierda */}
+        {/* Zona central con formulario de acceso */}
+        <div className="login-form-wrapper">
           <div className="login-form-encabezado">
             <h2 className="login-form-titulo">
               Iniciar <span className="login-titulo-acento">sesión</span>
@@ -108,51 +108,51 @@ export default function LoginPage({
                 Registrarse como solicitante
               </button>
             </p>
-
-            {/* Acceso de demostración rápido */}
-            <div className="login-demo-panel">
-              <div className="login-demo-header">
-                <span className="demo-titulo">Acceso de demostración</span>
-                <span className="demo-sub">Seleccione un perfil para probar el acceso rápido:</span>
-              </div>
-              <div className="login-demo-actions">
-                <button
-                  type="button"
-                  className="demo-chip chip-admin"
-                  disabled={cargando}
-                  onClick={() => {
-                    alCambiarCorreo?.('admin@upla.edu.pe');
-                    alCambiarContrasena?.('Admin123*');
-                    correoRef?.current?.focus();
-                  }}
-                >
-                  Administrador
-                </button>
-                <button
-                  type="button"
-                  className="demo-chip chip-resp"
-                  disabled={cargando}
-                  onClick={() => {
-                    alCambiarCorreo?.('responsable@upla.edu.pe');
-                    alCambiarContrasena?.('Responsable123*');
-                    correoRef?.current?.focus();
-                  }}
-                >
-                  Responsable
-                </button>
-                <button
-                  type="button"
-                  className="demo-chip chip-solic"
-                  disabled={cargando}
-                  onClick={() => {
-                    alIrARegistro?.();
-                  }}
-                >
-                  Solicitante
-                </button>
-              </div>
-            </div>
           </form>
+        </div>
+
+        {/* Acceso de demostración rápido ubicado más abajo */}
+        <div className="login-demo-panel">
+          <div className="login-demo-header">
+            <span className="demo-titulo">Acceso de demostración</span>
+            <span className="demo-sub">Seleccione un perfil para probar el acceso rápido:</span>
+          </div>
+          <div className="login-demo-actions">
+            <button
+              type="button"
+              className="demo-chip chip-admin"
+              disabled={cargando}
+              onClick={() => {
+                alCambiarCorreo?.('admin@upla.edu.pe');
+                alCambiarContrasena?.('Admin123*');
+                correoRef?.current?.focus();
+              }}
+            >
+              Administrador
+            </button>
+            <button
+              type="button"
+              className="demo-chip chip-resp"
+              disabled={cargando}
+              onClick={() => {
+                alCambiarCorreo?.('responsable@upla.edu.pe');
+                alCambiarContrasena?.('Responsable123*');
+                correoRef?.current?.focus();
+              }}
+            >
+              Responsable
+            </button>
+            <button
+              type="button"
+              className="demo-chip chip-solic"
+              disabled={cargando}
+              onClick={() => {
+                alIrARegistro?.();
+              }}
+            >
+              Solicitante
+            </button>
+          </div>
         </div>
       </div>
     </div>
