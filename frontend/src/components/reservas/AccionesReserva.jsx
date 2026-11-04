@@ -32,7 +32,7 @@ export default function AccionesReserva({
         tooltip={`Ver detalle de la reserva de ${solicitante}`}
         aria-label={`Ver detalle de la reserva de ${solicitante}`}
         className="w-auto px-2.5 sm:w-9 sm:px-0"
-        onClick={() => navegar(RUTAS.crearDetalleReserva(reserva.id))}
+        onClick={() => navegar(RUTAS.crearDetalleReserva(reserva.id), { state: { search: window.location.search, reservaId: reserva.id } })}
       >
         <span className="inline sm:hidden">Detalle</span>
       </Button>
