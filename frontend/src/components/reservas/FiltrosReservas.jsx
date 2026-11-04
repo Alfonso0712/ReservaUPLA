@@ -25,6 +25,7 @@ export default function FiltrosReservas({
         <TextInput
           nombre="filtro-texto-reservas"
           etiqueta="Buscar"
+          obligatorio={false}
           tipo="search"
           valor={texto}
           alCambiar={(e) => alCambiarTexto?.(e.target.value)}
@@ -34,6 +35,7 @@ export default function FiltrosReservas({
         <SelectInput
           nombre="filtro-estado-reservas"
           etiqueta="Estado"
+          obligatorio={false}
           valor={estado}
           alCambiar={(e) => alCambiarEstado?.(e.target.value)}
           opciones={LISTA_ESTADOS_RESERVA}
@@ -43,6 +45,7 @@ export default function FiltrosReservas({
         <SelectInput
           nombre="filtro-tipo-reservas"
           etiqueta="Tipo de ambiente"
+          obligatorio={false}
           valor={tipo}
           alCambiar={(e) => alCambiarTipo?.(e.target.value)}
           opciones={LISTA_TIPOS_AMBIENTE}

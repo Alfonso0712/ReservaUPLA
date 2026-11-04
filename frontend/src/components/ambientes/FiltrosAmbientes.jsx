@@ -22,6 +22,7 @@ export default function FiltrosAmbientes({
         <TextInput
           nombre="filtro-texto-ambientes"
           etiqueta="Buscar ambiente"
+          obligatorio={false}
           tipo="search"
           valor={texto}
           alCambiar={(e) => alCambiarTexto?.(e.target.value)}
@@ -31,6 +32,7 @@ export default function FiltrosAmbientes({
         <SelectInput
           nombre="filtro-tipo-ambientes"
           etiqueta="Tipo de ambiente"
+          obligatorio={false}
           valor={tipo}
           alCambiar={(e) => alCambiarTipo?.(e.target.value)}
           opciones={LISTA_TIPOS_AMBIENTE}

@@ -43,7 +43,14 @@ export default [
         URLSearchParams: 'readonly',
         localStorage: 'readonly',
         sessionStorage: 'readonly',
-        globalThis: 'readonly'
+        globalThis: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        vi: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly'
       }
     },
     rules: {
