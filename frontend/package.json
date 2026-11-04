@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "verificar:css": "node scripts/verificarCss.js",
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run"
   },
