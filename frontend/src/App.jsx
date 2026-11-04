@@ -1,4 +1,14 @@
-// ISO 9241-210 · Composición raíz < 20 líneas
+// Composición raíz de la aplicación (< 20 líneas)
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './hooks/useAuth';
+import RutasApp from './routes/rutas';
+
 export default function App() {
-  return <div className="min-h-screen bg-fondo text-texto" />;
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <RutasApp />
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
