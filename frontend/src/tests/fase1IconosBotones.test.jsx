@@ -28,12 +28,12 @@ describe('FASE 1: Sistema de iconos y botones', () => {
     const { rerender } = render(<Button variante="success" tamano="sm" icono={MAPA_ICONOS.APROBAR}>Aprobar</Button>);
     let boton = screen.getByRole('button', { name: 'Aprobar' });
     expect(boton.className).toContain('h-9');
-    expect(boton.className).toContain('bg-aprobada-texto');
+    expect(boton.className).toContain('var(--btn-success-bg)');
 
-    rerender(<Button variante="danger-outline" tamano="md" icono={MAPA_ICONOS.RECHAZAR}>Rechazar</Button>);
+    rerender(<Button variante="danger" tamano="md" icono={MAPA_ICONOS.RECHAZAR}>Rechazar</Button>);
     boton = screen.getByRole('button', { name: 'Rechazar' });
     expect(boton.className).toContain('h-10');
-    expect(boton.className).toContain('border-rechazada-texto');
+    expect(boton.className).toContain('var(--btn-danger-bg)');
 
     rerender(<Button variante="secondary" tamano="sm" icono={MAPA_ICONOS.CANCELAR}>Cancelar</Button>);
     boton = screen.getByRole('button', { name: 'Cancelar' });

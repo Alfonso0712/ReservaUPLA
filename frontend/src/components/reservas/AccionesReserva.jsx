@@ -26,43 +26,47 @@ export default function AccionesReserva({
   return (
     <div className="flex items-center gap-1.5 sm:gap-2">
       <Button
-        variante="secondary"
+        variante="neutral-info"
         tamano="sm"
-        iconOnly
         icono={MAPA_ICONOS.VER_DETALLE}
         tooltip={`Ver detalle de la reserva de ${solicitante}`}
         aria-label={`Ver detalle de la reserva de ${solicitante}`}
+        className="w-auto px-2.5 sm:w-9 sm:px-0"
         onClick={() => navegar(RUTAS.crearDetalleReserva(reserva.id))}
-      />
+      >
+        <span className="inline sm:hidden">Detalle</span>
+      </Button>
       {puedeAprobar ? (
         <Button
-          variante="secondary"
+          variante="success"
           tamano="sm"
-          iconOnly
           disabled={enProceso}
           icono="Check"
           tooltip="Aprobar reserva"
           aria-label={`Aprobar reserva de ${solicitante}`}
-          className="text-aprobada-texto hover:bg-aprobada-fondo border-aprobada-texto/30"
+          className="w-auto px-2.5 sm:w-9 sm:px-0 xl:w-auto xl:px-3"
           onClick={() => alSolicitarAprobar?.(reserva)}
-        />
+        >
+          <span className="inline sm:hidden xl:inline">Aprobar</span>
+        </Button>
       ) : (
-        <div className="w-9 h-9 shrink-0 hidden sm:block" aria-hidden="true" />
+        <div className="w-9 xl:w-[94px] h-9 shrink-0 hidden sm:block" aria-hidden="true" />
       )}
       {puedeRechazar ? (
         <Button
-          variante="secondary"
+          variante="danger"
           tamano="sm"
-          iconOnly
           disabled={enProceso}
           icono="X"
           tooltip="Rechazar reserva"
           aria-label={`Rechazar reserva de ${solicitante}`}
-          className="text-rechazada-texto hover:bg-rechazada-fondo border-rechazada-texto/30"
+          className="w-auto px-2.5 sm:w-9 sm:px-0 xl:w-auto xl:px-3"
           onClick={() => alSolicitarRechazar?.(reserva)}
-        />
+        >
+          <span className="inline sm:hidden xl:inline">Rechazar</span>
+        </Button>
       ) : (
-        <div className="w-9 h-9 shrink-0 hidden sm:block" aria-hidden="true" />
+        <div className="w-9 xl:w-[96px] h-9 shrink-0 hidden sm:block" aria-hidden="true" />
       )}
     </div>
   );

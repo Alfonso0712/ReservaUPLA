@@ -10,7 +10,7 @@ export default function TableList({
   caption, columnas = [], datos = [], claveFila = 'id', cargando = false,
   mensajeVacio = 'No se encontraron registros.', descripcionVacia = '',
   accionVacia = null, paginacion = true, tamanoPaginaInicial = 10,
-  esFiltroActivo = false, alLimpiarFiltros = null
+  esFiltroActivo = false, alLimpiarFiltros = null, obtenerClaseFila = null
 }) {
   const [paginaActual, setPaginaActual] = useState(1);
   const [tamano, setTamano] = useState(tamanoPaginaInicial);
@@ -57,7 +57,7 @@ export default function TableList({
           {cargando ? Array.from({ length: 5 }).map((_, i) => (
             <tr key={`skel-${i}`} className="h-14 animate-pulse">{columnas.map((c, ci) => <td key={c.clave || ci} className="px-4 py-3"><div className="h-4 bg-superficie-2 rounded w-4/5" /></td>)}</tr>
           )) : datosVisibles.map((fila, indice) => (
-            <tr key={fila[claveFila] ?? indice} className="h-14 sm:h-16 hover:bg-superficie-2 transition-colors">
+            <tr key={fila[claveFila] ?? indice} className={`h-14 sm:h-16 hover:bg-superficie-2 transition-colors ${obtenerClaseFila ? obtenerClaseFila(fila) : ''}`.trim()}>
               {columnas.map((col) => <td key={col.clave} data-label={col.encabezado} className={`px-4 py-3 text-[0.9375rem] text-texto align-middle ${col.claseCelda || ''}`.trim()}>{col.render ? col.render(fila) : fila[col.clave]}</td>)}
             </tr>
           ))}

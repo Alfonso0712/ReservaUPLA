@@ -15,6 +15,11 @@ export default function PestanasEstado({ estadoActivo = '', conteos = {}, alSele
       {PESTANAS.map((p) => {
         const esActivo = (estadoActivo || '') === p.clave;
         const total = conteos?.[p.propConteo] ?? 0;
+        const esPendienteConDatos = p.clave === ESTADOS_RESERVA.PENDIENTE && total > 0;
+        const claseBadge = esActivo
+          ? (esPendienteConDatos ? 'bg-[var(--btn-warning-bg)] text-[var(--btn-warning-fg)]' : 'bg-white/20 text-sobre-primario')
+          : (esPendienteConDatos ? 'bg-[var(--btn-warning-bg)] text-[var(--btn-warning-fg)] border border-[var(--btn-warning-border)]' : 'bg-superficie-2 text-texto');
+
         return (
           <button
             key={p.etiqueta}
@@ -30,7 +35,7 @@ export default function PestanasEstado({ estadoActivo = '', conteos = {}, alSele
             }`}
           >
             <span>{p.etiqueta}</span>
-            <span className={`px-1.5 py-0.5 rounded-full text-xs font-bold cifra-tabular ${esActivo ? 'bg-white/20 text-sobre-primario' : 'bg-superficie-2 text-texto'}`}>
+            <span className={`px-1.5 py-0.5 rounded-full text-xs font-bold cifra-tabular ${claseBadge}`}>
               {total}
             </span>
           </button>

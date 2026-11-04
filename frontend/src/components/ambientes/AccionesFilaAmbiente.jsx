@@ -14,7 +14,7 @@ export default function AccionesFilaAmbiente({
       <div className="flex items-center gap-2">
         {puedeEditar && (
           <Button
-            variante="secondary"
+            variante="neutral-info"
             tamano="sm"
             iconOnly
             icono={MAPA_ICONOS.EDITAR}
@@ -25,7 +25,7 @@ export default function AccionesFilaAmbiente({
         )}
         {puedeCambiarEstado && (
           <Button
-            variante="secondary"
+            variante="warning"
             tamano="sm"
             iconOnly
             icono="Power"

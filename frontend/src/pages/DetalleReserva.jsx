@@ -62,12 +62,12 @@ export default function DetalleReserva() {
           <section aria-label="Acciones sobre la reserva" className="p-5 rounded-tarjeta border border-borde bg-superficie flex flex-wrap items-center justify-between gap-4">
             {ESTADOS_FINALES.includes(reserva.estado) && !puedeCancelar ? <p className="text-sm font-medium text-texto-suave">{MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA}</p> : (
               <div className="flex flex-wrap items-center gap-3">
-                {acciones.includes('aprobar') && <Button variante="primario" onClick={async () => { const r = interpretarRespuesta(await cambiarEstadoReservaApi(reserva.id, ESTADOS_RESERVA.APROBADA)); if (r.ok) { setReserva(r.datos); setAlerta({ tipo: 'exito', texto: MENSAJES.RESERVA_APROBADA_EXITO }); } }}>Aprobar reserva</Button>}
-                {puedeCancelar && <Button variante="danger-outline" icono="Ban" onClick={() => setModalCanc(true)}>Cancelar reserva</Button>}
+                {acciones.includes('aprobar') && <Button variante="success" onClick={async () => { const r = interpretarRespuesta(await cambiarEstadoReservaApi(reserva.id, ESTADOS_RESERVA.APROBADA)); if (r.ok) { setReserva(r.datos); setAlerta({ tipo: 'exito', texto: MENSAJES.RESERVA_APROBADA_EXITO }); } }}>Aprobar reserva</Button>}
+                {puedeCancelar && <Button variante="danger" icono="Ban" onClick={() => setModalCanc(true)}>Cancelar reserva</Button>}
               </div>
             )}
           </section>
-          <ModalConfirmacion abierto={modalCanc} titulo={`¿Cancelar la reserva de ${reserva.solicitante?.nombreCompleto || 'solicitante'}?`} descripcion="Revise los datos de la reserva antes de confirmar la cancelación." reserva={reserva} requiereMotivo motivo={motivoCanc} alCambiarMotivo={(v) => { setMotivoCanc(v); if (errMot) setErrMot(''); }} errorMotivo={errMot} esIrreversible etiquetaConfirmar="Cancelar reserva" varianteConfirmar="danger-outline" enProceso={enProceso} alConfirmar={ejecutarCancelar} alCancelar={() => { setModalCanc(false); setMotivoCanc(''); setErrMot(''); }} />
+          <ModalConfirmacion abierto={modalCanc} titulo={`¿Cancelar la reserva de ${reserva.solicitante?.nombreCompleto || 'solicitante'}?`} descripcion="Revise los datos de la reserva antes de confirmar la cancelación." reserva={reserva} requiereMotivo motivo={motivoCanc} alCambiarMotivo={(v) => { setMotivoCanc(v); if (errMot) setErrMot(''); }} errorMotivo={errMot} esIrreversible etiquetaConfirmar="Cancelar reserva" varianteConfirmar="danger" enProceso={enProceso} alConfirmar={ejecutarCancelar} alCancelar={() => { setModalCanc(false); setMotivoCanc(''); setErrMot(''); }} />
         </>
       )}
     </div>

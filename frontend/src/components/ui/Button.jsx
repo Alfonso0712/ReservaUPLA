@@ -5,9 +5,14 @@ import Icono from './Icono';
 const VARIANTES = {
   primary: 'bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand-hover)] border border-transparent',
   primario: 'bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand-hover)] border border-transparent',
-  success: 'bg-aprobada-texto text-sobre-primario hover:opacity-90 border border-transparent',
-  'danger-outline': 'bg-transparent text-rechazada-texto border border-rechazada-texto hover:bg-rechazada-fondo',
-  peligro: 'bg-transparent text-rechazada-texto border border-rechazada-texto hover:bg-rechazada-fondo',
+  'neutral-info': 'bg-[var(--btn-info-bg)] text-[var(--btn-info-fg)] border border-[var(--btn-info-border)] hover:bg-[var(--btn-info-hover-bg)] hover:text-[var(--btn-info-hover-fg)]',
+  info: 'bg-[var(--btn-info-bg)] text-[var(--btn-info-fg)] border border-[var(--btn-info-border)] hover:bg-[var(--btn-info-hover-bg)] hover:text-[var(--btn-info-hover-fg)]',
+  success: 'bg-[var(--btn-success-bg)] text-[var(--btn-success-fg)] border border-[var(--btn-success-border)] hover:bg-[var(--btn-success-hover-bg)] hover:text-[var(--btn-success-hover-fg)] active:bg-[var(--btn-success-hover-bg)] active:text-[var(--btn-success-hover-fg)]',
+  danger: 'bg-[var(--btn-danger-bg)] text-[var(--btn-danger-fg)] border border-[var(--btn-danger-border)] hover:bg-[var(--btn-danger-hover-bg)] hover:text-[var(--btn-danger-hover-fg)] active:bg-[var(--btn-danger-hover-bg)] active:text-[var(--btn-danger-hover-fg)]',
+  'danger-outline': 'bg-[var(--btn-danger-bg)] text-[var(--btn-danger-fg)] border border-[var(--btn-danger-border)] hover:bg-[var(--btn-danger-hover-bg)] hover:text-[var(--btn-danger-hover-fg)]',
+  peligro: 'bg-[var(--btn-danger-bg)] text-[var(--btn-danger-fg)] border border-[var(--btn-danger-border)] hover:bg-[var(--btn-danger-hover-bg)] hover:text-[var(--btn-danger-hover-fg)]',
+  warning: 'bg-[var(--btn-warning-bg)] text-[var(--btn-warning-fg)] border border-[var(--btn-warning-border)] hover:bg-[var(--btn-warning-hover-bg)] hover:text-[var(--btn-warning-hover-fg)] active:bg-[var(--btn-warning-hover-bg)] active:text-[var(--btn-warning-hover-fg)]',
+  advertencia: 'bg-[var(--btn-warning-bg)] text-[var(--btn-warning-fg)] border border-[var(--btn-warning-border)] hover:bg-[var(--btn-warning-hover-bg)] hover:text-[var(--btn-warning-hover-fg)]',
   secondary: 'bg-superficie text-texto border border-borde hover:bg-superficie-2 hover:border-borde-control',
   secundario: 'bg-superficie text-texto border border-borde hover:bg-superficie-2 hover:border-borde-control',
   ghost: 'bg-transparent text-texto border border-transparent hover:bg-superficie-2',
@@ -51,7 +56,7 @@ const Button = forwardRef(function Button(
         <Icono nombre={icono} className={tamanoIcono} />
       ) : null}
       {!esIconOnly && <span className="inline-flex items-center gap-2 whitespace-nowrap">{enProceso ? textoProceso : children}</span>}
-      {esIconOnly && tooltip && (
+      {tooltip && (
         <span
           role="tooltip"
           className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap rounded px-2 py-0.5 text-xs bg-lateral-fondo text-white shadow-sm opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"

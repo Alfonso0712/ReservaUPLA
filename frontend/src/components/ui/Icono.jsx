@@ -4,7 +4,8 @@ import {
   FlaskConical, LayoutDashboard, CalendarDays, CalendarPlus, Building2,
   Sun, Moon, Menu, X, Eye, EyeOff, ChevronDown, ChevronRight, ChevronLeft,
   LogOut, AlertTriangle, Info, Search, Plus, Check, Loader2, HelpCircle,
-  Wrench, Sparkles, HardHat, Pencil, ArrowRightLeft, ArrowLeftRight, MoreHorizontal
+  Wrench, Sparkles, HardHat, Pencil, ArrowRightLeft, ArrowLeftRight, MoreHorizontal,
+  Power, ToggleRight
 } from 'lucide-react';
 
 const ICONOS = {
@@ -12,7 +13,8 @@ const ICONOS = {
   FlaskConical, LayoutDashboard, CalendarDays, CalendarPlus, Building2,
   Sun, Moon, Menu, X, Eye, EyeOff, ChevronDown, ChevronRight, ChevronLeft,
   LogOut, AlertTriangle, Info, Search, Plus, Check, Loader2, HelpCircle,
-  Wrench, Sparkles, HardHat, Pencil, ArrowRightLeft, ArrowLeftRight, MoreHorizontal
+  Wrench, Sparkles, HardHat, Pencil, ArrowRightLeft, ArrowLeftRight, MoreHorizontal,
+  Power, ToggleRight
 };
 
 export default function Icono({
