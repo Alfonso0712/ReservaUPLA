@@ -1,7 +1,11 @@
-// Shneiderman 2 · WCAG 2.2 AA · E-29
-import { ESCALAS_FUENTE } from '../../hooks/useTamanoFuente';
+// Shneiderman 2 · WCAG 2.2 AA · Control de tamaño de fuente (A−, A, A+) con persistencia · E-29
+import { useTamanoFuente, ESCALAS_FUENTE } from '../../hooks/useTamanoFuente';
 
-export default function ControlTamanoFuente({ tamanoActual = '100%', alCambiar }) {
+export default function ControlTamanoFuente({ tamanoActual, alCambiar }) {
+  const { tamano, cambiarTamano } = useTamanoFuente();
+  const actual = tamanoActual || tamano;
+  const manejarCambio = alCambiar || cambiarTamano;
+
   return (
     <div
       role="group"
@@ -9,15 +13,15 @@ export default function ControlTamanoFuente({ tamanoActual = '100%', alCambiar }
       className="inline-flex items-center gap-1 p-1 rounded-control border border-borde bg-superficie"
     >
       {ESCALAS_FUENTE.map((escala) => {
-        const activo = tamanoActual === escala.porcentaje;
+        const activo = actual === escala.porcentaje;
         return (
           <button
             key={escala.id}
             type="button"
             aria-label={escala.descripcion}
             aria-pressed={activo}
-            onClick={() => alCambiar?.(escala.porcentaje)}
-            className={`min-h-[2.75rem] min-w-[2.75rem] px-2.5 rounded-control text-sm font-semibold transition-colors cursor-pointer ${
+            onClick={() => manejarCambio(escala.porcentaje)}
+            className={`min-h-control min-w-control px-2.5 rounded-control text-sm font-semibold transition-colors cursor-pointer ${
               activo
                 ? 'bg-primario text-sobre-primario'
                 : 'bg-transparent text-texto hover:bg-superficie-2'

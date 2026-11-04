@@ -1,4 +1,4 @@
-// Nielsen 3 · WCAG 2.2 AA · E-25 · E-33
+// Nielsen 3 · WCAG 2.2 AA · Trampa de foco, cierre con Escape, retorno al disparador y fondo inerte · E-25 · E-33
 import { useEffect, useRef } from 'react';
 
 const SELECTOR_ENFOCABLES = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -6,6 +6,8 @@ const SELECTOR_ENFOCABLES = 'button:not([disabled]), [href], input:not([disabled
 export function useTrampaFoco(abierto, alCerrar, selectorFocoInicial = null) {
   const contenedorRef = useRef(null);
   const disparadorRef = useRef(null);
+  const alCerrarRef = useRef(alCerrar);
+  alCerrarRef.current = alCerrar;
 
   useEffect(() => {
     if (!abierto) return undefined;
@@ -13,21 +15,23 @@ export function useTrampaFoco(abierto, alCerrar, selectorFocoInicial = null) {
     disparadorRef.current = document.activeElement;
     const overflowPrevio = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    const principal = document.getElementById('contenido-principal');
+    principal?.setAttribute('aria-hidden', 'true');
 
     const contenedor = contenedorRef.current;
     const enfocarInicial = () => {
       if (!contenedor) return;
-      const objetivo = selectorFocoInicial
-        ? contenedor.querySelector(selectorFocoInicial)
-        : contenedor.querySelector(SELECTOR_ENFOCABLES);
+      const objetivo = (selectorFocoInicial && contenedor.querySelector(selectorFocoInicial))
+        || contenedor.querySelector(SELECTOR_ENFOCABLES);
       objetivo?.focus();
     };
+    enfocarInicial();
     const timer = setTimeout(enfocarInicial, 0);
 
     const manejarTeclado = (evento) => {
       if (evento.key === 'Escape') {
         evento.preventDefault();
-        alCerrar?.();
+        alCerrarRef.current?.();
         return;
       }
       if (evento.key !== 'Tab' || !contenedor) return;
@@ -49,11 +53,12 @@ export function useTrampaFoco(abierto, alCerrar, selectorFocoInicial = null) {
       clearTimeout(timer);
       document.removeEventListener('keydown', manejarTeclado);
       document.body.style.overflow = overflowPrevio;
+      principal?.removeAttribute('aria-hidden');
       if (disparadorRef.current && typeof disparadorRef.current.focus === 'function') {
         disparadorRef.current.focus();
       }
     };
-  }, [abierto, alCerrar, selectorFocoInicial]);
+  }, [abierto, selectorFocoInicial]);
 
   return contenedorRef;
 }
