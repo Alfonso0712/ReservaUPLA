@@ -34,9 +34,6 @@ export default function LayoutAutenticacion({ children }) {
               <p className="text-sm text-lateral-texto">Educación con valores y trascendencia</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <ControlTamanoFuente mimetizado /><ConmutadorTema mimetizado />
-          </div>
         </div>
 
         <div className="relative z-10 max-w-[340px] my-auto py-4 space-y-4">
@@ -44,7 +41,9 @@ export default function LayoutAutenticacion({ children }) {
             <span className="inline-block px-3 py-1 mb-2.5 rounded-control bg-lateral-activo-fondo text-xs font-semibold text-sobre-primario">
               Sistema institucional
             </span>
-            <p className="text-2xl sm:text-3xl font-bold text-sobre-primario mb-2">ReservaUPLA</p>
+            <p className="text-2xl sm:text-3xl font-bold text-sobre-primario mb-2">
+              Reserva<span className="text-acento-sobre-oscuro">UPLA</span>
+            </p>
             <p className="text-sm text-lateral-texto leading-relaxed">
               Plataforma oficial para la gestión, reserva y trazabilidad en tiempo real de laboratorios, auditorios y salas académicas.
             </p>
@@ -61,9 +60,8 @@ export default function LayoutAutenticacion({ children }) {
           </ul>
         </div>
 
-        <div className="relative z-10 hidden sm:flex items-center justify-between text-xs text-white p-2.5 rounded-control bg-[#071738]/85 border border-white/15 backdrop-blur-md shadow-sm">
-          <span>Universidad Peruana Los Andes © 2026</span>
-          <span className="font-semibold text-acento-sobre-oscuro">Gestión de ambientes universitarios</span>
+        <div className="relative z-10 flex items-center gap-2">
+          <ControlTamanoFuente mimetizado /><ConmutadorTema mimetizado />
         </div>
       </aside>
 

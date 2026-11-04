@@ -45,11 +45,11 @@ export default function RegistroSolicitante() {
   if (registrado) {
     return (
       <div className="w-full max-w-[360px] mx-auto p-4 sm:p-5 rounded-2xl border border-borde/70 bg-superficie text-texto shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_15px_-3px_rgba(0,0,0,0.04)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] space-y-3">
-        <h1 ref={refExito} tabIndex={-1} className="text-2xl font-bold text-texto outline-none">
+        <h1 ref={refExito} tabIndex={-1} className="text-xl sm:text-2xl font-bold text-texto text-center outline-none">
           {MENSAJES.REGISTRO_EXITOSO_TITULO}
         </h1>
-        <AlertMessage variante="exito" rol="status" mensaje={MENSAJES.REGISTRO_EXITOSO_DETALLE} />
-        <Link to={RUTAS.INGRESAR} className="min-h-control px-4 py-2.5 rounded-control bg-primario text-sobre-primario font-semibold inline-flex items-center justify-center w-full no-underline">
+        <AlertMessage variante="exito" rol="status" mensaje={MENSAJES.REGISTRO_EXITOSO_DETALLE} compacto />
+        <Link to={RUTAS.INGRESAR} className="min-h-control px-4 py-2.5 rounded-control bg-primario text-sobre-primario font-semibold inline-flex items-center justify-center w-full no-underline hover:-translate-y-0.5 active:translate-y-0 transition-transform">
           Iniciar sesión
         </Link>
       </div>
@@ -58,7 +58,7 @@ export default function RegistroSolicitante() {
 
   return (
     <div className="w-full max-w-[360px] mx-auto p-4 sm:p-5 rounded-2xl border border-borde/70 bg-superficie text-texto shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_15px_-3px_rgba(0,0,0,0.04)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] space-y-3">
-      <div>
+      <div className="flex flex-col items-center text-center">
         <h1 className="text-xl sm:text-2xl font-bold text-texto tracking-tight">Registrarse como solicitante</h1>
         <p className="mt-0.5 text-xs sm:text-sm text-texto-suave">Complete sus datos institucionales.</p>
       </div>
