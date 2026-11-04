@@ -38,7 +38,7 @@ export default function FormularioAmbiente({ abierto, responsables = [], alRegis
   const opcionesResp = responsables.map((r) => ({ valor: r.id, etiqueta: `${r.nombreCompleto} (${r.correo})` }));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-fondo/80">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
         <div className="flex items-center justify-between gap-3 pb-3 mb-4 border-b border-borde">
           <h2 id={idTitulo} className="text-xl font-semibold text-texto">Nuevo ambiente</h2>
