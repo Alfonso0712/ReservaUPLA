@@ -26,6 +26,7 @@ const Button = forwardRef(function Button(
   },
   ref
 ) {
+  const tieneChildren = children !== undefined && children !== null && children !== false && children !== '';
   const esIconOnly = iconOnly || variante === 'icon-only';
   const tipoBoton = tipo || type || 'button';
   const bloqueado = disabled || enProceso;
@@ -54,7 +55,7 @@ const Button = forwardRef(function Button(
       ) : icono ? (
         <Icono nombre={icono} className={tamanoIcono} />
       ) : null}
-      {!esIconOnly && <span className="inline-flex items-center gap-2 whitespace-nowrap">{enProceso ? textoProceso : children}</span>}
+      {!esIconOnly && tieneChildren && <span className="inline-flex items-center gap-2 whitespace-nowrap">{enProceso ? textoProceso : children}</span>}
       {tooltip && (
         <span
           role="tooltip"
