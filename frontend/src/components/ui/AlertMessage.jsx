@@ -12,7 +12,7 @@ const CONFIG_VARIANTE = {
 const AlertMessage = forwardRef(function AlertMessage(
   {
     variante = 'error', titulo = '', mensaje = '', children, accion = null,
-    role, rol, enfocarAlAparecer = false, alCerrar = null, className = '', ...props
+    role, rol, enfocarAlAparecer = false, alCerrar = null, className = '', compacto = false, ...props
   },
   refExterna
 ) {
@@ -39,12 +39,12 @@ const AlertMessage = forwardRef(function AlertMessage(
       }}
       role={rolFinal}
       tabIndex={-1}
-      className={`flex flex-wrap items-start justify-between gap-3 p-4 rounded-control border outline-none ${config.clases} ${className}`.trim()}
+      className={`flex flex-wrap items-start justify-between ${compacto ? 'gap-2 p-2 sm:p-2.5 text-xs sm:text-sm' : 'gap-3 p-4 text-base'} rounded-control border outline-none ${config.clases} ${className}`.trim()}
       {...props}
     >
-      <div className="flex items-start gap-3">
-        <Icono nombre={config.icono} className="w-5 h-5 mt-0.5 shrink-0" />
-        <div className="text-base leading-relaxed">
+      <div className={`flex items-start ${compacto ? 'gap-2' : 'gap-3'}`}>
+        <Icono nombre={config.icono} className={`${compacto ? 'w-4 h-4' : 'w-5 h-5'} mt-0.5 shrink-0`} />
+        <div className={compacto ? 'text-xs sm:text-sm leading-snug' : 'text-base leading-relaxed'}>
           {titulo && <strong className="block font-semibold">{titulo}</strong>}
           {textoContenido && <div>{textoContenido}</div>}
         </div>

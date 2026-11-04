@@ -68,7 +68,7 @@ export default function LayoutAutenticacion({ children }) {
       </aside>
 
       <div className="flex-1 lg:w-[32%] lg:h-full flex flex-col justify-center bg-fondo text-texto lg:overflow-y-auto">
-        <main id="contenido-principal" tabIndex={-1} className="flex-1 flex items-center justify-center p-4 sm:p-6 outline-none">
+        <main id="contenido-principal" tabIndex={-1} className="flex-1 flex items-center justify-center p-2 sm:p-4 outline-none">
           <div className="w-full max-w-[370px] my-auto">{children || <Outlet />}</div>
         </main>
       </div>
