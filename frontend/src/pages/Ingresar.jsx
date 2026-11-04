@@ -16,17 +16,17 @@ import AlertMessage from '../components/ui/AlertMessage';
 export default function Ingresar() {
   const navegar = useNavigate();
   const { iniciarSesion } = useAuth();
-  const { correoRecordado, recordar, setRecordar, sincronizarCorreo } = useCorreoRecordado();
+  const { correoInicial, recordar, setRecordar, guardarCorreo } = useCorreoRecordado();
   const [enfocarAlerta, setEnfocarAlerta] = useState(false);
 
   const form = useFormulario({
-    valoresIniciales: { correo: correoRecordado || '', contrasena: '' },
+    valoresIniciales: { correo: correoInicial || '', contrasena: '' },
     validar: validarLogin,
     alEnviar: async (valores, { setErrores, setErrorGeneral, enfocarPrimerError, camposRef }) => {
       const { correoNormalizado } = validarLogin(valores);
       const res = await iniciarSesion({ correo: correoNormalizado, contrasena: valores.contrasena });
       if (res.ok) {
-        sincronizarCorreo(correoNormalizado, recordar);
+        guardarCorreo(correoNormalizado, recordar);
         navegar(RUTAS.PANEL, { replace: true });
         return;
       }
@@ -62,7 +62,7 @@ export default function Ingresar() {
         <PasswordInput ref={form.registrarRef('contrasena')} nombre="contrasena" etiqueta="Contraseña" obligatorio valor={form.valores.contrasena} alCambiar={(e) => form.cambiarValor('contrasena', e.target.value)} alSalir={() => form.manejarBlur('contrasena')} error={form.errores.contrasena} ayuda={MENSAJES.AYUDA_CONTRASENA_LOGIN} placeholder="••••••••" autoComplete="current-password" enterKeyHint="done" soloLectura={form.enProceso} />
         <label className="inline-flex items-center gap-2.5 min-h-control cursor-pointer text-sm text-texto">
           <input type="checkbox" checked={recordar} onChange={(e) => setRecordar(e.target.checked)} readOnly={form.enProceso} className="w-4 h-4 rounded border-borde-control text-primario" />
-          <span>Recordar correo institucional</span>
+          <span>Recordar correo</span>
         </label>
         <Button tipo="submit" variante="primario" enProceso={form.enProceso} textoProceso={MENSAJES.VALIDANDO} className="w-full">Iniciar sesión</Button>
       </form>
