@@ -1,4 +1,4 @@
-// Nielsen 9 · Shneiderman 3 · ISO 9241-11 · RV-01..16 · E-01..24
+// Nielsen 9 · Shneiderman 3 · ISO 9241-11 · RV-01..16 · E-01..24 · E-34..38
 export const MENSAJES = {
   CORREO_OBLIGATORIO: 'Ingrese su correo institucional.',
   CORREO_FORMATO_INVALIDO: 'Ingrese un correo institucional válido.',
@@ -62,5 +62,8 @@ export const MENSAJES = {
   AYUDA_FILTRO_TIPO: 'Filtre según el tipo de ambiente universitario',
   AYUDA_FILTRO_BUSCAR_AMBIENTE: 'Busque por nombre o ubicación del ambiente',
   TEXTO_PANEL_AYUDA_QUIEN: 'Pueden ingresar docentes, estudiantes y personal administrativo con cuenta institucional activa en la Universidad Peruana Los Andes.',
-  TEXTO_PANEL_AYUDA_CLAVE: 'Si no recuerda su contraseña, comuníquese con el administrador del sistema.'
+  TEXTO_PANEL_AYUDA_CLAVE: 'Si no recuerda su contraseña, comuníquese con el administrador del sistema.',
+  CERRAR_SESION: 'Cerrar sesión',
+  ETIQUETA_TAMANO_FUENTE: 'Tamaño de letra',
+  ETIQUETA_TEMA: 'Tema'
 };
