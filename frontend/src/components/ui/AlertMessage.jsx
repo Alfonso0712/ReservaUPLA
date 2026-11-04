@@ -1,5 +1,5 @@
-// Nielsen 1 · Nielsen 9 · Shneiderman 4 · WCAG 2.2 AA · E-23 · E-24 · E-26
-import { forwardRef } from 'react';
+// Nielsen 1 · Nielsen 9 · Shneiderman 4 · WCAG 2.2 AA · Alerta accesible con foco opcional · E-23..26
+import { forwardRef, useEffect, useRef } from 'react';
 import Icono from './Icono';
 
 const CONFIG_VARIANTE = {
@@ -33,23 +33,38 @@ const AlertMessage = forwardRef(function AlertMessage(
     children,
     accion = null,
     role,
+    rol,
+    enfocarAlAparecer = false,
+    alCerrar = null,
     className = '',
     ...props
   },
-  ref
+  refExterna
 ) {
+  const refInterna = useRef(null);
   const textoContenido = mensaje || children;
+
+  useEffect(() => {
+    if (enfocarAlAparecer && (titulo || textoContenido)) {
+      refInterna.current?.focus();
+    }
+  }, [enfocarAlAparecer, titulo, textoContenido]);
+
   if (!titulo && !textoContenido) return null;
 
   const config = CONFIG_VARIANTE[variante] || CONFIG_VARIANTE.error;
-  const rolFinal = role || config.rolDefecto;
+  const rolFinal = rol || role || config.rolDefecto;
 
   return (
     <div
-      ref={ref}
+      ref={(nodo) => {
+        refInterna.current = nodo;
+        if (typeof refExterna === 'function') refExterna(nodo);
+        else if (refExterna) refExterna.current = nodo;
+      }}
       role={rolFinal}
       tabIndex={-1}
-      className={`flex flex-wrap items-start justify-between gap-3 p-4 rounded-control border ${config.clases} ${className}`.trim()}
+      className={`flex flex-wrap items-start justify-between gap-3 p-4 rounded-control border outline-none ${config.clases} ${className}`.trim()}
       {...props}
     >
       <div className="flex items-start gap-3">
@@ -59,7 +74,14 @@ const AlertMessage = forwardRef(function AlertMessage(
           {textoContenido && <div>{textoContenido}</div>}
         </div>
       </div>
-      {accion && <div className="shrink-0 self-center">{accion}</div>}
+      <div className="flex items-center gap-2 shrink-0 self-center">
+        {accion}
+        {alCerrar && (
+          <button type="button" onClick={alCerrar} aria-label="Cerrar mensaje" className="min-h-control min-w-control p-2 inline-flex items-center justify-center rounded-control">
+            <Icono nombre="X" className="w-4 h-4" />
+          </button>
+        )}
+      </div>
     </div>
   );
 });

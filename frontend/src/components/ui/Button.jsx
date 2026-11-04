@@ -1,4 +1,4 @@
-// Norman · Nielsen 1 · Nielsen 5 · WCAG 2.2 AA · E-22
+// Norman · Nielsen 1 · Nielsen 5 · WCAG 2.2 AA · Guarda contra doble clic y estado ocupado · E-22
 import { forwardRef } from 'react';
 import Icono from './Icono';
 
@@ -12,7 +12,8 @@ const ESTILOS_VARIANTE = {
 const Button = forwardRef(function Button(
   {
     children,
-    type = 'button',
+    type,
+    tipo,
     variante = 'primario',
     enProceso = false,
     textoProceso = 'Validando…',
@@ -24,6 +25,7 @@ const Button = forwardRef(function Button(
   },
   ref
 ) {
+  const tipoBoton = tipo || type || 'button';
   const bloqueado = disabled || enProceso;
   const estiloVariante = ESTILOS_VARIANTE[variante] || ESTILOS_VARIANTE.primario;
 
@@ -38,11 +40,11 @@ const Button = forwardRef(function Button(
   return (
     <button
       ref={ref}
-      type={type}
+      type={tipoBoton}
       disabled={bloqueado}
       aria-busy={enProceso || undefined}
       onClick={manejarClick}
-      className={`inline-flex items-center justify-center gap-2 min-h-[2.75rem] px-4 py-2 rounded-control font-semibold text-base transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${estiloVariante} ${className}`.trim()}
+      className={`inline-flex items-center justify-center gap-2 min-h-control px-4 py-2 rounded-control font-semibold text-base transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${estiloVariante} ${className}`.trim()}
       {...props}
     >
       {enProceso ? <Icono nombre="Loader2" className="w-4 h-4 animate-spin" /> : icono && <Icono nombre={icono} className="w-4 h-4" />}
