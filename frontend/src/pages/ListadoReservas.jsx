@@ -32,36 +32,27 @@ export default function ListadoReservas() {
   const tipoFiltro = searchParams.get('tipo') || '';
   const [confirmacion, setConfirmacion] = useState(null);
   const [alertaAccion, setAlertaAccion] = useState(null);
-
   const { reservas, cargando, error, enProcesoAccion, cambiarEstado } = useReservas({
     estado: estadoFiltro, tipo: tipoFiltro, texto: textoDebounced, versionExterna: ctx.versionDatos || 0
   });
-
   useEffect(() => {
     const prox = new URLSearchParams(searchParams);
     if (textoDebounced.trim()) prox.set('texto', textoDebounced.trim()); else prox.delete('texto');
     if (prox.toString() !== searchParams.toString()) setSearchParams(prox, { replace: true });
   }, [textoDebounced, searchParams, setSearchParams]);
-
   const actualizarParametro = (clave, valor) => {
     const prox = new URLSearchParams(searchParams);
     if (valor) prox.set(clave, valor); else prox.delete(clave);
     setSearchParams(prox, { replace: true });
   };
-
   const ejecutarCambioEstado = async () => {
     if (!confirmacion) return;
     const { reserva, nuevoEstado } = confirmacion;
     const res = await cambiarEstado(reserva.id, nuevoEstado);
     setConfirmacion(null);
-    if (res.ok) {
-      const msg = nuevoEstado === ESTADOS_RESERVA.APROBADA ? MENSAJES.RESERVA_APROBADA_EXITO : MENSAJES.RESERVA_RECHAZADA_EXITO;
-      setAlertaAccion({ tipo: 'exito', texto: msg });
-    } else if (res.errorGeneral) {
-      setAlertaAccion({ tipo: 'error', texto: res.errorGeneral });
-    }
+    if (res.ok) setAlertaAccion({ tipo: 'exito', texto: nuevoEstado === ESTADOS_RESERVA.APROBADA ? MENSAJES.RESERVA_APROBADA_EXITO : MENSAJES.RESERVA_RECHAZADA_EXITO });
+    else if (res.errorGeneral) setAlertaAccion({ tipo: 'error', texto: res.errorGeneral });
   };
-
   const columnas = [
     { clave: 'solicitante', encabezado: 'Solicitante', render: (r) => <div><p className="font-semibold text-texto">{r.solicitante?.nombreCompleto}</p><p className="text-sm text-texto-suave">{r.solicitante?.correo}</p></div> },
     { clave: 'ambiente', encabezado: 'Ambiente', render: (r) => <div className="space-y-1"><p className="font-semibold text-texto">{r.ambiente?.nombre}</p><TipoAmbienteChip tipo={r.ambiente?.tipo} /></div> },
@@ -70,10 +61,8 @@ export default function ListadoReservas() {
     { clave: 'estado', encabezado: 'Estado', render: (r) => <EstadoBadge estado={r.estado} /> },
     { clave: 'acciones', encabezado: 'Acciones', render: (r) => <AccionesReserva reserva={r} rolUsuario={usuario?.rol} enProceso={enProcesoAccion} alSolicitarAprobar={(item) => setConfirmacion({ reserva: item, nuevoEstado: ESTADOS_RESERVA.APROBADA })} alSolicitarRechazar={(item) => setConfirmacion({ reserva: item, nuevoEstado: ESTADOS_RESERVA.RECHAZADA })} /> }
   ];
-
   const puedeReservar = usuario?.rol === ROLES.ADMINISTRADOR || usuario?.rol === ROLES.SOLICITANTE;
   const esAprobar = confirmacion?.nuevoEstado === ESTADOS_RESERVA.APROBADA;
-
   return (
     <div className="space-y-5">
       <EncabezadoPagina migas={[{ etiqueta: 'Inicio', ruta: RUTAS.PANEL }, { etiqueta: 'Reservas' }]} titulo="Reservas" descripcion="Consulte, filtre y gestione las solicitudes de reserva de ambientes universitarios." accionPrimaria={puedeReservar ? <Button variante="primario" onClick={() => ctx.abrirModalReserva?.('')}><Icono nombre="CalendarPlus" className="w-5 h-5" /><span>Nueva reserva</span></Button> : null} />

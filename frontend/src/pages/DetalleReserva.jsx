@@ -15,6 +15,9 @@ import AlertMessage from '../components/ui/AlertMessage';
 import Cargando from '../components/ui/Cargando';
 import Button from '../components/ui/Button';
 
+const MAPA_MENSAJE = { [ESTADOS_RESERVA.APROBADA]: MENSAJES.RESERVA_APROBADA_EXITO, [ESTADOS_RESERVA.RECHAZADA]: MENSAJES.RESERVA_RECHAZADA_EXITO, [ESTADOS_RESERVA.CANCELADA]: MENSAJES.RESERVA_CANCELADA_EXITO };
+const MAPA_VERBO = { [ESTADOS_RESERVA.APROBADA]: 'Aprobar reserva', [ESTADOS_RESERVA.RECHAZADA]: 'Rechazar reserva', [ESTADOS_RESERVA.CANCELADA]: 'Cancelar reserva' };
+
 export default function DetalleReserva() {
   const { id } = useParams();
   const { usuario } = useAuth();
@@ -22,7 +25,7 @@ export default function DetalleReserva() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
   const [alerta, setAlerta] = useState(null);
-  const [nuevoEstadoModal, setNuevoEstadoModal] = useState('');
+  const [estadoModal, setEstadoModal] = useState('');
   const [enProceso, setEnProceso] = useState(false);
 
   const cargarDetalle = useCallback(async (signal) => {
@@ -41,27 +44,16 @@ export default function DetalleReserva() {
   }, [cargarDetalle]);
 
   const confirmarTransicion = async () => {
-    if (!reserva || !nuevoEstadoModal || enProceso) return;
+    if (!reserva || !estadoModal || enProceso) return;
     setEnProceso(true);
-    const res = interpretarRespuesta(await cambiarEstadoReservaApi(reserva.id, nuevoEstadoModal));
-    setEnProceso(false);
-    const estadoAplicado = nuevoEstadoModal;
-    setNuevoEstadoModal('');
-    if (res.ok) {
-      setReserva(res.datos);
-      const mapaMsg = { [ESTADOS_RESERVA.APROBADA]: MENSAJES.RESERVA_APROBADA_EXITO, [ESTADOS_RESERVA.RECHAZADA]: MENSAJES.RESERVA_RECHAZADA_EXITO, [ESTADOS_RESERVA.CANCELADA]: MENSAJES.RESERVA_CANCELADA_EXITO };
-      setAlerta({ tipo: 'exito', texto: mapaMsg[estadoAplicado] || 'Estado actualizado.' });
-    } else {
-      setAlerta({ tipo: 'error', texto: res.errorGeneral || MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA });
-    }
+    const aplicado = estadoModal;
+    const res = interpretarRespuesta(await cambiarEstadoReservaApi(reserva.id, aplicado));
+    setEnProceso(false); setEstadoModal('');
+    if (res.ok) { setReserva(res.datos); setAlerta({ tipo: 'exito', texto: MAPA_MENSAJE[aplicado] || 'Estado actualizado.' }); }
+    else setAlerta({ tipo: 'error', texto: res.errorGeneral || MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA });
   };
-
   const esAdmin = usuario?.rol === ROLES.ADMINISTRADOR;
-  const esDueno = reserva && usuario && reserva.solicitante?.id === usuario.id;
-  const esPendiente = reserva?.estado === ESTADOS_RESERVA.PENDIENTE;
-  const puedeCancelar = reserva && !ESTADOS_FINALES.includes(reserva.estado) && (esAdmin || esDueno);
-  const mapaEtiquetaModal = { [ESTADOS_RESERVA.APROBADA]: 'Aprobar reserva', [ESTADOS_RESERVA.RECHAZADA]: 'Rechazar reserva', [ESTADOS_RESERVA.CANCELADA]: 'Cancelar reserva' };
-
+  const puedeCancelar = reserva && !ESTADOS_FINALES.includes(reserva.estado) && (esAdmin || reserva.solicitante?.id === usuario?.id);
   return (
     <div className="space-y-5">
       <EncabezadoPagina migas={[{ etiqueta: 'Inicio', ruta: RUTAS.PANEL }, { etiqueta: 'Reservas', ruta: RUTAS.RESERVAS }, { etiqueta: 'Detalle' }]} titulo="Detalle de reserva" descripcion="Información completa de la solicitud, estado actual y acciones permitidas." accionPrimaria={<Link to={RUTAS.RESERVAS} className="min-h-control px-4 py-2.5 rounded-control border border-borde bg-superficie-2 text-texto font-semibold inline-flex items-center no-underline">Volver a reservas</Link>} />
@@ -72,17 +64,9 @@ export default function DetalleReserva() {
         <>
           <ResumenReserva reserva={reserva} />
           <section aria-label="Acciones sobre la reserva" className="p-5 rounded-tarjeta border border-borde bg-superficie flex flex-wrap items-center justify-between gap-4">
-            {ESTADOS_FINALES.includes(reserva.estado) ? (
-              <p className="text-sm font-medium text-texto-suave">{MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA}</p>
-            ) : (
-              <div className="flex flex-wrap items-center gap-3">
-                {esAdmin && esPendiente && <Button variante="primario" onClick={() => setNuevoEstadoModal(ESTADOS_RESERVA.APROBADA)}>Aprobar reserva</Button>}
-                {esAdmin && esPendiente && <Button variante="peligro" onClick={() => setNuevoEstadoModal(ESTADOS_RESERVA.RECHAZADA)}>Rechazar reserva</Button>}
-                {puedeCancelar && <Button variante="secundario" onClick={() => setNuevoEstadoModal(ESTADOS_RESERVA.CANCELADA)}>Cancelar reserva</Button>}
-              </div>
-            )}
+            {ESTADOS_FINALES.includes(reserva.estado) ? <p className="text-sm font-medium text-texto-suave">{MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA}</p> : <div className="flex flex-wrap items-center gap-3">{esAdmin && reserva.estado === ESTADOS_RESERVA.PENDIENTE && <Button variante="primario" onClick={() => setEstadoModal(ESTADOS_RESERVA.APROBADA)}>Aprobar reserva</Button>}{esAdmin && reserva.estado === ESTADOS_RESERVA.PENDIENTE && <Button variante="peligro" onClick={() => setEstadoModal(ESTADOS_RESERVA.RECHAZADA)}>Rechazar reserva</Button>}{puedeCancelar && <Button variante="secundario" onClick={() => setEstadoModal(ESTADOS_RESERVA.CANCELADA)}>Cancelar reserva</Button>}</div>}
           </section>
-          <ModalConfirmacion abierto={Boolean(nuevoEstadoModal)} titulo={`Confirmar: ${mapaEtiquetaModal[nuevoEstadoModal] || ''}`} descripcion="Revise los datos antes de confirmar el cambio de estado de la solicitud." reserva={reserva} esIrreversible={nuevoEstadoModal !== ESTADOS_RESERVA.APROBADA} etiquetaConfirmar={mapaEtiquetaModal[nuevoEstadoModal] || 'Confirmar'} varianteConfirmar={nuevoEstadoModal === ESTADOS_RESERVA.APROBADA ? 'primario' : 'peligro'} enProceso={enProceso} alConfirmar={confirmarTransicion} alCancelar={() => setNuevoEstadoModal('')} />
+          <ModalConfirmacion abierto={Boolean(estadoModal)} titulo={`Confirmar: ${MAPA_VERBO[estadoModal] || ''}`} descripcion="Revise los datos antes de confirmar el cambio de estado de la solicitud." reserva={reserva} esIrreversible={estadoModal !== ESTADOS_RESERVA.APROBADA} etiquetaConfirmar={MAPA_VERBO[estadoModal] || 'Confirmar'} varianteConfirmar={estadoModal === ESTADOS_RESERVA.APROBADA ? 'primario' : 'peligro'} enProceso={enProceso} alConfirmar={confirmarTransicion} alCancelar={() => setEstadoModal('')} />
         </>
       )}
     </div>

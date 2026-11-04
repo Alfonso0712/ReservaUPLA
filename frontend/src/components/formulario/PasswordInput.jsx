@@ -7,26 +7,11 @@ import { MENSAJES } from '../../constants/mensajes';
 
 const PasswordInput = forwardRef(function PasswordInput(
   {
-    id,
-    name,
-    nombre = 'contrasena',
-    etiqueta = 'Contraseña',
-    obligatorio = true,
-    ayuda = MENSAJES.AYUDA_CONTRASENA_LOGIN,
-    error = '',
-    value,
-    valor,
-    onChange,
-    alCambiar,
-    onBlur,
-    alSalir,
-    readOnly = false,
-    soloLectura = false,
-    placeholder = 'Ejemplo: ClaveSegura2026',
-    autoComplete = 'current-password',
-    enterKeyHint = 'done',
-    className = '',
-    ...props
+    id, name, nombre = 'contrasena', etiqueta = 'Contraseña', obligatorio = true,
+    ayuda = MENSAJES.AYUDA_CONTRASENA_LOGIN, error = '', value, valor,
+    onChange, alCambiar, onBlur, alSalir, readOnly = false, soloLectura = false,
+    placeholder = 'Ejemplo: ClaveSegura2026', autoComplete = 'current-password',
+    enterKeyHint = 'done', className = '', ...props
   },
   ref
 ) {
@@ -69,9 +54,7 @@ const PasswordInput = forwardRef(function PasswordInput(
           enterKeyHint={enterKeyHint}
           aria-invalid={tieneError}
           aria-describedby={describedBy}
-          className={`w-full min-h-control pl-3.5 pr-12 py-2 rounded-control border bg-superficie text-texto text-base transition-colors read-only:bg-superficie-2 ${
-            tieneError ? 'border-rechazada-texto' : 'border-borde-control'
-          }`}
+          className={`w-full min-h-control pl-3.5 pr-12 py-2 rounded-control border bg-superficie text-texto text-base transition-colors read-only:bg-superficie-2 ${tieneError ? 'border-rechazada-texto' : 'border-borde-control'}`}
           {...props}
         />
         <button type="button" aria-label={mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setMostrar((a) => !a)} className="absolute right-1 inline-flex items-center justify-center min-h-control min-w-control rounded-control text-texto-suave hover:text-texto bg-transparent border-0 cursor-pointer">

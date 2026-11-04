@@ -3,41 +3,16 @@ import { forwardRef, useEffect, useRef } from 'react';
 import Icono from './Icono';
 
 const CONFIG_VARIANTE = {
-  error: {
-    clases: 'bg-rechazada-fondo text-rechazada-texto border-rechazada-texto',
-    icono: 'CircleX',
-    rolDefecto: 'alert'
-  },
-  exito: {
-    clases: 'bg-aprobada-fondo text-aprobada-texto border-aprobada-texto',
-    icono: 'CircleCheck',
-    rolDefecto: 'status'
-  },
-  advertencia: {
-    clases: 'bg-pendiente-fondo text-pendiente-texto border-pendiente-texto',
-    icono: 'Clock',
-    rolDefecto: 'status'
-  },
-  info: {
-    clases: 'bg-primario-suave text-texto border-primario',
-    icono: 'Info',
-    rolDefecto: 'status'
-  }
+  error: { clases: 'bg-rechazada-fondo text-rechazada-texto border-rechazada-texto', icono: 'CircleX', rolDefecto: 'alert' },
+  exito: { clases: 'bg-aprobada-fondo text-aprobada-texto border-aprobada-texto', icono: 'CircleCheck', rolDefecto: 'status' },
+  advertencia: { clases: 'bg-pendiente-fondo text-pendiente-texto border-pendiente-texto', icono: 'Clock', rolDefecto: 'status' },
+  info: { clases: 'bg-primario-suave text-texto border-primario', icono: 'Info', rolDefecto: 'status' }
 };
 
 const AlertMessage = forwardRef(function AlertMessage(
   {
-    variante = 'error',
-    titulo = '',
-    mensaje = '',
-    children,
-    accion = null,
-    role,
-    rol,
-    enfocarAlAparecer = false,
-    alCerrar = null,
-    className = '',
-    ...props
+    variante = 'error', titulo = '', mensaje = '', children, accion = null,
+    role, rol, enfocarAlAparecer = false, alCerrar = null, className = '', ...props
   },
   refExterna
 ) {

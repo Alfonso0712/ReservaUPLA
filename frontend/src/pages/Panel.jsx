@@ -29,16 +29,8 @@ export default function Panel() {
 
   return (
     <div className="space-y-6">
-      <EncabezadoPagina
-        migas={[{ etiqueta: 'Inicio', ruta: RUTAS.PANEL }, { etiqueta: 'Panel' }]}
-        titulo="Panel"
-        descripcion="Resumen general del estado de las reservas y uso de ambientes académicos."
-        accionPrimaria={accionNuevaReserva}
-      />
-
-      {ctx.mensajeGlobal && (
-        <AlertMessage variante="exito" rol="status" mensaje={ctx.mensajeGlobal} enfocarAlAparecer alCerrar={ctx.limpiarMensajeGlobal} />
-      )}
+      <EncabezadoPagina migas={[{ etiqueta: 'Inicio', ruta: RUTAS.PANEL }, { etiqueta: 'Panel' }]} titulo="Panel" descripcion="Resumen general del estado de las reservas y uso de ambientes académicos." accionPrimaria={accionNuevaReserva} />
+      {ctx.mensajeGlobal && <AlertMessage variante="exito" rol="status" mensaje={ctx.mensajeGlobal} enfocarAlAparecer alCerrar={ctx.limpiarMensajeGlobal} />}
       {error && <AlertMessage variante="error" rol="alert" mensaje={error} enfocarAlAparecer />}
       {cargando && <Cargando />}
 
@@ -60,22 +52,11 @@ export default function Panel() {
             <CardIndicador titulo="Reservas rechazadas" valor={indicadores.rechazadas} icono="CircleX" destino={`${RUTAS.RESERVAS}?estado=Rechazada`} textoAccion="Ver reservas rechazadas" />
             {/* [JUSTIFICADO: se añade "Canceladas" para que los totales de estados sumen el total general] */}
             <CardIndicador titulo="Reservas canceladas" valor={indicadores.canceladas ?? 0} icono="Ban" destino={`${RUTAS.RESERVAS}?estado=Cancelada`} textoAccion="Ver reservas canceladas" />
-            <CardIndicador
-              titulo="Ambiente más utilizado"
-              valor={indicadores.ambienteMasUtilizado?.nombre || 'Sin registros'}
-              subtitulo={`${indicadores.ambienteMasUtilizado?.cantidad ?? 0} reservas registradas`}
-              icono="Building2"
-              destino={RUTAS.AMBIENTES}
-              textoAccion="Consultar ambientes"
-            />
+            <CardIndicador titulo="Ambiente más utilizado" valor={indicadores.ambienteMasUtilizado?.nombre || 'Sin registros'} subtitulo={`${indicadores.ambienteMasUtilizado?.cantidad ?? 0} reservas registradas`} icono="Building2" destino={RUTAS.AMBIENTES} textoAccion="Consultar ambientes" />
           </section>
 
           {indicadores.total === 0 && (
-            <EstadoVacio
-              titulo="No hay reservas registradas todavía"
-              descripcion="Registre la primera solicitud de reserva para visualizar la actividad académica."
-              accion={accionNuevaReserva}
-            />
+            <EstadoVacio titulo="No hay reservas registradas todavía" descripcion="Registre la primera solicitud de reserva para visualizar la actividad académica." accion={accionNuevaReserva} />
           )}
         </>
       )}
