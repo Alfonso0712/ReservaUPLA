@@ -11,7 +11,8 @@ export default function LogoUpla({
   const clasesTamano = {
     marca: 'w-16 h-auto object-contain',
     lateral: 'w-10 h-10 object-contain',
-    compacto: 'w-9 h-9 object-contain'
+    compacto: 'w-9 h-9 object-contain',
+    libre: 'object-contain'
   };
 
   return (
