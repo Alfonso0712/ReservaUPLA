@@ -6,21 +6,21 @@ export default function PanelAyuda({ alRellenarDemo = null, deshabilitado = fals
   if (!mostrarDemo) return null;
 
   return (
-    <section aria-label="Acceso de demostración" className="p-3.5 rounded-control border border-borde bg-superficie-2">
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="text-sm font-semibold text-texto">Acceso de demostración</span>
-        <span className="px-2 py-0.5 rounded-control border border-borde bg-superficie text-sm font-medium text-texto-suave">
+    <section aria-label="Acceso de demostración" className="p-2 sm:p-2.5 rounded-control border border-borde bg-superficie-2">
+      <div className="flex items-center justify-between gap-2 mb-1.5">
+        <span className="text-xs font-semibold text-texto-suave">Acceso de demostración</span>
+        <span className="px-1.5 py-0.5 rounded-control border border-borde bg-superficie text-[10px] font-medium text-texto-suave">
           Solo para pruebas
         </span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-1.5">
         {CUENTAS_DEMO.map((cuenta) => (
           <button
             key={cuenta.rol}
             type="button"
             disabled={deshabilitado}
             onClick={() => alRellenarDemo(cuenta)}
-            className="min-h-control px-2.5 py-2 rounded-control border border-borde bg-superficie text-texto hover:bg-fondo text-sm font-semibold transition-colors"
+            className="py-1 px-1.5 rounded-control border border-borde bg-superficie text-texto hover:bg-fondo text-xs font-medium transition-colors text-center truncate cursor-pointer"
           >
             {cuenta.etiqueta}
           </button>
