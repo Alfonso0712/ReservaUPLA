@@ -2,9 +2,9 @@
 import { useTamanoFuente, ESCALAS_FUENTE } from '../../hooks/useTamanoFuente';
 
 export default function ControlTamanoFuente({ tamanoActual, alCambiar }) {
-  const { tamano, cambiarTamano } = useTamanoFuente();
-  const actual = tamanoActual || tamano;
-  const manejarCambio = alCambiar || cambiarTamano;
+  const { tamanoFuente, cambiarTamanoFuente } = useTamanoFuente();
+  const actual = tamanoActual || tamanoFuente;
+  const manejarCambio = alCambiar || cambiarTamanoFuente;
 
   return (
     <div
@@ -20,7 +20,7 @@ export default function ControlTamanoFuente({ tamanoActual, alCambiar }) {
             type="button"
             aria-label={escala.descripcion}
             aria-pressed={activo}
-            onClick={() => manejarCambio(escala.porcentaje)}
+            onClick={() => manejarCambio?.(escala.porcentaje)}
             className={`min-h-control min-w-control px-2.5 rounded-control text-sm font-semibold transition-colors cursor-pointer ${
               activo
                 ? 'bg-primario text-sobre-primario'
