@@ -14,14 +14,3 @@ export function obtenerFechaHoyIso() {
   const dia = String(ahora.getDate()).padStart(2, '0');
   return `${anio}-${mes}-${dia}`;
 }
-
-export function obtenerTextoRelativoFecha(fechaIso) {
-  if (!fechaIso || typeof fechaIso !== 'string') return '';
-  const [anio, mes, dia] = fechaIso.split('T')[0].split('-').map(Number);
-  if (!anio || !mes || !dia) return '';
-  const diffDias = Math.round((new Date(anio, mes - 1, dia) - new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())) / 86400000);
-  if (diffDias === 0) return 'Hoy';
-  if (diffDias === 1) return 'Mañana';
-  if (diffDias === -1) return 'Ayer';
-  return diffDias > 1 ? `En ${diffDias} días` : `Hace ${Math.abs(diffDias)} días`;
-}
