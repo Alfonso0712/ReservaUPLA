@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { RUTA_IMAGEN_FONDO_LOGIN } from '../constants/rutas';
 import LogoUpla from '../components/ui/LogoUpla';
 import Icono from '../components/ui/Icono';
+import RedParticulas from '../components/ui/RedParticulas';
 import ControlTamanoFuente from '../components/navegacion/ControlTamanoFuente';
 import ConmutadorTema from '../components/navegacion/ConmutadorTema';
 import SaltarAlContenido from '../components/navegacion/SaltarAlContenido';
@@ -24,6 +25,7 @@ export default function LayoutAutenticacion({ children }) {
         style={{ backgroundImage: `url(${RUTA_IMAGEN_FONDO_LOGIN})`, backgroundPosition: 'right center' }}
       >
         <div className="absolute inset-0 capa-superposicion-login pointer-events-none" aria-hidden="true" />
+        <RedParticulas />
         <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
             <LogoUpla variante="marca" />
@@ -65,9 +67,9 @@ export default function LayoutAutenticacion({ children }) {
         </div>
       </aside>
 
-      <div className="flex-1 lg:w-[32%] lg:h-full flex flex-col justify-center bg-superficie text-texto lg:overflow-y-auto">
-        <main id="contenido-principal" tabIndex={-1} className="flex-1 flex items-center justify-center p-6 sm:p-8 outline-none">
-          <div className="w-full max-w-[340px] my-auto">{children || <Outlet />}</div>
+      <div className="flex-1 lg:w-[32%] lg:h-full flex flex-col justify-center bg-fondo text-texto lg:overflow-y-auto">
+        <main id="contenido-principal" tabIndex={-1} className="flex-1 flex items-center justify-center p-4 sm:p-6 outline-none">
+          <div className="w-full max-w-[370px] my-auto">{children || <Outlet />}</div>
         </main>
       </div>
     </div>

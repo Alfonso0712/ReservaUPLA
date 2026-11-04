@@ -40,8 +40,10 @@ const TextInput = forwardRef(function TextInput(
         maxLength={maxLength}
         aria-invalid={tieneError}
         aria-describedby={describedBy}
-        className={`w-full min-h-[42px] px-3.5 py-2 rounded-control border bg-superficie text-texto text-sm sm:text-base transition-colors read-only:bg-superficie-2 read-only:cursor-not-allowed ${
-          tieneError ? 'border-rechazada-texto' : 'border-borde-control'
+        className={`w-full min-h-[42px] px-3.5 py-2 rounded-control border text-sm sm:text-base transition-all duration-200 ease-in-out read-only:bg-superficie-2 read-only:cursor-not-allowed ${
+          tieneError
+            ? 'border-rechazada-texto bg-superficie text-texto focus:border-rechazada-texto focus:ring-4 focus:ring-rechazada-texto/15 focus:outline-none'
+            : 'border-borde-control/40 bg-[#F8FAFC] dark:bg-superficie-2 text-texto focus:bg-superficie focus:border-primario-enlace focus:ring-4 focus:ring-primario/15 focus:outline-none'
         }`}
         {...props}
       />
