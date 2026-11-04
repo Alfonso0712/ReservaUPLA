@@ -56,7 +56,7 @@ public class ReservaService : IReservaService
                 throw new DomainException(Mensajes.AmbienteNoDisponible);
 
             var conflicto = await _reservaRepo.HayConflictoAsync(
-                dto.AmbienteId, dto.Fecha, dto.HoraInicio, dto.HoraFin, null, ct);
+                new IntervaloHorario(dto.AmbienteId, dto.Fecha, dto.HoraInicio, dto.HoraFin), ct);
             if (conflicto)
                 throw new DomainException(Mensajes.ConflictoDisponibilidad, esConflicto: true);
 
@@ -79,7 +79,10 @@ public class ReservaService : IReservaService
         return await CambiarEstadoAsync(id, nuevoEstado, _usuarioActual.Id, _usuarioActual.Rol, ct);
     }
 
-    public async Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
+    public Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
+        => CambiarEstadoAsync(id, nuevoEstado, new ActorReserva(usuarioId, rol), ct);
+
+    public async Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, IActor actor, CancellationToken ct = default)
     {
         return await _unitOfWork.EjecutarEnTransaccionSerializableAsync(async () =>
         {
@@ -94,17 +97,13 @@ public class ReservaService : IReservaService
                 throw new DomainException(Mensajes.ReservaRechazadaInmodificable, esConflicto: true);
 
             // Alcance de visibilidad: si el recurso no es visible para el actor, responde 404 (no 403)
-            ValidarVisibilidadPorAlcance(reserva, ambiente, rol, usuarioId);
+            ValidarVisibilidadPorAlcance(reserva, ambiente, actor.Rol, actor.Id);
 
             if (nuevoEstado == EstadoReserva.Aprobada)
             {
-                var conflicto = await _reservaRepo.HayConflictoAsync(
-                    reserva.Ida_Reserva, reserva.Fec_Reserva, reserva.Hin_Reserva, reserva.Hfi_Reserva, reserva.Id_Reserva, ct);
-                if (conflicto)
-                    throw new DomainException(Mensajes.ConflictoDisponibilidad, esConflicto: true);
+                await ValidarConflictoAprobacionAsync(reserva, ct);
             }
 
-            var actor = new ActorReserva(usuarioId, rol);
             reserva.CambiarEstado(nuevoEstado, actor);
             await _reservaRepo.ActualizarAsync(reserva, ct);
             await _unitOfWork.GuardarCambiosAsync(ct);
@@ -113,6 +112,14 @@ public class ReservaService : IReservaService
 
             return ReservaMapper.ToDto(reserva, solicitante?.Nom_Usuario ?? string.Empty, ambiente.Nom_Ambiente);
         }, ct);
+    }
+
+    private async Task ValidarConflictoAprobacionAsync(Reserva reserva, CancellationToken ct)
+    {
+        var conflicto = await _reservaRepo.HayConflictoAsync(
+            new IntervaloHorario(reserva.Ida_Reserva, reserva.Fec_Reserva, reserva.Hin_Reserva, reserva.Hfi_Reserva, reserva.Id_Reserva), ct);
+        if (conflicto)
+            throw new DomainException(Mensajes.ConflictoDisponibilidad, esConflicto: true);
     }
 
     public async Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, CancellationToken ct = default)
@@ -127,8 +134,9 @@ public class ReservaService : IReservaService
         var (solId, respId) = ResolverAlcanceVisibilidad(rol, usuarioId);
         EstadoReserva? estEnum = !string.IsNullOrWhiteSpace(filtro.Estado) && Enum.TryParse<EstadoReserva>(filtro.Estado, true, out var e) ? e : null;
 
-        var total = await _reservaRepo.ContarAsync(estEnum, filtro.AmbienteId, filtro.Fecha, solId, respId, ct);
-        var lista = await _reservaRepo.ListarAsync(estEnum, filtro.AmbienteId, filtro.Fecha, solId, respId, filtro.Pagina, filtro.TamanoPagina, ct);
+        var parametros = new ParametrosConsultaReservas(estEnum, filtro.AmbienteId, filtro.Fecha, solId, respId, filtro.Pagina, filtro.TamanoPagina);
+        var total = await _reservaRepo.ContarAsync(parametros, ct);
+        var lista = await _reservaRepo.ListarAsync(parametros, ct);
 
         var dtos = new List<ReservaDto>(lista.Count);
         foreach (var r in lista)

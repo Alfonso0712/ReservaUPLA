@@ -6,6 +6,7 @@ using Moq;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
 using ReservaUpla.Application.Services;
+using ReservaUpla.Domain.Common;
 using ReservaUpla.Domain.Constants;
 using ReservaUpla.Domain.Entities;
 using ReservaUpla.Domain.Enums;
@@ -160,8 +161,8 @@ public class ServicesAndConcurrencyTests
         var idResponsable1 = Guid.NewGuid();
         var idResponsable2 = Guid.NewGuid();
 
-        var amb1 = Ambiente.Crear("Lab R1", TipoAmbiente.LaboratorioComputo, 20, "Pab 1", idResponsable1);
-        var amb2 = Ambiente.Crear("Lab R2", TipoAmbiente.LaboratorioComputo, 25, "Pab 2", idResponsable2);
+        var amb1 = Ambiente.Crear("Lab R1", TipoAmbiente.LaboratorioComputo, 20, "Pabellon 1", idResponsable1);
+        var amb2 = Ambiente.Crear("Lab R2", TipoAmbiente.LaboratorioComputo, 25, "Pabellon 2", idResponsable2);
         await context.Ambientes.AddRangeAsync(amb1, amb2);
         await context.SaveChangesAsync();
 
@@ -169,5 +170,37 @@ public class ServicesAndConcurrencyTests
 
         Assert.Single(lista);
         Assert.Equal(amb1.Id_Ambiente, lista[0].Id_Ambiente);
+    }
+
+    [Fact]
+    public async Task ParametrosConsultaReservas_Y_IntervaloHorario_FuncionanCorrectamente()
+    {
+        var context = CrearContextoEnMemoria(nameof(ParametrosConsultaReservas_Y_IntervaloHorario_FuncionanCorrectamente));
+        var repo = new ReservaRepository(context);
+
+        var ambId = Guid.NewGuid();
+        var solId = Guid.NewGuid();
+        var fecha = new DateOnly(2026, 11, 20);
+
+        var reserva1 = Reserva.Crear(fecha, new TimeSpan(8, 0, 0), new TimeSpan(10, 0, 0), "Clase Magistral A", solId, ambId);
+        reserva1.CambiarEstado(EstadoReserva.Aprobada, new ActorReserva(Guid.NewGuid(), RolUsuario.Administrador));
+        await repo.AgregarAsync(reserva1);
+        await context.SaveChangesAsync();
+
+        // Verificar conflicto usando IntervaloHorario
+        var hayConflicto = await repo.HayConflictoAsync(new IntervaloHorario(ambId, fecha, new TimeSpan(9, 0, 0), new TimeSpan(11, 0, 0)));
+        Assert.True(hayConflicto);
+
+        var sinConflicto = await repo.HayConflictoAsync(new IntervaloHorario(ambId, fecha, new TimeSpan(10, 0, 0), new TimeSpan(12, 0, 0)));
+        Assert.False(sinConflicto);
+
+        // Verificar consulta usando ParametrosConsultaReservas
+        var paramsConsulta = new ParametrosConsultaReservas(Estado: EstadoReserva.Aprobada, AmbienteId: ambId, Fecha: fecha);
+        var total = await repo.ContarAsync(paramsConsulta);
+        var lista = await repo.ListarAsync(paramsConsulta);
+
+        Assert.Equal(1, total);
+        Assert.Single(lista);
+        Assert.Equal(reserva1.Id_Reserva, lista[0].Id_Reserva);
     }
 }

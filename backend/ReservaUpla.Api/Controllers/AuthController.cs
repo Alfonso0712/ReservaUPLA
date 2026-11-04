@@ -22,6 +22,8 @@ namespace ReservaUpla.Api.Controllers;
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
+    private const int Status499ClientClosedRequest = 499;
+
     private readonly IAuthService _authService;
     private readonly ILogger<AuthController> _logger;
 
@@ -42,17 +44,7 @@ public class AuthController : ControllerBase
             var rol = Enum.Parse<RolUsuario>(usuario.Rol, true);
             var permisos = PoliticaDeAcceso.ObtenerPermisos(rol);
 
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Name, usuario.NombreCompleto),
-                new Claim(ClaimTypes.Email, usuario.Correo),
-                new Claim(ClaimTypes.Role, usuario.Rol)
-            };
-
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(identity);
-
+            var principal = CrearClaimsPrincipal(usuario);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
             return Ok(new { usuario, permisos });
@@ -68,7 +60,7 @@ public class AuthController : ControllerBase
         catch (OperationCanceledException)
         {
             // E-14: Cancelacion de solicitud
-            return StatusCode(499);
+            return StatusCode(Status499ClientClosedRequest);
         }
         catch (Exception ex)
         {
@@ -79,6 +71,20 @@ public class AuthController : ControllerBase
                 title: MensajesValidacion.ErrorInternoTitulo,
                 detail: MensajesValidacion.ErrorInternoDetalle);
         }
+    }
+
+    private static ClaimsPrincipal CrearClaimsPrincipal(UsuarioDto usuario)
+    {
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+            new Claim(ClaimTypes.Name, usuario.NombreCompleto),
+            new Claim(ClaimTypes.Email, usuario.Correo),
+            new Claim(ClaimTypes.Role, usuario.Rol)
+        };
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        return new ClaimsPrincipal(identity);
     }
 
     [HttpPost("logout")]

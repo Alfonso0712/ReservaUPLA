@@ -14,6 +14,9 @@ namespace ReservaUpla.Infrastructure.Repositories;
 
 public class ReservaRepository : IReservaRepository
 {
+    private const string EtiquetaSinRegistros = "Sin registros";
+    private const string EtiquetaDesconocido = "Desconocido";
+
     private readonly AppDbContext _context;
 
     public ReservaRepository(AppDbContext context)
@@ -27,6 +30,46 @@ public class ReservaRepository : IReservaRepository
     }
 
     public async Task<IReadOnlyList<Reserva>> ListarAsync(
+        ParametrosConsultaReservas parametros,
+        CancellationToken ct = default)
+    {
+        var query = ConstruirFiltro(parametros);
+        return await query
+            .OrderByDescending(r => r.Fec_Reserva)
+            .ThenByDescending(r => r.Hin_Reserva)
+            .Skip((parametros.Pagina - 1) * parametros.TamanoPagina)
+            .Take(parametros.TamanoPagina)
+            .ToListAsync(ct);
+    }
+
+    public async Task<int> ContarAsync(
+        ParametrosConsultaReservas parametros,
+        CancellationToken ct = default)
+    {
+        var query = ConstruirFiltro(parametros);
+        return await query.CountAsync(ct);
+    }
+
+    // RN-01 · RV-14 · E-17
+    public async Task<bool> HayConflictoAsync(
+        IntervaloHorario intervalo,
+        CancellationToken ct = default)
+    {
+        var query = _context.Reservas.AsNoTracking().Where(r =>
+            r.Ida_Reserva == intervalo.AmbienteId &&
+            r.Fec_Reserva == intervalo.Fecha &&
+            r.Est_Reserva == EstadoReserva.Aprobada &&
+            r.Hin_Reserva < intervalo.Fin &&
+            r.Hfi_Reserva > intervalo.Inicio);
+
+        if (intervalo.ExcluirReservaId.HasValue)
+            query = query.Where(r => r.Id_Reserva != intervalo.ExcluirReservaId.Value);
+
+        return await query.AnyAsync(ct);
+    }
+
+    // Sobrecargas para retrocompatibilidad
+    public Task<IReadOnlyList<Reserva>> ListarAsync(
         EstadoReserva? estado,
         Guid? ambienteId,
         DateOnly? fecha,
@@ -35,49 +78,25 @@ public class ReservaRepository : IReservaRepository
         int pagina,
         int tamanoPagina,
         CancellationToken ct = default)
-    {
-        var query = ConstruirFiltro(estado, ambienteId, fecha, solicitanteId, responsableId);
-        return await query
-            .OrderByDescending(r => r.Fec_Reserva)
-            .ThenByDescending(r => r.Hin_Reserva)
-            .Skip((pagina - 1) * tamanoPagina)
-            .Take(tamanoPagina)
-            .ToListAsync(ct);
-    }
+        => ListarAsync(new ParametrosConsultaReservas(estado, ambienteId, fecha, solicitanteId, responsableId, pagina, tamanoPagina), ct);
 
-    public async Task<int> ContarAsync(
+    public Task<int> ContarAsync(
         EstadoReserva? estado,
         Guid? ambienteId,
         DateOnly? fecha,
         Guid? solicitanteId,
         Guid? responsableId,
         CancellationToken ct = default)
-    {
-        var query = ConstruirFiltro(estado, ambienteId, fecha, solicitanteId, responsableId);
-        return await query.CountAsync(ct);
-    }
+        => ContarAsync(new ParametrosConsultaReservas(estado, ambienteId, fecha, solicitanteId, responsableId), ct);
 
-    // RN-01 · RV-14 · E-17
-    public async Task<bool> HayConflictoAsync(
+    public Task<bool> HayConflictoAsync(
         Guid ambienteId,
         DateOnly fecha,
         TimeSpan inicio,
         TimeSpan fin,
         Guid? excluirReservaId = null,
         CancellationToken ct = default)
-    {
-        var query = _context.Reservas.AsNoTracking().Where(r =>
-            r.Ida_Reserva == ambienteId &&
-            r.Fec_Reserva == fecha &&
-            r.Est_Reserva == EstadoReserva.Aprobada &&
-            r.Hin_Reserva < fin &&
-            r.Hfi_Reserva > inicio);
-
-        if (excluirReservaId.HasValue)
-            query = query.Where(r => r.Id_Reserva != excluirReservaId.Value);
-
-        return await query.AnyAsync(ct);
-    }
+        => HayConflictoAsync(new IntervaloHorario(ambienteId, fecha, inicio, fin, excluirReservaId), ct);
 
     public async Task AgregarAsync(Reserva reserva, CancellationToken ct = default)
     {
@@ -101,7 +120,7 @@ public class ReservaRepository : IReservaRepository
     // RF-08 · E-30
     public async Task<DashboardEstadisticasDto> ObtenerEstadisticasDashboardAsync(Guid? solicitanteId, Guid? responsableId, CancellationToken ct = default)
     {
-        var query = ConstruirFiltro(null, null, null, solicitanteId, responsableId);
+        var query = ConstruirFiltro(new ParametrosConsultaReservas(SolicitanteId: solicitanteId, ResponsableId: responsableId));
 
         var total = await query.CountAsync(ct);
         var pendientes = await query.CountAsync(r => r.Est_Reserva == EstadoReserva.Pendiente, ct);
@@ -122,37 +141,32 @@ public class ReservaRepository : IReservaRepository
             .OrderByDescending(x => x.Cantidad)
             .FirstOrDefaultAsync(ct);
 
-        if (top == null) return ("Sin registros", 0);
+        if (top == null) return (EtiquetaSinRegistros, 0);
 
         var ambiente = await _context.Ambientes.AsNoTracking().FirstOrDefaultAsync(a => a.Id_Ambiente == top.AmbienteId, ct);
-        return (ambiente?.Nom_Ambiente ?? "Desconocido", top.Cantidad);
+        return (ambiente?.Nom_Ambiente ?? EtiquetaDesconocido, top.Cantidad);
     }
 
-    private IQueryable<Reserva> ConstruirFiltro(
-        EstadoReserva? estado,
-        Guid? ambienteId,
-        DateOnly? fecha,
-        Guid? solicitanteId,
-        Guid? responsableId)
+    private IQueryable<Reserva> ConstruirFiltro(ParametrosConsultaReservas parametros)
     {
         var query = _context.Reservas.AsNoTracking();
 
-        if (estado.HasValue)
-            query = query.Where(r => r.Est_Reserva == estado.Value);
+        if (parametros.Estado.HasValue)
+            query = query.Where(r => r.Est_Reserva == parametros.Estado.Value);
 
-        if (ambienteId.HasValue)
-            query = query.Where(r => r.Ida_Reserva == ambienteId.Value);
+        if (parametros.AmbienteId.HasValue)
+            query = query.Where(r => r.Ida_Reserva == parametros.AmbienteId.Value);
 
-        if (fecha.HasValue)
-            query = query.Where(r => r.Fec_Reserva == fecha.Value);
+        if (parametros.Fecha.HasValue)
+            query = query.Where(r => r.Fec_Reserva == parametros.Fecha.Value);
 
-        if (solicitanteId.HasValue)
-            query = query.Where(r => r.Idu_Reserva == solicitanteId.Value);
+        if (parametros.SolicitanteId.HasValue)
+            query = query.Where(r => r.Idu_Reserva == parametros.SolicitanteId.Value);
 
-        if (responsableId.HasValue)
+        if (parametros.ResponsableId.HasValue)
         {
             query = query.Where(r => _context.Ambientes
-                .Any(a => a.Id_Ambiente == r.Ida_Reserva && a.Idr_Ambiente == responsableId.Value));
+                .Any(a => a.Id_Ambiente == r.Ida_Reserva && a.Idr_Ambiente == parametros.ResponsableId.Value));
         }
 
         return query;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ReservaUpla.Application.DTOs;
+using ReservaUpla.Domain.Common;
 using ReservaUpla.Domain.Enums;
 
 namespace ReservaUpla.Application.Interfaces;
@@ -44,6 +45,7 @@ public interface IReservaService
     Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, Guid usuarioId, RolUsuario rol, CancellationToken ct = default);
     // RF-07 · RN-05 · RN-06 · RV-15 a RV-17 · E-18 a E-21 · E-31
     Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, CancellationToken ct = default);
+    Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, IActor actor, CancellationToken ct = default);
     Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, Guid usuarioId, RolUsuario rol, CancellationToken ct = default);
     // RF-08 · E-30
     Task<DashboardEstadisticasDto> ObtenerDashboardAsync(CancellationToken ct = default);
