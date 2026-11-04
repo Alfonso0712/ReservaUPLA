@@ -33,7 +33,7 @@ export default function TableList({
   const datosVisibles = paginacion ? datosOrdenados.slice((paginaSegura - 1) * tamano, paginaSegura * tamano) : datosOrdenados;
 
   return (
-    <div className="w-full rounded-tarjeta border border-borde bg-superficie overflow-x-auto shadow-sm">
+    <div className="w-full rounded-tarjeta border border-borde bg-superficie overflow-hidden shadow-sm">
       <table className="w-full border-collapse text-left tabla-responsiva">
         <caption className="sr-only">{caption}</caption>
         <thead className="bg-superficie-2 border-b border-borde">
