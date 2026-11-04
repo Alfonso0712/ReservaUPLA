@@ -1,0 +1,78 @@
+// RF-01 · RV-01..03 · Shneiderman 4 · Registro público con rol fijo Solicitante y diálogo con cierre · E-01..06
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useFormulario } from '../hooks/useFormulario';
+import { useFocoAlMontar } from '../hooks/useFocoAlMontar';
+import { validarRegistroSolicitante } from '../validation/validadores';
+import { interpretarRespuesta } from '../validation/interpretarRespuesta';
+import { registrarSolicitanteApi } from '../services/usuarioService';
+import { MENSAJES } from '../constants/mensajes';
+import { RUTAS } from '../constants/rutas';
+import TextInput from '../components/formulario/TextInput';
+import PasswordInput from '../components/formulario/PasswordInput';
+import Button from '../components/ui/Button';
+import AlertMessage from '../components/ui/AlertMessage';
+
+export default function RegistroSolicitante() {
+  const [registrado, setRegistrado] = useState(false);
+  const refExito = useFocoAlMontar(registrado, registrado);
+
+  const form = useFormulario({
+    valoresIniciales: { nombreCompleto: '', correo: '', contrasena: '' },
+    validar: validarRegistroSolicitante,
+    alEnviar: async (valores, { setErrores, setErrorGeneral, enfocarPrimerError }) => {
+      const { datosNormalizados } = validarRegistroSolicitante(valores);
+      const resp = await registrarSolicitanteApi(datosNormalizados);
+      const res = interpretarRespuesta(resp);
+      if (res.ok) {
+        setRegistrado(true);
+        return;
+      }
+      if (Object.keys(res.errores).length > 0) {
+        setErrores(res.errores);
+        enfocarPrimerError(res.errores);
+        return;
+      }
+      setErrorGeneral(res.errorGeneral);
+    }
+  });
+
+  useEffect(() => {
+    document.title = 'Registro de solicitante | ReservaUPLA';
+    if (!registrado) form.camposRef.current.nombreCompleto?.focus();
+  }, [registrado, form.camposRef]);
+
+  if (registrado) {
+    return (
+      <div className="space-y-5">
+        <h1 ref={refExito} tabIndex={-1} className="text-2xl font-bold text-texto outline-none">
+          {MENSAJES.REGISTRO_EXITOSO_TITULO}
+        </h1>
+        <AlertMessage variante="exito" rol="status" mensaje={MENSAJES.REGISTRO_EXITOSO_DETALLE} />
+        <Link to={RUTAS.INGRESAR} className="min-h-control px-4 py-2.5 rounded-control bg-primario text-sobre-primario font-semibold inline-flex items-center justify-center w-full no-underline">
+          Iniciar sesión
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-5">
+      <div>
+        <h1 className="text-2xl font-bold text-texto">Registrarse como solicitante</h1>
+        <p className="mt-1 text-base text-texto-suave">Complete sus datos institucionales para solicitar ambientes académicos.</p>
+      </div>
+      <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
+      {form.errorGeneral && <AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer />}
+      <form onSubmit={form.manejarEnvio} noValidate className="space-y-4">
+        <TextInput ref={form.registrarRef('nombreCompleto')} nombre="nombreCompleto" etiqueta="Nombre completo" obligatorio valor={form.valores.nombreCompleto} alCambiar={(e) => form.cambiarValor('nombreCompleto', e.target.value)} alSalir={() => form.manejarBlur('nombreCompleto')} error={form.errores.nombreCompleto} ayuda={MENSAJES.AYUDA_NOMBRE_COMPLETO} placeholder="Juan Pérez Huamán" autoComplete="name" enterKeyHint="next" soloLectura={form.enProceso} />
+        <TextInput ref={form.registrarRef('correo')} nombre="correo" etiqueta="Correo institucional" tipo="email" obligatorio valor={form.valores.correo} alCambiar={(e) => form.cambiarValor('correo', e.target.value)} alSalir={() => form.manejarBlur('correo')} error={form.errores.correo} ayuda={MENSAJES.AYUDA_CORREO} placeholder="nombre@upla.edu.pe" autoComplete="email" inputMode="email" enterKeyHint="next" soloLectura={form.enProceso} />
+        <PasswordInput ref={form.registrarRef('contrasena')} nombre="contrasena" etiqueta="Contraseña" obligatorio valor={form.valores.contrasena} alCambiar={(e) => form.cambiarValor('contrasena', e.target.value)} alSalir={() => form.manejarBlur('contrasena')} error={form.errores.contrasena} ayuda={MENSAJES.AYUDA_CONTRASENA_REGISTRO} placeholder="Mínimo 8 caracteres" autoComplete="new-password" enterKeyHint="done" soloLectura={form.enProceso} />
+        <Button tipo="submit" variante="primario" enProceso={form.enProceso} textoProceso={MENSAJES.VALIDANDO} className="w-full">Crear cuenta de solicitante</Button>
+      </form>
+      <p className="text-sm text-texto-suave text-center">
+        ¿Ya tiene una cuenta? <Link to={RUTAS.INGRESAR} className="font-semibold text-primario-enlace">Iniciar sesión</Link>
+      </p>
+    </div>
+  );
+}

@@ -24,3 +24,4 @@ export const MAX_LONGITUD_MOTIVO = 500;
 
 export const TIMEOUT_PETICION_MS = 10000;
 export const DEBOUNCE_BUSQUEDA_MS = 300;
+export const CLAVE_SESION_MOCK = 'reservaupla_sesion_id';

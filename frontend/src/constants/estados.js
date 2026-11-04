@@ -6,6 +6,11 @@ export const ESTADOS_RESERVA = {
   CANCELADA: 'Cancelada'
 };
 
+export const ESTADOS_AMBIENTE = {
+  DISPONIBLE: 'Disponible',
+  MANTENIMIENTO: 'En mantenimiento'
+};
+
 export const LISTA_ESTADOS_RESERVA = [
   ESTADOS_RESERVA.PENDIENTE,
   ESTADOS_RESERVA.APROBADA,
