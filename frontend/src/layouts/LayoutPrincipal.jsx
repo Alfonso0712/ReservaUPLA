@@ -1,16 +1,14 @@
 // Nielsen 3 · WCAG 2.2 AA · Layout principal con barra lateral fija, cabecera y contenedor semántico · E-25
 import { useState, useRef, useCallback } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { RUTAS } from '../constants/rutas';
 import SaltarAlContenido from '../components/navegacion/SaltarAlContenido';
 import Sidebar from '../components/navegacion/Sidebar';
 import Header from '../components/navegacion/Header';
 import PageContainer from '../components/navegacion/PageContainer';
 
 export default function LayoutPrincipal({ children, renderModalReserva = null }) {
-  const { usuario, cerrarSesion } = useAuth();
-  const navegar = useNavigate();
+  const { usuario } = useAuth();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [modalReserva, setModalReserva] = useState({ abierto: false, ambienteId: '' });
   const [mensajeGlobal, setMensajeGlobal] = useState('');
@@ -31,11 +29,6 @@ export default function LayoutPrincipal({ children, renderModalReserva = null })
     setVersionDatos((v) => v + 1);
   }, []);
 
-  const manejarCerrarSesion = useCallback(async () => {
-    await cerrarSesion();
-    navegar(RUTAS.INGRESAR, { replace: true });
-  }, [cerrarSesion, navegar]);
-
   const contextoOutlet = {
     abrirModalReserva,
     mensajeGlobal,
@@ -52,7 +45,6 @@ export default function LayoutPrincipal({ children, renderModalReserva = null })
         abiertoMovil={menuAbierto}
         alCerrarMovil={() => setMenuAbierto(false)}
         alAbrirNuevaReserva={() => abrirModalReserva('')}
-        alCerrarSesion={manejarCerrarSesion}
       />
       <div className="flex-1 flex flex-col min-w-0">
         <Header

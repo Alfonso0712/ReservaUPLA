@@ -35,11 +35,11 @@ const Button = forwardRef(function Button(
       disabled={bloqueado}
       aria-busy={enProceso || undefined}
       onClick={manejarClick}
-      className={`inline-flex items-center justify-center gap-2 min-h-[42px] px-4 py-2 rounded-control font-semibold text-sm sm:text-base transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 hover:shadow-[0_6px_16px_rgba(10,61,145,0.28)] dark:hover:shadow-[0_6px_16px_rgba(37,99,235,0.35)] disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none ${estiloVariante} ${className}`.trim()}
+      className={`inline-flex items-center justify-center gap-2 min-h-control px-4 py-2 rounded-control font-semibold text-sm sm:text-base whitespace-nowrap transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 hover:shadow-[0_6px_16px_rgba(10,61,145,0.28)] dark:hover:shadow-[0_6px_16px_rgba(37,99,235,0.35)] disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none ${estiloVariante} ${className}`.trim()}
       {...props}
     >
-      {enProceso ? <Icono nombre="Loader2" className="w-4 h-4 animate-spin" /> : icono && <Icono nombre={icono} className="w-4 h-4" />}
-      <span>{enProceso ? textoProceso : children}</span>
+      {enProceso ? <Icono nombre="Loader2" className="w-4 h-4 animate-spin shrink-0" /> : icono && <Icono nombre={icono} className="w-4 h-4 shrink-0" />}
+      <span className="whitespace-nowrap">{enProceso ? textoProceso : children}</span>
     </button>
   );
 });
