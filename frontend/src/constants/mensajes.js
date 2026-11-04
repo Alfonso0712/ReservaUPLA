@@ -1,4 +1,4 @@
-// Nielsen 9 · Shneiderman 3 · ISO 9241-11 · RV-01..16 · E-01..24 · E-34..38
+// Nielsen 9 · Shneiderman 3 · ISO 9241-11 · RV-01..18 · E-01..44
 export const MENSAJES = {
   CORREO_OBLIGATORIO: 'Ingrese su correo institucional.',
   CORREO_FORMATO_INVALIDO: 'Ingrese un correo institucional válido.',
@@ -21,12 +21,17 @@ export const MENSAJES = {
   REGISTRO_EXITOSO_DETALLE: 'Su cuenta de solicitante fue creada. Ya puede iniciar sesión con su correo institucional.',
   AMBIENTE_NOMBRE_OBLIGATORIO: 'Ingrese el nombre del ambiente (entre 1 y 100 caracteres).',
   AMBIENTE_NOMBRE_LONGITUD: 'El nombre del ambiente debe tener entre 1 y 100 caracteres.',
+  AMBIENTE_NOMBRE_DUPLICADO: 'Ya existe un ambiente con ese nombre. Use otro nombre.',
   AMBIENTE_TIPO_OBLIGATORIO: 'Seleccione un tipo de ambiente de la lista.',
   AMBIENTE_CAPACIDAD_OBLIGATORIA: 'Ingrese la capacidad del ambiente (entre 1 y 1000 personas).',
   AMBIENTE_CAPACIDAD_INVALIDA: 'La capacidad debe ser un número entero entre 1 y 1000 personas.',
   AMBIENTE_UBICACION_OBLIGATORIA: 'Ingrese la ubicación del ambiente (entre 1 y 100 caracteres).',
   AMBIENTE_UBICACION_LONGITUD: 'La ubicación debe tener entre 1 y 100 caracteres.',
+  AMBIENTE_ESTADO_INVALIDO: 'Seleccione un estado de ambiente válido.',
+  AMBIENTE_NO_DISPONIBLE: 'El ambiente no está disponible para nuevas solicitudes de reserva.',
   AMBIENTE_CREADO_EXITO: 'El ambiente se registró correctamente en el catálogo.',
+  AMBIENTE_ACTUALIZADO_EXITO: 'El ambiente fue actualizado correctamente.',
+  AMBIENTE_ESTADO_ACTUALIZADO_EXITO: 'El estado del ambiente fue actualizado correctamente.',
   RESERVA_AMBIENTE_OBLIGATORIO: 'Seleccione el ambiente que desea reservar.',
   RESERVA_SOLICITANTE_OBLIGATORIO: 'Seleccione el solicitante responsable de la reserva.',
   RESERVA_FECHA_OBLIGATORIA: 'Seleccione la fecha de la reserva (desde hoy en adelante).',

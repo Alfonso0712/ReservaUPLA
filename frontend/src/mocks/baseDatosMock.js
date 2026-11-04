@@ -1,8 +1,8 @@
-// Enrutador del adaptador mock con latencia y simulación de fallos · E-04 · E-08 · E-09 · E-23 · E-24
+// Enrutador del adaptador mock con latencia y simulación de fallos · E-04 · E-08 · E-09 · E-23 · E-24 · E-39..44
 import { MENSAJES } from '../constants/mensajes';
 import { dbMock, reiniciarBaseMock, configurarFalloMock, guardarIdSesionMock, respuestaExito, respuestaError } from './estadoMock';
 import { CUENTAS_DEMO } from './datosSemilla';
-import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarResponsables, mockListarAmbientes, mockCrearAmbiente } from './manejadoresAuthAmbientes';
+import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarResponsables, mockListarAmbientes, mockCrearAmbiente, mockActualizarAmbiente, mockCambiarEstadoAmbiente } from './manejadoresAuthAmbientes';
 import { mockObtenerDisponibilidad, mockListarReservas, mockObtenerReserva, mockCrearReserva, mockCambiarEstadoReserva, mockObtenerDashboard } from './manejadoresReservasDashboard';
 
 function esperarLatencia(ms, signal) {
@@ -22,6 +22,10 @@ function despacharRutaMock(metodo, urlLimpia, parametros, cuerpo) {
   if (metodo === 'GET' && urlLimpia === '/api/usuarios') return respuestaExito([...dbMock.usuarios]);
   if (metodo === 'GET' && urlLimpia === '/api/ambientes') return mockListarAmbientes();
   if (metodo === 'POST' && urlLimpia === '/api/ambientes') return mockCrearAmbiente(cuerpo);
+  const matchAmbEstado = urlLimpia.match(/^\/api\/ambientes\/([^/]+)\/estado$/);
+  if (metodo === 'PATCH' && matchAmbEstado) return mockCambiarEstadoAmbiente(matchAmbEstado[1], cuerpo);
+  const matchAmb = urlLimpia.match(/^\/api\/ambientes\/([^/]+)$/);
+  if (metodo === 'PUT' && matchAmb) return mockActualizarAmbiente(matchAmb[1], cuerpo);
   const matchDisp = urlLimpia.match(/^\/api\/ambientes\/([^/]+)\/disponibilidad$/);
   if (metodo === 'GET' && matchDisp) return mockObtenerDisponibilidad(matchDisp[1], parametros.get('fecha') || '');
   if (metodo === 'GET' && urlLimpia === '/api/reservas') {

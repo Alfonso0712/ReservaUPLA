@@ -1,8 +1,7 @@
-// Manejadores mock de autenticación, usuarios y ambientes · RF-01 · RF-02 · E-01..11 · E-32 · E-45..49
+// Manejadores mock de autenticación y usuarios · RF-01 · E-01..09 · E-45..49
 import { ROLES } from '../constants/roles';
-import { ESTADOS_AMBIENTE } from '../constants/estados';
 import { MENSAJES } from '../constants/mensajes';
-import { validarLogin, validarRegistroSolicitante, validarAmbiente } from '../validation/validadores';
+import { validarLogin, validarRegistroSolicitante } from '../validation/validadores';
 import { dbMock, guardarIdSesionMock, obtenerUsuarioActualMock, respuestaExito, respuestaError } from './estadoMock';
 import { obtenerPermisosDeRol } from './permisosPorRol';
 
@@ -56,26 +55,4 @@ export function mockListarResponsables() {
   return respuestaExito(lista);
 }
 
-export function mockListarAmbientes() {
-  const usuario = obtenerUsuarioActualMock();
-  if (usuario?.rol === ROLES.RESPONSABLE) {
-    return respuestaExito(dbMock.ambientes.filter((a) => a.responsableId === usuario.id));
-  }
-  return respuestaExito([...dbMock.ambientes]);
-}
-
-export function mockCrearAmbiente(cuerpo = {}) {
-  const usuario = obtenerUsuarioActualMock();
-  if (usuario && usuario.rol !== ROLES.ADMINISTRADOR) return respuestaError(403, MENSAJES.ACCION_SOLO_ADMINISTRADOR);
-  const val = validarAmbiente(cuerpo);
-  if (!val.valido) return respuestaError(400, MENSAJES.RESUMEN_ERRORES_FORMULARIO, formatearErroresCampo(val.errores));
-  const d = val.datosNormalizados;
-  const resp = dbMock.usuarios.find((u) => u.id === d.responsableId);
-  const nuevo = {
-    id: `amb-${Date.now()}`, nombre: d.nombre, tipo: d.tipo, capacidad: d.capacidad,
-    ubicacion: d.ubicacion, estado: ESTADOS_AMBIENTE.DISPONIBLE,
-    responsableId: resp?.id || '', responsableNombre: resp?.nombreCompleto || 'Sin asignar'
-  };
-  dbMock.ambientes.push(nuevo);
-  return respuestaExito(nuevo, MENSAJES.AMBIENTE_CREADO_EXITO, 201);
-}
+export { mockListarAmbientes, mockCrearAmbiente, mockActualizarAmbiente, mockCambiarEstadoAmbiente } from './manejadoresAmbientes';

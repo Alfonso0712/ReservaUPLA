@@ -1,30 +1,13 @@
-// Nielsen 5 · Norman · WCAG 2.2 AA · Selector desplegable accesible sobre CampoFormulario · E-26
+// Nielsen 5 · Norman · WCAG 2.2 AA · Selector desplegable accesible sobre CampoFormulario · E-26 · E-42
 import { forwardRef, useId } from 'react';
 import CampoFormulario, { construirDescribedBy } from './CampoFormulario';
 
 const SelectInput = forwardRef(function SelectInput(
   {
-    id,
-    name,
-    nombre,
-    etiqueta,
-    obligatorio = true,
-    ayuda = 'Seleccione una opción de la lista',
-    error = '',
-    value,
-    valor,
-    onChange,
-    alCambiar,
-    onBlur,
-    alSalir,
-    opciones = [],
-    placeholder,
-    textoPlaceholder = 'Seleccione una opción',
-    incluirVacio = true,
-    readOnly = false,
-    soloLectura = false,
-    className = '',
-    ...props
+    id, name, nombre, etiqueta, obligatorio = true, ayuda = 'Seleccione una opción de la lista',
+    error = '', value, valor, onChange, alCambiar, onBlur, alSalir, opciones = [],
+    placeholder, textoPlaceholder = 'Seleccione una opción', incluirVacio = true,
+    readOnly = false, soloLectura = false, className = '', ...props
   },
   ref
 ) {
@@ -60,7 +43,8 @@ const SelectInput = forwardRef(function SelectInput(
         {opciones.map((op) => {
           const v = typeof op === 'object' ? op.valor : op;
           const et = typeof op === 'object' ? op.etiqueta : op;
-          return <option key={v} value={v}>{et}</option>;
+          const des = typeof op === 'object' ? Boolean(op.deshabilitada) : false;
+          return <option key={v} value={v} disabled={des}>{et}</option>;
         })}
       </select>
     </CampoFormulario>

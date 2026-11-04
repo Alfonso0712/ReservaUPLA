@@ -1,4 +1,4 @@
-// RF-03 · RF-04 · RN-01..04 · RV-08..14 · Modal accesible de nueva solicitud de reserva · E-12..17 · E-22 · E-33
+// RF-03 · RF-04 · RN-01..04 · RV-08..14 · Modal accesible de nueva reserva · E-12..17 · E-22 · E-42
 import { useState, useEffect, useId } from 'react';
 import { useFormulario } from '../../hooks/useFormulario';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
@@ -16,7 +16,6 @@ import PanelDisponibilidad from './PanelDisponibilidad';
 import Button from '../ui/Button';
 import AlertMessage from '../ui/AlertMessage';
 import Icono from '../ui/Icono';
-
 export default function FormularioReserva({ abierto, ambientePreseleccionadoId = '', alCerrar, alExito }) {
   const idTitulo = useId();
   const [cat, setCat] = useState({ ambientes: [], ocupados: [], cargandoDisp: false });
@@ -32,29 +31,32 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
     }
   });
   const modalRef = useTrampaFoco(abierto, () => { if (!form.enProceso) alCerrar?.(); }, 'select, input');
+  const ambSeleccionado = cat.ambientes.find((a) => a.id === form.valores.ambienteId);
+  const esDisponible = ambSeleccionado?.estado === 'Disponible';
   useEffect(() => {
     if (!abierto) return undefined;
     form.setValores({ ambienteId: ambientePreseleccionadoId || '', fecha: '', horaInicio: '', horaFin: '', motivo: '' });
     form.setErrores({}); form.setErrorGeneral('');
     const ctrl = new AbortController();
     listarAmbientesApi(ctrl.signal).then((rA) => {
-      if (!ctrl.signal.aborted) {
-        const iA = interpretarRespuesta(rA);
-        setCat((p) => ({ ...p, ambientes: iA.ok && Array.isArray(iA.datos) ? iA.datos : [] }));
-      }
+      if (!ctrl.signal.aborted) { const iA = interpretarRespuesta(rA); setCat((p) => ({ ...p, ambientes: iA.ok && Array.isArray(iA.datos) ? iA.datos : [] })); }
     });
     return () => ctrl.abort();
   }, [abierto, ambientePreseleccionadoId]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!abierto || !form.valores.ambienteId || !form.valores.fecha) { setCat((p) => ({ ...p, ocupados: [] })); return undefined; }
+    if (!abierto || !form.valores.ambienteId || !form.valores.fecha || !esDisponible) { setCat((p) => ({ ...p, ocupados: [] })); return undefined; }
     const ctrl = new AbortController();
     setCat((p) => ({ ...p, cargandoDisp: true }));
     consultarDisponibilidadApi(form.valores.ambienteId, form.valores.fecha, ctrl.signal).then((r) => {
       if (!ctrl.signal.aborted) { const i = interpretarRespuesta(r); setCat((p) => ({ ...p, ocupados: i.ok && Array.isArray(i.datos?.ocupados) ? i.datos.ocupados : [], cargandoDisp: false })); }
     });
     return () => ctrl.abort();
-  }, [abierto, form.valores.ambienteId, form.valores.fecha]);
+  }, [abierto, form.valores.ambienteId, form.valores.fecha, esDisponible]);
   if (!abierto) return null;
+  const opcionesAmb = cat.ambientes.map((a) => ({
+    valor: a.id, etiqueta: `${a.nombre}${a.estado === 'Disponible' ? ` (${a.capacidad} personas)` : ` (en ${a.estado.toLowerCase()})`}`,
+    deshabilitada: a.estado !== 'Disponible'
+  }));
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
@@ -62,7 +64,7 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
         <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
         {form.errorGeneral && <div className="mb-4"><AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer /></div>}
         <form onSubmit={form.manejarEnvio} noValidate className="space-y-4">
-          <SelectInput ref={form.registrarRef('ambienteId')} nombre="ambienteId" etiqueta="Ambiente" obligatorio valor={form.valores.ambienteId} alCambiar={(e) => form.cambiarValor('ambienteId', e.target.value)} alSalir={() => form.manejarBlur('ambienteId')} opciones={cat.ambientes.map((a) => ({ valor: a.id, etiqueta: `${a.nombre} (${a.capacidad} personas)` }))} placeholder="Seleccione un ambiente" ayuda={MENSAJES.AYUDA_AMBIENTE} error={form.errores.ambienteId} soloLectura={form.enProceso} />
+          <SelectInput ref={form.registrarRef('ambienteId')} nombre="ambienteId" etiqueta="Ambiente" obligatorio valor={form.valores.ambienteId} alCambiar={(e) => form.cambiarValor('ambienteId', e.target.value)} alSalir={() => form.manejarBlur('ambienteId')} opciones={opcionesAmb} placeholder="Seleccione un ambiente" ayuda={MENSAJES.AYUDA_AMBIENTE} error={form.errores.ambienteId} soloLectura={form.enProceso} />
           <DateInput ref={form.registrarRef('fecha')} nombre="fecha" etiqueta="Fecha" obligatorio min={obtenerFechaHoyIso()} valor={form.valores.fecha} alCambiar={(e) => form.cambiarValor('fecha', e.target.value)} alSalir={() => form.manejarBlur('fecha')} ayuda={MENSAJES.AYUDA_FECHA} error={form.errores.fecha} soloLectura={form.enProceso} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"><TimeInput ref={form.registrarRef('horaInicio')} nombre="horaInicio" etiqueta="Hora de inicio" obligatorio valor={form.valores.horaInicio} alCambiar={(e) => form.cambiarValor('horaInicio', e.target.value)} alSalir={() => form.manejarBlur('horaInicio')} ayuda={MENSAJES.AYUDA_HORARIO} error={form.errores.horaInicio} soloLectura={form.enProceso} /><TimeInput ref={form.registrarRef('horaFin')} nombre="horaFin" etiqueta="Hora de fin" obligatorio valor={form.valores.horaFin} alCambiar={(e) => form.cambiarValor('horaFin', e.target.value)} alSalir={() => form.manejarBlur('horaFin')} ayuda={MENSAJES.AYUDA_HORARIO} error={form.errores.horaFin} soloLectura={form.enProceso} /></div>
           <PanelDisponibilidad ambienteSeleccionado={Boolean(form.valores.ambienteId)} fechaSeleccionada={Boolean(form.valores.fecha)} cargando={cat.cargandoDisp} ocupados={cat.ocupados} horaInicio={form.valores.horaInicio} horaFin={form.valores.horaFin} />
