@@ -1,13 +1,90 @@
-// RF-06 · Vista de detalle de reserva
+// RF-06 · RF-07 · RN-05 · RN-06 · Detalle de reserva con "Qué sigue" y cambio de estado confirmado · E-19..21
+import { useState, useEffect, useCallback } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { obtenerReservaPorIdApi, cambiarEstadoReservaApi } from '../services/reservaService';
+import { interpretarRespuesta } from '../validation/interpretarRespuesta';
+import { ROLES } from '../constants/roles';
+import { ESTADOS_RESERVA, ESTADOS_FINALES } from '../constants/estados';
+import { MENSAJES } from '../constants/mensajes';
+import { RUTAS } from '../constants/rutas';
 import EncabezadoPagina from '../components/navegacion/EncabezadoPagina';
+import ResumenReserva from '../components/reservas/ResumenReserva';
+import ModalConfirmacion from '../components/ui/ModalConfirmacion';
+import AlertMessage from '../components/ui/AlertMessage';
+import Cargando from '../components/ui/Cargando';
+import Button from '../components/ui/Button';
 
 export default function DetalleReserva() {
+  const { id } = useParams();
+  const { usuario } = useAuth();
+  const [reserva, setReserva] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
+  const [alerta, setAlerta] = useState(null);
+  const [nuevoEstadoModal, setNuevoEstadoModal] = useState('');
+  const [enProceso, setEnProceso] = useState(false);
+
+  const cargarDetalle = useCallback(async (signal) => {
+    setCargando(true); setError('');
+    const resp = await obtenerReservaPorIdApi(id, signal);
+    if (signal?.aborted) return;
+    const res = interpretarRespuesta(resp);
+    if (res.ok) setReserva(res.datos); else setError(res.errorGeneral);
+    setCargando(false);
+  }, [id]);
+
+  useEffect(() => {
+    const ctrl = new AbortController();
+    cargarDetalle(ctrl.signal);
+    return () => ctrl.abort();
+  }, [cargarDetalle]);
+
+  const confirmarTransicion = async () => {
+    if (!reserva || !nuevoEstadoModal || enProceso) return;
+    setEnProceso(true);
+    const res = interpretarRespuesta(await cambiarEstadoReservaApi(reserva.id, nuevoEstadoModal));
+    setEnProceso(false);
+    const estadoAplicado = nuevoEstadoModal;
+    setNuevoEstadoModal('');
+    if (res.ok) {
+      setReserva(res.datos);
+      const mapaMsg = { [ESTADOS_RESERVA.APROBADA]: MENSAJES.RESERVA_APROBADA_EXITO, [ESTADOS_RESERVA.RECHAZADA]: MENSAJES.RESERVA_RECHAZADA_EXITO, [ESTADOS_RESERVA.CANCELADA]: MENSAJES.RESERVA_CANCELADA_EXITO };
+      setAlerta({ tipo: 'exito', texto: mapaMsg[estadoAplicado] || 'Estado actualizado.' });
+    } else {
+      setAlerta({ tipo: 'error', texto: res.errorGeneral || MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA });
+    }
+  };
+
+  const esAdmin = usuario?.rol === ROLES.ADMINISTRADOR;
+  const esDueno = reserva && usuario && reserva.solicitante?.id === usuario.id;
+  const esPendiente = reserva?.estado === ESTADOS_RESERVA.PENDIENTE;
+  const puedeCancelar = reserva && !ESTADOS_FINALES.includes(reserva.estado) && (esAdmin || esDueno);
+  const mapaEtiquetaModal = { [ESTADOS_RESERVA.APROBADA]: 'Aprobar reserva', [ESTADOS_RESERVA.RECHAZADA]: 'Rechazar reserva', [ESTADOS_RESERVA.CANCELADA]: 'Cancelar reserva' };
+
   return (
-    <div>
-      <EncabezadoPagina
-        titulo="Detalle de reserva"
-        descripcion="Información completa de la solicitud, estado actual y acciones disponibles."
-      />
+    <div className="space-y-5">
+      <EncabezadoPagina migas={[{ etiqueta: 'Inicio', ruta: RUTAS.PANEL }, { etiqueta: 'Reservas', ruta: RUTAS.RESERVAS }, { etiqueta: 'Detalle' }]} titulo="Detalle de reserva" descripcion="Información completa de la solicitud, estado actual y acciones permitidas." accionPrimaria={<Link to={RUTAS.RESERVAS} className="min-h-control px-4 py-2.5 rounded-control border border-borde bg-superficie-2 text-texto font-semibold inline-flex items-center no-underline">Volver a reservas</Link>} />
+      {alerta && <AlertMessage variante={alerta.tipo} rol={alerta.tipo === 'error' ? 'alert' : 'status'} mensaje={alerta.texto} enfocarAlAparecer alCerrar={() => setAlerta(null)} />}
+      {error && <AlertMessage variante="error" rol="alert" mensaje={error} enfocarAlAparecer />}
+      {cargando && <Cargando />}
+      {!cargando && reserva && (
+        <>
+          <ResumenReserva reserva={reserva} />
+          <section aria-label="Acciones sobre la reserva" className="p-5 rounded-tarjeta border border-borde bg-superficie flex flex-wrap items-center justify-between gap-4">
+            {ESTADOS_FINALES.includes(reserva.estado) ? (
+              <p className="text-sm font-medium text-texto-suave">{MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA}</p>
+            ) : (
+              <div className="flex flex-wrap items-center gap-3">
+                {esAdmin && esPendiente && <Button variante="primario" onClick={() => setNuevoEstadoModal(ESTADOS_RESERVA.APROBADA)}>Aprobar reserva</Button>}
+                {esAdmin && esPendiente && <Button variante="peligro" onClick={() => setNuevoEstadoModal(ESTADOS_RESERVA.RECHAZADA)}>Rechazar reserva</Button>}
+                {puedeCancelar && <Button variante="secundario" onClick={() => setNuevoEstadoModal(ESTADOS_RESERVA.CANCELADA)}>Cancelar reserva</Button>}
+              </div>
+            )}
+          </section>
+          <ModalConfirmacion abierto={Boolean(nuevoEstadoModal)} titulo={`Confirmar: ${mapaEtiquetaModal[nuevoEstadoModal] || ''}`} descripcion="Revise los datos antes de confirmar el cambio de estado de la solicitud." reserva={reserva} esIrreversible={nuevoEstadoModal !== ESTADOS_RESERVA.APROBADA} etiquetaConfirmar={mapaEtiquetaModal[nuevoEstadoModal] || 'Confirmar'} varianteConfirmar={nuevoEstadoModal === ESTADOS_RESERVA.APROBADA ? 'primario' : 'peligro'} enProceso={enProceso} alConfirmar={confirmarTransicion} alCancelar={() => setNuevoEstadoModal('')} />
+        </>
+      )}
     </div>
   );
 }

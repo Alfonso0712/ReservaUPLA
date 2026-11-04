@@ -4,6 +4,7 @@ import { RUTAS } from '../constants/rutas';
 import RutaProtegida from './RutaProtegida';
 import LayoutAutenticacion from '../layouts/LayoutAutenticacion';
 import LayoutPrincipal from '../layouts/LayoutPrincipal';
+import FormularioReserva from '../components/reservas/FormularioReserva';
 import Ingresar from '../pages/Ingresar';
 import RegistroSolicitante from '../pages/RegistroSolicitante';
 import Panel from '../pages/Panel';
@@ -12,7 +13,7 @@ import DetalleReserva from '../pages/DetalleReserva';
 import Ambientes from '../pages/Ambientes';
 import NoEncontrada from '../pages/NoEncontrada';
 
-export default function RutasApp({ renderModalReserva = null }) {
+export default function RutasApp() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to={RUTAS.INGRESAR} replace />} />
@@ -21,7 +22,13 @@ export default function RutasApp({ renderModalReserva = null }) {
         <Route path={RUTAS.REGISTRO} element={<RegistroSolicitante />} />
       </Route>
       <Route element={<RutaProtegida />}>
-        <Route element={<LayoutPrincipal renderModalReserva={renderModalReserva} />}>
+        <Route
+          element={
+            <LayoutPrincipal
+              renderModalReserva={(props) => <FormularioReserva {...props} />}
+            />
+          }
+        >
           <Route path={RUTAS.PANEL} element={<Panel />} />
           <Route path={RUTAS.RESERVAS} element={<ListadoReservas />} />
           <Route path={RUTAS.DETALLE_RESERVA} element={<DetalleReserva />} />
