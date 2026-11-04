@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { usePermisos } from '../hooks/usePermisos';
 import { useAmbientes } from '../hooks/useAmbientes';
+import { useDebounce } from '../hooks/useDebounce';
 import { PERMISOS } from '../constants/permisos';
 import { normalizarTexto } from '../utils/normalizarTexto';
 import EncabezadoPagina from '../components/navegacion/EncabezadoPagina';
@@ -22,7 +23,7 @@ export default function Ambientes() {
   const { puede } = usePermisos();
   const ctx = useOutletContext() || {};
   const { ambientes, responsables, cargando, error, registrarAmbiente, editarAmbiente, cambiarEstadoAmbiente } = useAmbientes();
-  const [texto, setTexto] = useState('');
+  const [texto, setTexto] = useState(''); const debTexto = useDebounce(texto);
   const [tipo, setTipo] = useState('');
   const [modalCrear, setModalCrear] = useState(false);
   const [aEditar, setAEditar] = useState(null);
@@ -30,15 +31,13 @@ export default function Ambientes() {
   const [mensajeExito, setMensajeExito] = useState('');
   const conExito = (fn) => (m) => { if (typeof window !== 'undefined') { fn(); setMensajeExito(m); } };
 
-  const puedeCrear = puede(PERMISOS.AMBIENTES_CREAR);
-  const puedeEditar = puede(PERMISOS.AMBIENTES_EDITAR);
-  const puedeCambiarEstado = puede(PERMISOS.AMBIENTES_CAMBIAR_ESTADO);
-  const puedeCrearReserva = puede(PERMISOS.RESERVAS_CREAR);
+  const puedeCrear = puede(PERMISOS.AMBIENTES_CREAR); const puedeEditar = puede(PERMISOS.AMBIENTES_EDITAR);
+  const puedeCambiarEstado = puede(PERMISOS.AMBIENTES_CAMBIAR_ESTADO); const puedeCrearReserva = puede(PERMISOS.RESERVAS_CREAR);
 
   const filtrados = useMemo(() => {
-    const busq = normalizarTexto(texto).toLowerCase();
+    const busq = normalizarTexto(debTexto).toLowerCase();
     return ambientes.filter((amb) => (!tipo || amb.tipo === tipo) && (!busq || `${amb.nombre} ${amb.ubicacion}`.toLowerCase().includes(busq)));
-  }, [ambientes, texto, tipo]);
+  }, [ambientes, debTexto, tipo]);
   const todosDisponibles = useMemo(() => filtrados.length > 0 && filtrados.every((a) => a.estado === 'Disponible'), [filtrados]);
 
   const columnas = [

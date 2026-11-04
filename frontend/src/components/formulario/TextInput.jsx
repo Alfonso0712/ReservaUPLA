@@ -1,13 +1,15 @@
-// Nielsen 5 · Shneiderman 2 · WCAG 2.2 AA · Campo de texto accesible sobre CampoFormulario · E-26
+// Nielsen 5 · Shneiderman 2 · WCAG 2.2 AA · Campo de texto accesible · E-26
 import { forwardRef, useId } from 'react';
 import CampoFormulario, { construirDescribedBy } from './CampoFormulario';
+import Icono from '../ui/Icono';
 
 const TextInput = forwardRef(function TextInput(
   {
     id, name, nombre, etiqueta, obligatorio = true, ayuda = '', error = '',
     type, tipo, value, valor, onChange, alCambiar, onBlur, alSalir,
     readOnly = false, soloLectura = false, placeholder = '', autoComplete,
-    inputMode, enterKeyHint, maxLength, className = '', ...props
+    inputMode, enterKeyHint, maxLength, className = '', icono,
+    mostrarOpcional = false, ...props
   },
   ref
 ) {
@@ -21,32 +23,38 @@ const TextInput = forwardRef(function TextInput(
   const esSoloLectura = Boolean(soloLectura || readOnly);
   const describedBy = construirDescribedBy(idFinal, ayuda, error);
   const tieneError = Boolean(error);
+  const iconoVisible = icono || (tipoCampo === 'search' ? 'Search' : null);
 
   return (
-    <CampoFormulario id={idFinal} etiqueta={etiqueta} obligatorio={obligatorio} ayuda={ayuda} error={error} className={className}>
-      <input
-        ref={ref}
-        id={idFinal}
-        name={nombreCampo}
-        type={tipoCampo}
-        value={valorActual}
-        onChange={esSoloLectura ? undefined : manejarCambio}
-        onBlur={manejarSalida}
-        readOnly={esSoloLectura}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        inputMode={inputMode}
-        enterKeyHint={enterKeyHint}
-        maxLength={maxLength}
-        aria-invalid={tieneError}
-        aria-describedby={describedBy}
-        className={`w-full min-h-[42px] px-3.5 py-2 rounded-control border text-sm sm:text-base transition-all duration-200 ease-in-out read-only:bg-superficie-2 read-only:cursor-not-allowed ${
-          tieneError
-            ? 'border-rechazada-texto bg-superficie text-texto focus:border-rechazada-texto focus:ring-4 focus:ring-rechazada-texto/15 focus:outline-none'
-            : 'border-borde-control/40 bg-[#F8FAFC] dark:bg-superficie-2 text-texto focus:bg-superficie focus:border-primario-enlace focus:ring-4 focus:ring-primario/15 focus:outline-none'
-        }`}
-        {...props}
-      />
+    <CampoFormulario id={idFinal} etiqueta={etiqueta} obligatorio={obligatorio} ayuda={ayuda} error={error} className={className} mostrarOpcional={mostrarOpcional}>
+      <div className="relative flex items-center w-full">
+        {iconoVisible && (
+          <Icono nombre={iconoVisible} className="w-4 h-4 text-texto-suave absolute left-3 pointer-events-none" />
+        )}
+        <input
+          ref={ref}
+          id={idFinal}
+          name={nombreCampo}
+          type={tipoCampo}
+          value={valorActual}
+          onChange={esSoloLectura ? undefined : manejarCambio}
+          onBlur={manejarSalida}
+          readOnly={esSoloLectura}
+          placeholder={placeholder}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          enterKeyHint={enterKeyHint}
+          maxLength={maxLength}
+          aria-invalid={tieneError}
+          aria-describedby={describedBy}
+          className={`w-full h-10 ${iconoVisible ? 'pl-9 pr-3.5' : 'px-3.5'} py-2 rounded-control border text-sm sm:text-base transition-colors duration-150 read-only:bg-superficie-2 read-only:cursor-not-allowed ${
+            tieneError
+              ? 'border-rechazada-texto bg-superficie text-texto focus:border-rechazada-texto focus:ring-2 focus:ring-rechazada-texto/20 focus:outline-none'
+              : 'border-borde bg-superficie text-texto hover:border-borde-control focus:bg-superficie focus:border-primario-enlace focus:ring-2 focus:ring-primario/20 focus:outline-none'
+          }`}
+          {...props}
+        />
+      </div>
     </CampoFormulario>
   );
 });

@@ -9,16 +9,20 @@ export function construirDescribedBy(id, ayuda, error, extraId = '') {
 
 export default function CampoFormulario({
   id, etiqueta, obligatorio = true, ayuda = '', error = '',
-  contador = null, avisoExtra = null, children, className = ''
+  contador = null, avisoExtra = null, children, className = '', mostrarOpcional = false
 }) {
   return (
     <div className={`flex flex-col gap-1 w-full ${className}`.trim()}>
-      <label htmlFor={id} className="text-sm font-semibold text-texto">
-        <span>{etiqueta}</span>{' '}
-        <span className="text-xs font-normal text-texto-suave" title={obligatorio ? 'Campo obligatorio' : 'Campo opcional'}>
-          {obligatorio ? '(*)' : '(opcional)'}
-        </span>
-      </label>
+      {etiqueta && (
+        <label htmlFor={id} className="text-sm font-semibold text-texto">
+          <span>{etiqueta}</span>
+          {obligatorio ? (
+            <span className="ml-1 text-xs font-normal text-texto-suave" title="Campo obligatorio">(*)</span>
+          ) : mostrarOpcional ? (
+            <span className="ml-1 text-xs font-normal text-texto-suave" title="Campo opcional">(opcional)</span>
+          ) : null}
+        </label>
+      )}
       {children}
       <div className="flex flex-wrap items-center justify-between gap-1.5">
         {ayuda && <span id={`${id}-ayuda`} className="text-xs text-texto-suave">{ayuda}</span>}

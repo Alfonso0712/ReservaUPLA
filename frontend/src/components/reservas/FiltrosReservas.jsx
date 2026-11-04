@@ -1,7 +1,5 @@
-// RF-05 · Nielsen 1 · Nielsen 6 · Filtros etiquetados con un único contador en región aria-live="polite" · E-26
-import { LISTA_ESTADOS_RESERVA } from '../../constants/estados';
+// RF-05 · Nielsen 1 · Nielsen 6 · Filtros integrados compactos con feedback inmediato · E-26
 import { LISTA_TIPOS_AMBIENTE } from '../../constants/tiposAmbiente';
-import { MENSAJES } from '../../constants/mensajes';
 import TextInput from '../formulario/TextInput';
 import SelectInput from '../formulario/SelectInput';
 import Button from '../ui/Button';
@@ -12,16 +10,15 @@ export default function FiltrosReservas({
   tipo = '',
   totalResultados = 0,
   alCambiarTexto,
-  alCambiarEstado,
   alCambiarTipo,
   alLimpiar
 }) {
   const hayFiltrosActivos = Boolean(texto.trim() || estado || tipo);
-  const etiquetaConteo = totalResultados === 1 ? '1 resultado encontrado' : `${totalResultados} resultados encontrados`;
+  const etiquetaConteo = totalResultados === 1 ? '1 reserva encontrada' : `${totalResultados} reservas encontradas`;
 
   return (
-    <section aria-label="Filtros de búsqueda de reservas" className="mb-5 p-4 rounded-tarjeta border border-borde bg-superficie space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <section aria-label="Filtros de reservas" className="p-3.5 rounded-tarjeta border border-borde bg-superficie space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <TextInput
           nombre="filtro-texto-reservas"
           etiqueta="Buscar"
@@ -29,18 +26,7 @@ export default function FiltrosReservas({
           tipo="search"
           valor={texto}
           alCambiar={(e) => alCambiarTexto?.(e.target.value)}
-          placeholder="Solicitante, ambiente o motivo"
-          ayuda={MENSAJES.AYUDA_FILTRO_BUSCAR_RESERVA}
-        />
-        <SelectInput
-          nombre="filtro-estado-reservas"
-          etiqueta="Estado"
-          obligatorio={false}
-          valor={estado}
-          alCambiar={(e) => alCambiarEstado?.(e.target.value)}
-          opciones={LISTA_ESTADOS_RESERVA}
-          placeholder="Todos los estados"
-          ayuda={MENSAJES.AYUDA_FILTRO_ESTADO}
+          placeholder="Solicitante o ambiente"
         />
         <SelectInput
           nombre="filtro-tipo-reservas"
@@ -50,16 +36,15 @@ export default function FiltrosReservas({
           alCambiar={(e) => alCambiarTipo?.(e.target.value)}
           opciones={LISTA_TIPOS_AMBIENTE}
           placeholder="Todos los tipos"
-          ayuda={MENSAJES.AYUDA_FILTRO_TIPO}
         />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-borde">
-        <p role="status" aria-live="polite" className="text-sm font-semibold text-texto cifra-tabular">
+      <div className="flex items-center justify-between gap-3 pt-2 border-t border-borde/60">
+        <p role="status" aria-live="polite" className="text-xs sm:text-sm font-semibold text-texto-suave cifra-tabular">
           {etiquetaConteo}
         </p>
         {hayFiltrosActivos && (
-          <Button variante="secundario" onClick={alLimpiar}>
+          <Button variante="ghost" tamano="sm" icono="RotateCcw" onClick={alLimpiar}>
             Limpiar filtros
           </Button>
         )}
