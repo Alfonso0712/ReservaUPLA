@@ -1,24 +1,10 @@
-// Nielsen 2 · Nielsen 3 · Menú lateral simplificado con pie integrado · E-18 · E-37 · E-45
-import { NavLink } from 'react-router-dom';
+// Nielsen 1 · Nielsen 2 · Nielsen 3 · Shneiderman 2 · Sidebar con navegación accesible · E-18 · E-54
 import { usePermisos } from '../../hooks/usePermisos';
 import { obtenerItemsPorPermiso, ITEMS_NAVEGACION } from '../../constants/navegacion';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
+import ItemNavegacion from './ItemNavegacion';
 import LogoUpla from '../ui/LogoUpla';
 import Icono from '../ui/Icono';
-
-function ItemMenuLateral({ item, alCerrarMenuMovil }) {
-  const base = 'w-full min-h-control px-4 py-3 rounded-control flex items-center gap-3 text-base font-medium transition-colors no-underline text-left';
-  return (
-    <NavLink
-      to={item.ruta}
-      onClick={() => alCerrarMenuMovil?.()}
-      className={({ isActive }) => `${base} ${isActive ? 'bg-lateral-activo-fondo text-sobre-primario font-semibold border-l-4 border-acento-sobre-oscuro' : 'text-lateral-texto hover:bg-lateral-activo-fondo'}`}
-    >
-      <Icono nombre={item.icono} className="w-5 h-5 shrink-0" />
-      <span>{item.etiqueta}</span>
-    </NavLink>
-  );
-}
 
 export default function Sidebar({ abiertoMovil = false, alCerrarMovil }) {
   const cajonRef = useTrampaFoco(abiertoMovil, alCerrarMovil);
@@ -32,8 +18,8 @@ export default function Sidebar({ abiertoMovil = false, alCerrarMovil }) {
           <div className="flex items-center gap-3">
             <LogoUpla variante="lateral" />
             <div>
-              <span className="block text-base font-bold text-sobre-primario leading-tight">ReservaUPLA</span>
-              <span className="block text-sm text-lateral-texto">Gestión académica</span>
+              <span className="block text-[1.125rem] font-bold text-white leading-tight">ReservaUPLA</span>
+              <span className="block text-[0.875rem] text-lateral-texto">Gestión académica</span>
             </div>
           </div>
           {abiertoMovil && (
@@ -43,18 +29,18 @@ export default function Sidebar({ abiertoMovil = false, alCerrarMovil }) {
           )}
         </div>
         <nav aria-label="Navegación principal" className="mt-8 flex-1">
-          <ul className="space-y-3">
+          <ul className="space-y-1">
             {items.map((it) => (
               <li key={it.id}>
-                <ItemMenuLateral item={it} alCerrarMenuMovil={alCerrarMovil} />
+                <ItemNavegacion item={it} alCerrarMenuMovil={alCerrarMovil} />
               </li>
             ))}
           </ul>
         </nav>
       </div>
-      <footer className="p-4 border-t border-borde text-xs text-lateral-texto space-y-1">
-        <p className="font-semibold text-sobre-primario leading-snug">Universidad Peruana Los Andes © 2026</p>
-        <p className="text-[11px] opacity-80 leading-normal">Gestión de ambientes universitarios · Huancayo</p>
+      <footer className="p-4 border-t border-borde text-[0.875rem] text-lateral-texto font-normal space-y-1">
+        <p className="leading-snug">© 2026 Universidad Peruana Los Andes</p>
+        <p className="leading-normal">Gestión de ambientes universitarios · Huancayo</p>
       </footer>
     </div>
   );
