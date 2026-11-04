@@ -16,10 +16,8 @@ it('E-41: cambiar estado muestra el aviso de reservas futuras y requiere confirm
   guardarIdSesionMock('usr-admin');
   const user = userEvent.setup();
   render(<MemoryRouter><AuthProvider><Ambientes /></AuthProvider></MemoryRouter>);
-  const btnsMenu = await screen.findAllByRole('button', { name: /más acciones/i });
-  await user.click(btnsMenu[0]);
-  const btnCambiar = await screen.findByRole('menuitem', { name: /cambiar estado/i });
-  await user.click(btnCambiar);
+  const btnsCambiar = await screen.findAllByRole('button', { name: /marcar como (no )?disponible/i });
+  await user.click(btnsCambiar[0]);
   expect(await screen.findByRole('dialog', { name: /cambiar estado/i })).toBeInTheDocument();
   expect(screen.getByText(/tiene \d+ reservas pendientes o aprobadas/i)).toBeInTheDocument();
   const selectEstado = screen.getByLabelText(/nuevo estado/i);

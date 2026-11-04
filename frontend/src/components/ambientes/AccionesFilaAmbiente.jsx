@@ -1,7 +1,6 @@
-// ISO 9241-110 · Jerarquía de acciones por fila en catálogo de ambientes
+// ISO 9241-110 · Botones icon-only con tooltip dinámico y sin menú para ambientes
 import Button from '../ui/Button';
 import Icono from '../ui/Icono';
-import MenuAccionesFila from '../ui/MenuAccionesFila';
 import { MAPA_ICONOS } from '../../constants/iconos';
 
 export default function AccionesFilaAmbiente({
@@ -9,14 +8,7 @@ export default function AccionesFilaAmbiente({
   alEditar, alCambiarEstado, alReservar
 }) {
   if (puedeEditar || puedeCambiarEstado) {
-    const itemsMenu = [];
-    if (puedeCambiarEstado) {
-      itemsMenu.push({
-        etiqueta: 'Cambiar estado',
-        icono: MAPA_ICONOS.CAMBIAR_ESTADO,
-        onClick: () => alCambiarEstado(ambiente)
-      });
-    }
+    const tooltipEstado = ambiente.estado === 'Disponible' ? 'Marcar como no disponible' : 'Marcar como disponible';
 
     return (
       <div className="flex items-center gap-2">
@@ -26,15 +18,20 @@ export default function AccionesFilaAmbiente({
             tamano="sm"
             iconOnly
             icono={MAPA_ICONOS.EDITAR}
-            tooltip={`Editar ${ambiente.nombre}`}
+            tooltip="Editar"
             aria-label="Editar"
             onClick={() => alEditar(ambiente)}
           />
         )}
-        {itemsMenu.length > 0 && (
-          <MenuAccionesFila
-            items={itemsMenu}
-            ariaLabel={`Más acciones para ${ambiente.nombre}`}
+        {puedeCambiarEstado && (
+          <Button
+            variante="secondary"
+            tamano="sm"
+            iconOnly
+            icono="Power"
+            tooltip={tooltipEstado}
+            aria-label={tooltipEstado}
+            onClick={() => alCambiarEstado(ambiente)}
           />
         )}
       </div>
@@ -44,13 +41,7 @@ export default function AccionesFilaAmbiente({
   if (puedeCrearReserva) {
     if (ambiente.estado === 'Disponible') {
       return (
-        <Button
-          variante="success"
-          tamano="sm"
-          icono="CalendarPlus"
-          aria-label={`Reservar ${ambiente.nombre}`}
-          onClick={() => alReservar(ambiente.id)}
-        >
+        <Button variante="success" tamano="sm" icono="CalendarPlus" aria-label={`Reservar ${ambiente.nombre}`} onClick={() => alReservar(ambiente.id)}>
           Reservar
         </Button>
       );

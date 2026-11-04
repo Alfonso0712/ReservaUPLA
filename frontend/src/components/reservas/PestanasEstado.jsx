@@ -25,7 +25,7 @@ export default function PestanasEstado({ estadoActivo = '', conteos = {}, alSele
             onClick={() => alSeleccionar?.(p.clave)}
             className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-control text-sm font-semibold transition-colors whitespace-nowrap cursor-pointer border ${
               esActivo
-                ? 'bg-primario text-sobre-primario border-primario shadow-sm'
+                ? 'bg-[var(--color-brand)] text-sobre-primario border-[var(--color-brand)] shadow-sm'
                 : 'bg-superficie text-texto hover:bg-superficie-2 border-borde text-texto-suave hover:text-texto'
             }`}
           >

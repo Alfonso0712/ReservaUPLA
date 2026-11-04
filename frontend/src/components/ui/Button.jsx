@@ -3,8 +3,8 @@ import { forwardRef } from 'react';
 import Icono from './Icono';
 
 const VARIANTES = {
-  primary: 'bg-primario text-sobre-primario hover:bg-primario-hover border border-transparent',
-  primario: 'bg-primario text-sobre-primario hover:bg-primario-hover border border-transparent',
+  primary: 'bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand-hover)] border border-transparent',
+  primario: 'bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand-hover)] border border-transparent',
   success: 'bg-aprobada-texto text-sobre-primario hover:opacity-90 border border-transparent',
   'danger-outline': 'bg-transparent text-rechazada-texto border border-rechazada-texto hover:bg-rechazada-fondo',
   peligro: 'bg-transparent text-rechazada-texto border border-rechazada-texto hover:bg-rechazada-fondo',
@@ -50,7 +50,7 @@ const Button = forwardRef(function Button(
       ) : icono ? (
         <Icono nombre={icono} className={tamanoIcono} />
       ) : null}
-      {!esIconOnly && <span>{enProceso ? textoProceso : children}</span>}
+      {!esIconOnly && <span className="inline-flex items-center gap-2 whitespace-nowrap">{enProceso ? textoProceso : children}</span>}
       {esIconOnly && tooltip && (
         <span
           role="tooltip"

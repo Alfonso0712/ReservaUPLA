@@ -5,8 +5,9 @@ import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import ItemNavegacion from './ItemNavegacion';
 import LogoUpla from '../ui/LogoUpla';
 import Icono from '../ui/Icono';
+import UsuarioLateral from './UsuarioLateral';
 
-export default function Sidebar({ abiertoMovil = false, alCerrarMovil }) {
+export default function Sidebar({ abiertoMovil = false, alCerrarMovil, usuario }) {
   const cajonRef = useTrampaFoco(abiertoMovil, alCerrarMovil);
   const { puede } = usePermisos();
   const items = typeof puede === 'function' ? obtenerItemsPorPermiso(puede) : ITEMS_NAVEGACION;
@@ -38,10 +39,7 @@ export default function Sidebar({ abiertoMovil = false, alCerrarMovil }) {
           </ul>
         </nav>
       </div>
-      <footer className="p-4 border-t border-borde text-[0.875rem] text-lateral-texto font-normal space-y-1">
-        <p className="leading-snug">© 2026 Universidad Peruana Los Andes</p>
-        <p className="leading-normal">Gestión de ambientes universitarios · Huancayo</p>
-      </footer>
+      <UsuarioLateral alCerrarMenu={alCerrarMovil} usuario={usuario} />
     </div>
   );
 
