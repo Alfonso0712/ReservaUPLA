@@ -19,7 +19,6 @@ import TableList from '../components/ui/TableList';
 import Badge from '../components/ui/Badge';
 import ModalConfirmacion from '../components/ui/ModalConfirmacion';
 import Toast from '../components/ui/Toast';
-import Cargando from '../components/ui/Cargando';
 import Button from '../components/ui/Button';
 import Icono from '../components/ui/Icono';
 
@@ -70,7 +69,7 @@ export default function ListadoReservas() {
       <EncabezadoPagina titulo="Reservas" descripcion="Consulte, filtre y gestione las solicitudes de reserva de ambientes universitarios." accionPrimaria={puede(PERMISOS.RESERVAS_CREAR) ? <Button variante="primario" onClick={() => ctx.abrirModalReserva?.('')}><Icono nombre="CalendarPlus" className="w-5 h-5" /><span>Nueva reserva</span></Button> : null} />
       <FiltrosReservas texto={txtIn} estado={estadoFiltro} tipo={tipoFiltro} totalResultados={reservas.length} alCambiarTexto={setTxtIn} alCambiarEstado={(v) => actParam('estado', v)} alCambiarTipo={(v) => actParam('tipo', v)} alLimpiar={() => { setTxtIn(''); setParams({}, { replace: true }); }} />
       <PestanasEstado estadoActivo={estadoFiltro} conteos={indicadores} alSeleccionar={(e) => actParam('estado', e)} />
-      {cargando ? <Cargando /> : <TableList caption="Listado de solicitudes de reserva de ambientes" columnas={columnas} datos={ordenadas} mensajeVacio="No se encontraron reservas con los criterios seleccionados" descripcionVacia="Puede limpiar los filtros activos o registrar una nueva solicitud." />}
+      <TableList caption="Listado de solicitudes de reserva de ambientes" columnas={columnas} datos={ordenadas} cargando={cargando} esFiltroActivo={Boolean(txtIn.trim() || estadoFiltro || tipoFiltro)} alLimpiarFiltros={() => { setTxtIn(''); setParams({}, { replace: true }); }} mensajeVacio="No hay reservas registradas aún" descripcionVacia="Puede registrar una nueva solicitud de reserva con el botón superior." />
       <ModalConfirmacion abierto={Boolean(conf)} titulo={esApr ? 'Confirmar aprobación' : (esCanc ? 'Confirmar cancelación' : 'Confirmar rechazo')} descripcion={esApr ? '¿Desea aprobar esta solicitud de reserva?' : (esCanc ? '¿Desea cancelar esta solicitud de reserva?' : 'Indique el motivo del rechazo:')} reserva={conf?.reserva} esIrreversible={!esApr} requiereMotivo={conf?.nuevoEstado === ESTADOS_RESERVA.RECHAZADA} motivo={motivo} alCambiarMotivo={(v) => { setMotivo(v); if (errMot) setErrMot(''); }} errorMotivo={errMot} etiquetaConfirmar={esApr ? 'Aprobar reserva' : (esCanc ? 'Cancelar reserva' : 'Rechazar reserva')} varianteConfirmar={esApr ? 'primary' : 'danger-outline'} enProceso={enProcesoAccion} alConfirmar={ejecutarAccion} alCancelar={() => { setConf(null); setMotivo(''); setErrMot(''); }} />
       <Toast toasts={toasts} alCerrar={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
     </div>

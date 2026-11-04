@@ -15,7 +15,6 @@ import Badge from '../components/ui/Badge';
 import TableList from '../components/ui/TableList';
 import TipoAmbienteChip from '../components/ui/TipoAmbienteChip';
 import AlertMessage from '../components/ui/AlertMessage';
-import Cargando from '../components/ui/Cargando';
 import Button from '../components/ui/Button';
 import Icono from '../components/ui/Icono';
 
@@ -68,7 +67,7 @@ export default function Ambientes() {
       {mensajeExito && <AlertMessage variante="exito" rol="status" mensaje={mensajeExito} enfocarAlAparecer alCerrar={() => setMensajeExito('')} />}
       {error && <AlertMessage variante="error" rol="alert" mensaje={error} enfocarAlAparecer />}
       <FiltrosAmbientes texto={texto} tipo={tipo} totalResultados={filtrados.length} alCambiarTexto={setTexto} alCambiarTipo={setTipo} alLimpiar={() => { setTexto(''); setTipo(''); }} />
-      {cargando ? <Cargando /> : <TableList caption="Catálogo de ambientes universitarios" columnas={columnas} datos={filtrados} mensajeVacio="No se encontraron ambientes con esos filtros" descripcionVacia="Intente limpiar los criterios de búsqueda aplicados." />}
+      <TableList caption="Catálogo de ambientes universitarios" columnas={columnas} datos={filtrados} cargando={cargando} esFiltroActivo={Boolean(texto.trim() || tipo)} alLimpiarFiltros={() => { setTexto(''); setTipo(''); }} mensajeVacio="No hay ambientes registrados aún" descripcionVacia="Puede registrar un nuevo ambiente con el botón superior." accionVacia={puedeCrear ? <Button variante="primario" onClick={() => setModalCrear(true)}><Icono nombre="Plus" className="w-5 h-5" /><span>Nuevo ambiente</span></Button> : null} />
       <FormularioAmbiente abierto={modalCrear} modo="crear" responsables={responsables} alRegistrar={registrarAmbiente} alCerrar={() => setModalCrear(false)} alExito={conExito(() => setModalCrear(false))} />
       <FormularioAmbiente abierto={Boolean(aEditar)} modo="editar" ambienteAEditar={aEditar} responsables={responsables} alEditar={editarAmbiente} alCerrar={() => setAEditar(null)} alExito={conExito(() => setAEditar(null))} />
       <ModalCambiarEstadoAmbiente abierto={Boolean(aCambiarEstado)} ambiente={aCambiarEstado} alCambiarEstado={cambiarEstadoAmbiente} alCerrar={() => setACambiarEstado(null)} alExito={conExito(() => setACambiarEstado(null))} />
