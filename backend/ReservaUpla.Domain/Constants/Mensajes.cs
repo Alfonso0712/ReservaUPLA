@@ -3,8 +3,8 @@ namespace ReservaUpla.Domain.Constants;
 public static class Mensajes
 {
     // RV-01
-    public const string CorreoRequerido = "El correo electrónico es obligatorio.";
-    public const string CorreoInvalido = "El correo electrónico no tiene un formato válido.";
+    public const string CorreoRequerido = MensajesValidacion.CorreoVacio;
+    public const string CorreoInvalido = MensajesValidacion.CorreoFormatoInvalido;
     public const string CorreoDuplicado = "El correo electrónico ya se encuentra registrado.";
 
     // RV-02
@@ -13,8 +13,8 @@ public static class Mensajes
     public const string NombreFormato = "El nombre solo puede contener letras, espacios y tildes.";
 
     // RV-03
-    public const string ContrasenaRequerida = "La contraseña es obligatoria.";
-    public const string ContrasenaLongitud = "La contraseña debe tener entre 8 y 64 caracteres.";
+    public const string ContrasenaRequerida = MensajesValidacion.ContrasenaVacia;
+    public const string ContrasenaLongitud = "La contraseña debe tener al menos 8 caracteres.";
 
     // RV-04, RV-05, RV-06, RV-07, RV-13
     public const string AmbienteNombreRequerido = "El nombre del ambiente es obligatorio y máximo 100 caracteres.";
@@ -40,9 +40,9 @@ public static class Mensajes
     public const string SolicitanteSoloCancelaPropias = "Solo puede cancelar reservas que le pertenezcan.";
 
     // Auth & General
-    public const string CredencialesInvalidas = "Credenciales incorrectas.";
-    public const string LimiteIntentosExcedido = "Demasiados intentos fallidos. Intente nuevamente en unos minutos.";
+    public const string CredencialesInvalidas = MensajesValidacion.CredencialesNoValidasDetalle;
+    public const string LimiteIntentosExcedido = "Demasiados intentos. Espere unos segundos e intente nuevamente.";
     public const string RecursoNoEncontrado = "El recurso solicitado no fue encontrado.";
     public const string AccesoDenegado = "No tiene permisos para realizar esta acción.";
-    public const string ErrorServidor = "Ocurrió un error inesperado al procesar la solicitud. Por favor intente más tarde.";
+    public const string ErrorServidor = MensajesValidacion.ErrorInternoDetalle;
 }

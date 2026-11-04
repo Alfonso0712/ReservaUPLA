@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
 using ReservaUpla.Application.Mappers;
+using ReservaUpla.Domain.Common;
 using ReservaUpla.Domain.Constants;
 using ReservaUpla.Domain.Entities;
 using ReservaUpla.Domain.Enums;
@@ -12,24 +13,36 @@ using ReservaUpla.Domain.Exceptions;
 
 namespace ReservaUpla.Application.Services;
 
-// RF-03 a RF-08 · RN-01 a RN-06 · RV-08 a RV-17 · E-12 a E-21 · E-30 a E-32
+// RF-03 a RF-08 · RN-01 a RN-06 · RV-08 a RV-17 · E-12 a E-21 · E-30 a E-32 · E-45 a E-49
 public class ReservaService : IReservaService
 {
     private readonly IReservaRepository _reservaRepo;
     private readonly IAmbienteRepository _ambienteRepo;
     private readonly IUsuarioRepository _usuarioRepo;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IUsuarioActual? _usuarioActual;
 
     public ReservaService(
         IReservaRepository reservaRepo,
         IAmbienteRepository ambienteRepo,
         IUsuarioRepository usuarioRepo,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IUsuarioActual? usuarioActual = null)
     {
         _reservaRepo = reservaRepo;
         _ambienteRepo = ambienteRepo;
         _usuarioRepo = usuarioRepo;
         _unitOfWork = unitOfWork;
+        _usuarioActual = usuarioActual;
+    }
+
+    public async Task<ReservaDto> CrearReservaAsync(CrearReservaDto dto, CancellationToken ct = default)
+    {
+        var solicitanteId = _usuarioActual?.Id ?? Guid.Empty;
+        if (solicitanteId == Guid.Empty)
+            throw new DomainException(Mensajes.AccesoDenegado);
+
+        return await CrearReservaAsync(dto, solicitanteId, ct);
     }
 
     public async Task<ReservaDto> CrearReservaAsync(CrearReservaDto dto, Guid solicitanteId, CancellationToken ct = default)
@@ -58,12 +71,30 @@ public class ReservaService : IReservaService
         }, ct);
     }
 
+    public async Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, CancellationToken ct = default)
+    {
+        if (_usuarioActual == null || !_usuarioActual.EstaAutenticado)
+            throw new DomainException(Mensajes.AccesoDenegado);
+
+        return await CambiarEstadoAsync(id, nuevoEstado, _usuarioActual.Id, _usuarioActual.Rol, ct);
+    }
+
     public async Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
     {
         return await _unitOfWork.EjecutarEnTransaccionSerializableAsync(async () =>
         {
             var reserva = await _reservaRepo.ObtenerPorIdAsync(id, ct)
                 ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
+
+            var ambiente = await _ambienteRepo.ObtenerPorIdAsync(reserva.Ida_Reserva, ct)
+                ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
+
+            // RN-06: Si la reserva ya fue Rechazada o Cancelada, rechaza inmediatamente con 409
+            if (reserva.Est_Reserva == EstadoReserva.Rechazada || reserva.Est_Reserva == EstadoReserva.Cancelada)
+                throw new DomainException(Mensajes.ReservaRechazadaInmodificable, esConflicto: true);
+
+            // Alcance de visibilidad: si el recurso no es visible para el actor, responde 404 (no 403)
+            ValidarVisibilidadPorAlcance(reserva, ambiente, rol, usuarioId);
 
             if (nuevoEstado == EstadoReserva.Aprobada)
             {
@@ -73,15 +104,22 @@ public class ReservaService : IReservaService
                     throw new DomainException(Mensajes.ConflictoDisponibilidad, esConflicto: true);
             }
 
-            reserva.CambiarEstado(nuevoEstado, rol, usuarioId);
+            var actor = new ActorReserva(usuarioId, rol);
+            reserva.CambiarEstado(nuevoEstado, actor);
             await _reservaRepo.ActualizarAsync(reserva, ct);
             await _unitOfWork.GuardarCambiosAsync(ct);
 
             var solicitante = await _usuarioRepo.ObtenerPorIdAsync(reserva.Idu_Reserva, ct);
-            var ambiente = await _ambienteRepo.ObtenerPorIdAsync(reserva.Ida_Reserva, ct);
 
-            return ReservaMapper.ToDto(reserva, solicitante?.Nom_Usuario ?? string.Empty, ambiente?.Nom_Ambiente ?? string.Empty);
+            return ReservaMapper.ToDto(reserva, solicitante?.Nom_Usuario ?? string.Empty, ambiente.Nom_Ambiente);
         }, ct);
+    }
+
+    public async Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, CancellationToken ct = default)
+    {
+        var rol = _usuarioActual?.Rol ?? RolUsuario.Solicitante;
+        var usuarioId = _usuarioActual?.Id ?? Guid.Empty;
+        return await ListarReservasAsync(filtro, usuarioId, rol, ct);
     }
 
     public async Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
@@ -103,6 +141,13 @@ public class ReservaService : IReservaService
         return new PaginadoDto<ReservaDto>(dtos, total, filtro.Pagina, filtro.TamanoPagina);
     }
 
+    public async Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, CancellationToken ct = default)
+    {
+        var rol = _usuarioActual?.Rol ?? RolUsuario.Solicitante;
+        var usuarioId = _usuarioActual?.Id ?? Guid.Empty;
+        return await ObtenerDetalleAsync(id, usuarioId, rol, ct);
+    }
+
     public async Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
     {
         var reserva = await _reservaRepo.ObtenerPorIdAsync(id, ct)
@@ -111,7 +156,8 @@ public class ReservaService : IReservaService
         var ambiente = await _ambienteRepo.ObtenerPorIdAsync(reserva.Ida_Reserva, ct)
             ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
 
-        ValidarPermisoDetalle(reserva, ambiente, rol, usuarioId);
+        // Recurso no visible responde 404 para no revelar su existencia
+        ValidarVisibilidadPorAlcance(reserva, ambiente, rol, usuarioId);
 
         var solicitante = await _usuarioRepo.ObtenerPorIdAsync(reserva.Idu_Reserva, ct)
             ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
@@ -125,10 +171,24 @@ public class ReservaService : IReservaService
             ambiente.Tip_Ambiente.ToString());
     }
 
+    public async Task<DashboardEstadisticasDto> ObtenerDashboardAsync(CancellationToken ct = default)
+    {
+        var rol = _usuarioActual?.Rol ?? RolUsuario.Solicitante;
+        var usuarioId = _usuarioActual?.Id ?? Guid.Empty;
+        return await ObtenerDashboardAsync(usuarioId, rol, ct);
+    }
+
     public async Task<DashboardEstadisticasDto> ObtenerDashboardAsync(Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
     {
         var (solId, respId) = ResolverAlcanceVisibilidad(rol, usuarioId);
-        return await _reservaRepo.ObtenerEstadisticasDashboardAsync(solId, respId, ct);
+        var stats = await _reservaRepo.ObtenerEstadisticasDashboardAsync(solId, respId, ct);
+        var alcance = rol switch
+        {
+            RolUsuario.Solicitante => "propio",
+            RolUsuario.Responsable => "asignado",
+            _ => "global"
+        };
+        return stats with { Alcance = alcance };
     }
 
     private static (Guid? SolicitanteId, Guid? ResponsableId) ResolverAlcanceVisibilidad(RolUsuario rol, Guid usuarioId)
@@ -141,12 +201,12 @@ public class ReservaService : IReservaService
         };
     }
 
-    private static void ValidarPermisoDetalle(Reserva reserva, Ambiente ambiente, RolUsuario rol, Guid usuarioId)
+    private static void ValidarVisibilidadPorAlcance(Reserva reserva, Ambiente ambiente, RolUsuario rol, Guid usuarioId)
     {
         if (rol == RolUsuario.Solicitante && reserva.Idu_Reserva != usuarioId)
-            throw new DomainException(Mensajes.AccesoDenegado);
+            throw new DomainException(Mensajes.RecursoNoEncontrado);
 
         if (rol == RolUsuario.Responsable && ambiente.Idr_Ambiente != usuarioId)
-            throw new DomainException(Mensajes.AccesoDenegado);
+            throw new DomainException(Mensajes.RecursoNoEncontrado);
     }
 }

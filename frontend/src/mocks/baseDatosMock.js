@@ -2,7 +2,7 @@
 import { MENSAJES } from '../constants/mensajes';
 import { dbMock, reiniciarBaseMock, configurarFalloMock, guardarIdSesionMock, respuestaExito, respuestaError } from './estadoMock';
 import { CUENTAS_DEMO } from './datosSemilla';
-import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarAmbientes, mockCrearAmbiente } from './manejadoresAuthAmbientes';
+import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarResponsables, mockListarAmbientes, mockCrearAmbiente } from './manejadoresAuthAmbientes';
 import { mockObtenerDisponibilidad, mockListarReservas, mockObtenerReserva, mockCrearReserva, mockCambiarEstadoReserva, mockObtenerDashboard } from './manejadoresReservasDashboard';
 
 function esperarLatencia(ms, signal) {
@@ -18,6 +18,7 @@ function despacharRutaMock(metodo, urlLimpia, parametros, cuerpo) {
   if (metodo === 'POST' && urlLimpia === '/api/auth/logout') return mockLogout();
   if (metodo === 'GET' && urlLimpia === '/api/auth/yo') return mockObtenerYo();
   if (metodo === 'POST' && urlLimpia === '/api/usuarios') return mockRegistrarUsuario(cuerpo);
+  if (metodo === 'GET' && urlLimpia === '/api/usuarios/responsables') return mockListarResponsables();
   if (metodo === 'GET' && urlLimpia === '/api/usuarios') return respuestaExito([...dbMock.usuarios]);
   if (metodo === 'GET' && urlLimpia === '/api/ambientes') return mockListarAmbientes();
   if (metodo === 'POST' && urlLimpia === '/api/ambientes') return mockCrearAmbiente(cuerpo);

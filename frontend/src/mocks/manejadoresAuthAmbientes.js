@@ -1,9 +1,10 @@
-// Manejadores mock de autenticación, usuarios y ambientes · RF-01 · RF-02 · E-01..11 · E-32
+// Manejadores mock de autenticación, usuarios y ambientes · RF-01 · RF-02 · E-01..11 · E-32 · E-45..49
 import { ROLES } from '../constants/roles';
 import { ESTADOS_AMBIENTE } from '../constants/estados';
 import { MENSAJES } from '../constants/mensajes';
 import { validarLogin, validarRegistroSolicitante, validarAmbiente } from '../validation/validadores';
 import { dbMock, guardarIdSesionMock, obtenerUsuarioActualMock, respuestaExito, respuestaError } from './estadoMock';
+import { obtenerPermisosDeRol } from './permisosPorRol';
 
 function formatearErroresCampo(errores) {
   return Object.fromEntries(Object.entries(errores).map(([k, v]) => [k, [v]]));
@@ -17,7 +18,8 @@ export function mockLogin(cuerpo = {}) {
     return respuestaError(401, MENSAJES.CREDENCIALES_INVALIDAS);
   }
   guardarIdSesionMock(usuario.id);
-  return respuestaExito(usuario, 'Sesión iniciada.');
+  const permisos = obtenerPermisosDeRol(usuario.rol);
+  return respuestaExito({ usuario, permisos }, 'Sesión iniciada.');
 }
 
 export function mockLogout() {
@@ -28,7 +30,8 @@ export function mockLogout() {
 export function mockObtenerYo() {
   const usuario = obtenerUsuarioActualMock();
   if (!usuario) return respuestaError(401, MENSAJES.CREDENCIALES_INVALIDAS);
-  return respuestaExito(usuario, 'Sesión activa.');
+  const permisos = obtenerPermisosDeRol(usuario.rol);
+  return respuestaExito({ usuario, permisos }, 'Sesión activa.');
 }
 
 export function mockRegistrarUsuario(cuerpo = {}) {
@@ -42,6 +45,15 @@ export function mockRegistrarUsuario(cuerpo = {}) {
   dbMock.usuarios.push(nuevo);
   dbMock.claves[correo] = contrasena;
   return respuestaExito(nuevo, MENSAJES.REGISTRO_EXITOSO_TITULO, 201);
+}
+
+export function mockListarResponsables() {
+  const usuario = obtenerUsuarioActualMock();
+  if (usuario && usuario.rol !== ROLES.ADMINISTRADOR) {
+    return respuestaError(403, MENSAJES.ACCESO_DENEGADO || 'No tiene permiso para realizar esta acción.');
+  }
+  const lista = dbMock.usuarios.filter((u) => u.activo && u.rol === ROLES.RESPONSABLE);
+  return respuestaExito(lista);
 }
 
 export function mockListarAmbientes() {

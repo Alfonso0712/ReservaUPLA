@@ -1,16 +1,10 @@
-// Nielsen 2 · Nielsen 3 · Menú lateral simplificado con enlaces principales · E-18 · E-37
+// Nielsen 2 · Nielsen 3 · Menú lateral simplificado derivado de permisos · E-18 · E-37 · E-45
 import { NavLink } from 'react-router-dom';
-import { obtenerGruposPorRol } from '../../constants/navegacion';
+import { usePermisos } from '../../hooks/usePermisos';
+import { obtenerItemsPorPermiso, ITEMS_NAVEGACION } from '../../constants/navegacion';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
-import { RUTAS } from '../../constants/rutas';
 import LogoUpla from '../ui/LogoUpla';
 import Icono from '../ui/Icono';
-
-const ENLACES_BASE = [
-  { id: 'panel', etiqueta: 'Panel', ruta: RUTAS.PANEL, icono: 'LayoutDashboard' },
-  { id: 'listado-reservas', etiqueta: 'Reservas', ruta: RUTAS.RESERVAS, icono: 'CalendarDays' },
-  { id: 'ambientes', etiqueta: 'Ambientes', ruta: RUTAS.AMBIENTES, icono: 'Building2' }
-];
 
 function ItemMenuLateral({ item, alCerrarMenuMovil }) {
   const base = 'w-full min-h-control px-3 py-2.5 rounded-control flex items-center gap-3 text-base font-medium transition-colors no-underline text-left';
@@ -26,11 +20,10 @@ function ItemMenuLateral({ item, alCerrarMenuMovil }) {
   );
 }
 
-export default function Sidebar({ usuario, abiertoMovil = false, alCerrarMovil }) {
+export default function Sidebar({ abiertoMovil = false, alCerrarMovil }) {
   const cajonRef = useTrampaFoco(abiertoMovil, alCerrarMovil);
-  const items = usuario?.rol
-    ? obtenerGruposPorRol(usuario.rol).flatMap((g) => g.items).filter((it) => it.id !== 'nueva-reserva')
-    : ENLACES_BASE;
+  const { puede } = usePermisos();
+  const items = typeof puede === 'function' ? obtenerItemsPorPermiso(puede) : ITEMS_NAVEGACION;
 
   const contenido = (
     <div className="flex flex-col h-full w-64 bg-lateral-fondo text-lateral-texto border-r border-borde">

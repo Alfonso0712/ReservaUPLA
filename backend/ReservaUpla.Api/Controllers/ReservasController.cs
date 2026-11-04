@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReservaUpla.Api.Extensions;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
 using ReservaUpla.Domain.Constants;
@@ -26,15 +25,16 @@ public class ReservasController : ControllerBase
 
     // RF-03 · RN-02 a RN-04 · RV-08 a RV-14 · E-12 a E-17
     [HttpPost]
-    [Authorize(Roles = "Solicitante")]
+    [Authorize(Policy = Permisos.ReservasCrear)]
     public async Task<ActionResult<ReservaDto>> CrearReserva([FromBody] CrearReservaDto dto, CancellationToken ct)
     {
-        var creada = await _reservaService.CrearReservaAsync(dto, User.GetUserId(), ct);
+        var creada = await _reservaService.CrearReservaAsync(dto, ct);
         return CreatedAtAction(nameof(ObtenerDetalle), new { id = creada.Id }, creada);
     }
 
     // RF-05 · E-32
     [HttpGet]
+    [Authorize(Policy = Permisos.ReservasVer)]
     public async Task<ActionResult<PaginadoDto<ReservaDto>>> ListarReservas(
         [FromQuery] string? estado,
         [FromQuery] Guid? ambienteId,
@@ -44,15 +44,16 @@ public class ReservasController : ControllerBase
         CancellationToken ct = default)
     {
         var filtro = new FiltroReservasDto(estado, ambienteId, fecha, pagina, tamanoPagina);
-        var resultado = await _reservaService.ListarReservasAsync(filtro, User.GetUserId(), User.GetUserRole(), ct);
+        var resultado = await _reservaService.ListarReservasAsync(filtro, ct);
         return Ok(resultado);
     }
 
     // RF-06
     [HttpGet("{id:guid}")]
+    [Authorize(Policy = Permisos.ReservasVer)]
     public async Task<ActionResult<ReservaDetalleDto>> ObtenerDetalle(Guid id, CancellationToken ct)
     {
-        var detalle = await _reservaService.ObtenerDetalleAsync(id, User.GetUserId(), User.GetUserRole(), ct);
+        var detalle = await _reservaService.ObtenerDetalleAsync(id, ct);
         return Ok(detalle);
     }
 
@@ -66,7 +67,7 @@ public class ReservasController : ControllerBase
         if (!Enum.TryParse<EstadoReserva>(dto.Estado, true, out var nuevoEstado))
             throw new DomainException(Mensajes.TransicionEstadoInvalida);
 
-        var actualizada = await _reservaService.CambiarEstadoAsync(id, nuevoEstado, User.GetUserId(), User.GetUserRole(), ct);
+        var actualizada = await _reservaService.CambiarEstadoAsync(id, nuevoEstado, ct);
         return Ok(actualizada);
     }
 }

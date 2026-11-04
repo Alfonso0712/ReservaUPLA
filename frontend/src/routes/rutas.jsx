@@ -1,6 +1,7 @@
-// Definición declarativa de rutas · /ingresar · /registro · /panel · /reservas · /reservas/:id · /ambientes · * · E-25
+// Definición declarativa de rutas protegidas por permisos · E-25 · E-45 · E-48
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { RUTAS } from '../constants/rutas';
+import { PERMISOS } from '../constants/permisos';
 import RutaProtegida from './RutaProtegida';
 import LayoutAutenticacion from '../layouts/LayoutAutenticacion';
 import LayoutPrincipal from '../layouts/LayoutPrincipal';
@@ -22,17 +23,11 @@ export default function RutasApp() {
         <Route path={RUTAS.REGISTRO} element={<RegistroSolicitante />} />
       </Route>
       <Route element={<RutaProtegida />}>
-        <Route
-          element={
-            <LayoutPrincipal
-              renderModalReserva={(props) => <FormularioReserva {...props} />}
-            />
-          }
-        >
-          <Route path={RUTAS.PANEL} element={<Panel />} />
-          <Route path={RUTAS.RESERVAS} element={<ListadoReservas />} />
-          <Route path={RUTAS.DETALLE_RESERVA} element={<DetalleReserva />} />
-          <Route path={RUTAS.AMBIENTES} element={<Ambientes />} />
+        <Route element={<LayoutPrincipal renderModalReserva={(props) => <FormularioReserva {...props} />} />}>
+          <Route path={RUTAS.PANEL} element={<RutaProtegida permiso={PERMISOS.DASHBOARD_VER}><Panel /></RutaProtegida>} />
+          <Route path={RUTAS.RESERVAS} element={<RutaProtegida permiso={PERMISOS.RESERVAS_VER}><ListadoReservas /></RutaProtegida>} />
+          <Route path={RUTAS.DETALLE_RESERVA} element={<RutaProtegida permiso={PERMISOS.RESERVAS_VER}><DetalleReserva /></RutaProtegida>} />
+          <Route path={RUTAS.AMBIENTES} element={<RutaProtegida permiso={PERMISOS.AMBIENTES_VER}><Ambientes /></RutaProtegida>} />
           <Route path="*" element={<NoEncontrada />} />
         </Route>
       </Route>

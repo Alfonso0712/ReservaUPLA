@@ -1,4 +1,4 @@
-// Manejadores mock de reservas, disponibilidad y dashboard · RF-03..08 · RN-01..06 · E-12..32
+// Manejadores mock de reservas, disponibilidad y dashboard · RF-03..08 · RN-01..06 · E-12..32 · E-45..49
 import { ROLES } from '../constants/roles';
 import { ESTADOS_RESERVA } from '../constants/estados';
 import { MENSAJES } from '../constants/mensajes';
@@ -27,17 +27,27 @@ export function mockListarReservas({ estado = '', tipo = '', texto = '' } = {}) 
 
 export function mockObtenerReserva(id) {
   const item = dbMock.reservas.find((r) => r.id === id);
-  return item ? respuestaExito(item) : respuestaError(404, 'No se encontró la reserva solicitada.');
+  if (!item) return respuestaError(404, 'No se encontró la reserva solicitada.');
+  const usuario = obtenerUsuarioActualMock();
+  if (usuario?.rol === ROLES.SOLICITANTE && item.solicitante.id !== usuario.id) {
+    return respuestaError(404, 'No se encontró la reserva solicitada.');
+  }
+  if (usuario?.rol === ROLES.RESPONSABLE) {
+    const idsAmb = dbMock.ambientes.filter((a) => a.responsableId === usuario.id).map((a) => a.id);
+    if (!idsAmb.includes(item.ambiente.id)) {
+      return respuestaError(404, 'No se encontró la reserva solicitada.');
+    }
+  }
+  return respuestaExito(item);
 }
 
 export function mockCrearReserva(cuerpo = {}) {
   const usuario = obtenerUsuarioActualMock();
-  const esAdmin = usuario?.rol === ROLES.ADMINISTRADOR;
   if (!verificarDisponibilidadLocal(dbMock.reservas, cuerpo)) return respuestaError(409, MENSAJES.RESERVA_SOLAPE_HORARIO, { horaFin: [MENSAJES.RESERVA_SOLAPE_HORARIO] });
-  const val = validarReserva(cuerpo, { reservasExistentes: dbMock.reservas, requiereSolicitante: esAdmin });
+  const val = validarReserva(cuerpo, { reservasExistentes: dbMock.reservas, requiereSolicitante: false });
   if (!val.valido) return respuestaError(400, MENSAJES.RESUMEN_ERRORES_FORMULARIO, Object.fromEntries(Object.entries(val.errores).map(([k, v]) => [k, [v]])));
   const amb = dbMock.ambientes.find((a) => a.id === cuerpo.ambienteId) || dbMock.ambientes[0];
-  const solic = (esAdmin && dbMock.usuarios.find((u) => u.id === cuerpo.solicitanteId)) || usuario || dbMock.usuarios[2];
+  const solic = usuario || dbMock.usuarios[2];
   const nueva = {
     id: `res-${Date.now()}`, fecha: cuerpo.fecha, horaInicio: cuerpo.horaInicio, horaFin: cuerpo.horaFin,
     motivo: normalizarTexto(cuerpo.motivo), estado: ESTADOS_RESERVA.PENDIENTE,
@@ -58,7 +68,9 @@ export function mockCambiarEstadoReserva(id, { estado: nuevoEstado } = {}) {
 }
 
 export function mockObtenerDashboard() {
-  const base = filtrarPorRol(dbMock.reservas, obtenerUsuarioActualMock());
+  const usuario = obtenerUsuarioActualMock();
+  const base = filtrarPorRol(dbMock.reservas, usuario);
+  const alcance = usuario?.rol === ROLES.SOLICITANTE ? 'propio' : (usuario?.rol === ROLES.RESPONSABLE ? 'asignado' : 'global');
   const conteo = {};
   base.forEach((r) => { conteo[r.ambiente.nombre] = (conteo[r.ambiente.nombre] || 0) + 1; });
   const top = Object.entries(conteo).sort((a, b) => b[1] - a[1])[0];
@@ -66,6 +78,7 @@ export function mockObtenerDashboard() {
   return respuestaExito({
     total: base.length, pendientes: contar(ESTADOS_RESERVA.PENDIENTE), aprobadas: contar(ESTADOS_RESERVA.APROBADA),
     rechazadas: contar(ESTADOS_RESERVA.RECHAZADA), canceladas: contar(ESTADOS_RESERVA.CANCELADA),
-    ambienteMasUtilizado: top ? { nombre: top[0], cantidad: top[1] } : { nombre: 'Sin registros', cantidad: 0 }
+    ambienteMasUtilizado: top ? { nombre: top[0], cantidad: top[1] } : { nombre: 'Sin registros', cantidad: 0 },
+    alcance
   });
 }

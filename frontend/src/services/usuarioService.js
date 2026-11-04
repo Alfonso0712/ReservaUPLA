@@ -1,4 +1,4 @@
-// Servicio HTTP de usuarios · RF-01 · POST /api/usuarios · E-01..06
+// Servicio HTTP de usuarios · RF-01 · POST /api/usuarios · GET /api/usuarios/responsables · E-01..06
 import { solicitarApi } from './apiClient';
 
 export async function registrarSolicitanteApi({ nombreCompleto, correo, contrasena }, signal) {
@@ -11,6 +11,13 @@ export async function registrarSolicitanteApi({ nombreCompleto, correo, contrase
 
 export async function listarUsuariosApi(signal) {
   return solicitarApi('/api/usuarios', {
+    metodo: 'GET',
+    signal
+  });
+}
+
+export async function listarResponsablesApi(signal) {
+  return solicitarApi('/api/usuarios/responsables', {
     metodo: 'GET',
     signal
   });

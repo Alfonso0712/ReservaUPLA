@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ReservaUpla.Application.Interfaces;
 using ReservaUpla.Domain.Entities;
+using ReservaUpla.Domain.Enums;
 using ReservaUpla.Infrastructure.Data;
 
 namespace ReservaUpla.Infrastructure.Repositories;
@@ -35,5 +38,14 @@ public class UsuarioRepository : IUsuarioRepository
     public async Task AgregarAsync(Usuario usuario, CancellationToken ct = default)
     {
         await _context.Usuarios.AddAsync(usuario, ct);
+    }
+
+    public async Task<IReadOnlyList<Usuario>> ListarResponsablesAsync(CancellationToken ct = default)
+    {
+        return await _context.Usuarios
+            .AsNoTracking()
+            .Where(u => u.Act_Usuario && u.Rol_Usuario == RolUsuario.Responsable)
+            .OrderBy(u => u.Nom_Usuario)
+            .ToListAsync(ct);
     }
 }

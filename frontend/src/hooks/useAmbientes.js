@@ -1,11 +1,13 @@
-// Hook de catálogo de ambientes y alta por Administrador sin condiciones de carrera · RF-02 · E-10 · E-11 · E-32
+// Hook de catálogo de ambientes y alta según alcance del backend · RF-02 · E-10 · E-11 · E-32
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { listarAmbientesApi, crearAmbienteApi } from '../services/ambienteService';
-import { listarUsuariosApi } from '../services/usuarioService';
+import { listarResponsablesApi } from '../services/usuarioService';
 import { interpretarRespuesta } from '../validation/interpretarRespuesta';
-import { ROLES } from '../constants/roles';
+import { usePermisos } from './usePermisos';
+import { PERMISOS } from '../constants/permisos';
 
-export function useAmbientes(usuarioActual = null) {
+export function useAmbientes() {
+  const { puede } = usePermisos();
   const [ambientes, setAmbientes] = useState([]);
   const [responsables, setResponsables] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -16,27 +18,29 @@ export function useAmbientes(usuarioActual = null) {
     const idPeticion = ++peticionRef.current;
     setCargando(true);
     setError('');
-    const [respAmb, respUsr] = await Promise.all([
-      listarAmbientesApi(signal),
-      listarUsuariosApi(signal)
-    ]);
+
+    const promesas = [listarAmbientesApi(signal)];
+    const puedeListarResp = typeof puede === 'function' && puede(PERMISOS.USUARIOS_LISTAR_RESPONSABLES);
+    if (puedeListarResp) promesas.push(listarResponsablesApi(signal));
+
+    const [respAmb, respUsr] = await Promise.all(promesas);
     if (signal?.aborted || idPeticion !== peticionRef.current) return;
+
     const resAmb = interpretarRespuesta(respAmb);
-    const resUsr = interpretarRespuesta(respUsr);
     if (resAmb.ok) {
-      const lista = Array.isArray(resAmb.datos) ? resAmb.datos : [];
-      const filtrada = usuarioActual?.rol === ROLES.RESPONSABLE
-        ? lista.filter((a) => a.responsableId === usuarioActual.id)
-        : lista;
-      setAmbientes(filtrada);
+      setAmbientes(Array.isArray(resAmb.datos) ? resAmb.datos : []);
     } else {
       setError(resAmb.errorGeneral);
     }
-    if (resUsr.ok && Array.isArray(resUsr.datos)) {
-      setResponsables(resUsr.datos.filter((u) => u.rol === ROLES.RESPONSABLE));
+
+    if (respUsr) {
+      const resUsr = interpretarRespuesta(respUsr);
+      if (resUsr.ok && Array.isArray(resUsr.datos)) {
+        setResponsables(resUsr.datos);
+      }
     }
     setCargando(false);
-  }, [usuarioActual?.id, usuarioActual?.rol]);
+  }, [puede]);
 
   useEffect(() => {
     const ctrl = new AbortController();

@@ -1,14 +1,11 @@
 // RF-03 · RF-04 · RN-01..04 · RV-08..14 · Modal accesible de nueva solicitud de reserva · E-12..17 · E-22 · E-33
 import { useState, useEffect, useId } from 'react';
-import { useAuth } from '../../hooks/useAuth';
 import { useFormulario } from '../../hooks/useFormulario';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import { validarReserva } from '../../validation/validadores';
 import { interpretarRespuesta } from '../../validation/interpretarRespuesta';
 import { listarAmbientesApi, consultarDisponibilidadApi } from '../../services/ambienteService';
-import { listarUsuariosApi } from '../../services/usuarioService';
 import { crearReservaApi } from '../../services/reservaService';
-import { ROLES } from '../../constants/roles';
 import { MENSAJES } from '../../constants/mensajes';
 import { obtenerFechaHoyIso } from '../../utils/formatearFecha';
 import SelectInput from '../formulario/SelectInput';
@@ -22,11 +19,10 @@ import Icono from '../ui/Icono';
 
 export default function FormularioReserva({ abierto, ambientePreseleccionadoId = '', alCerrar, alExito }) {
   const idTitulo = useId();
-  const esAdmin = useAuth().usuario?.rol === ROLES.ADMINISTRADOR;
-  const [cat, setCat] = useState({ ambientes: [], solicitantes: [], ocupados: [], cargandoDisp: false });
+  const [cat, setCat] = useState({ ambientes: [], ocupados: [], cargandoDisp: false });
   const form = useFormulario({
-    valoresIniciales: { ambienteId: ambientePreseleccionadoId || '', solicitanteId: '', fecha: '', horaInicio: '', horaFin: '', motivo: '' },
-    validar: (vals) => validarReserva(vals, { requiereSolicitante: esAdmin }),
+    valoresIniciales: { ambienteId: ambientePreseleccionadoId || '', fecha: '', horaInicio: '', horaFin: '', motivo: '' },
+    validar: (vals) => validarReserva(vals),
     alEnviar: async (vals, { setErrores, setErrorGeneral, enfocarPrimerError }) => {
       const res = interpretarRespuesta(await crearReservaApi(vals));
       if (res.ok) { alExito?.(MENSAJES.RESERVA_CREADA_EXITO, res.datos); return; }
@@ -38,14 +34,17 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
   const modalRef = useTrampaFoco(abierto, () => { if (!form.enProceso) alCerrar?.(); }, 'select, input');
   useEffect(() => {
     if (!abierto) return undefined;
-    form.setValores({ ambienteId: ambientePreseleccionadoId || '', solicitanteId: '', fecha: '', horaInicio: '', horaFin: '', motivo: '' });
+    form.setValores({ ambienteId: ambientePreseleccionadoId || '', fecha: '', horaInicio: '', horaFin: '', motivo: '' });
     form.setErrores({}); form.setErrorGeneral('');
     const ctrl = new AbortController();
-    Promise.all([listarAmbientesApi(ctrl.signal), esAdmin ? listarUsuariosApi(ctrl.signal) : Promise.resolve(null)]).then(([rA, rU]) => {
-      if (!ctrl.signal.aborted) { const iA = interpretarRespuesta(rA); const iU = rU ? interpretarRespuesta(rU) : { ok: false }; setCat((p) => ({ ...p, ambientes: iA.ok && Array.isArray(iA.datos) ? iA.datos : [], solicitantes: iU.ok && Array.isArray(iU.datos) ? iU.datos : [] })); }
+    listarAmbientesApi(ctrl.signal).then((rA) => {
+      if (!ctrl.signal.aborted) {
+        const iA = interpretarRespuesta(rA);
+        setCat((p) => ({ ...p, ambientes: iA.ok && Array.isArray(iA.datos) ? iA.datos : [] }));
+      }
     });
     return () => ctrl.abort();
-  }, [abierto, ambientePreseleccionadoId, esAdmin]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [abierto, ambientePreseleccionadoId]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!abierto || !form.valores.ambienteId || !form.valores.fecha) { setCat((p) => ({ ...p, ocupados: [] })); return undefined; }
     const ctrl = new AbortController();
@@ -64,8 +63,6 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
         {form.errorGeneral && <div className="mb-4"><AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer /></div>}
         <form onSubmit={form.manejarEnvio} noValidate className="space-y-4">
           <SelectInput ref={form.registrarRef('ambienteId')} nombre="ambienteId" etiqueta="Ambiente" obligatorio valor={form.valores.ambienteId} alCambiar={(e) => form.cambiarValor('ambienteId', e.target.value)} alSalir={() => form.manejarBlur('ambienteId')} opciones={cat.ambientes.map((a) => ({ valor: a.id, etiqueta: `${a.nombre} (${a.capacidad} personas)` }))} placeholder="Seleccione un ambiente" ayuda={MENSAJES.AYUDA_AMBIENTE} error={form.errores.ambienteId} soloLectura={form.enProceso} />
-          {/* [JUSTIFICADO: permite al Administrador registrar la reserva a nombre de un solicitante específico] */}
-          {esAdmin && <SelectInput ref={form.registrarRef('solicitanteId')} nombre="solicitanteId" etiqueta="Solicitante" obligatorio valor={form.valores.solicitanteId} alCambiar={(e) => form.cambiarValor('solicitanteId', e.target.value)} alSalir={() => form.manejarBlur('solicitanteId')} opciones={cat.solicitantes.map((u) => ({ valor: u.id, etiqueta: `${u.nombreCompleto} (${u.correo})` }))} placeholder="Seleccione un solicitante" ayuda={MENSAJES.AYUDA_SOLICITANTE} error={form.errores.solicitanteId} soloLectura={form.enProceso} />}
           <DateInput ref={form.registrarRef('fecha')} nombre="fecha" etiqueta="Fecha" obligatorio min={obtenerFechaHoyIso()} valor={form.valores.fecha} alCambiar={(e) => form.cambiarValor('fecha', e.target.value)} alSalir={() => form.manejarBlur('fecha')} ayuda={MENSAJES.AYUDA_FECHA} error={form.errores.fecha} soloLectura={form.enProceso} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"><TimeInput ref={form.registrarRef('horaInicio')} nombre="horaInicio" etiqueta="Hora de inicio" obligatorio valor={form.valores.horaInicio} alCambiar={(e) => form.cambiarValor('horaInicio', e.target.value)} alSalir={() => form.manejarBlur('horaInicio')} ayuda={MENSAJES.AYUDA_HORARIO} error={form.errores.horaInicio} soloLectura={form.enProceso} /><TimeInput ref={form.registrarRef('horaFin')} nombre="horaFin" etiqueta="Hora de fin" obligatorio valor={form.valores.horaFin} alCambiar={(e) => form.cambiarValor('horaFin', e.target.value)} alSalir={() => form.manejarBlur('horaFin')} ayuda={MENSAJES.AYUDA_HORARIO} error={form.errores.horaFin} soloLectura={form.enProceso} /></div>
           <PanelDisponibilidad ambienteSeleccionado={Boolean(form.valores.ambienteId)} fechaSeleccionada={Boolean(form.valores.fecha)} cargando={cat.cargandoDisp} ocupados={cat.ocupados} horaInicio={form.valores.horaInicio} horaFin={form.valores.horaFin} />

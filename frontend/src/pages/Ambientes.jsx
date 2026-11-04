@@ -1,10 +1,9 @@
-// RF-02 · Catálogo de ambientes con capacidad sin salto de línea y preselección para reservar · E-10 · E-11 · E-32
+// RF-02 · Catálogo de ambientes y permisos de reserva · E-10 · E-11 · E-32 · E-45
 import { useState, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { usePermisos } from '../hooks/usePermisos';
 import { useAmbientes } from '../hooks/useAmbientes';
-import { ROLES } from '../constants/roles';
-import { RUTAS } from '../constants/rutas';
+import { PERMISOS } from '../constants/permisos';
 import { normalizarTexto } from '../utils/normalizarTexto';
 import EncabezadoPagina from '../components/navegacion/EncabezadoPagina';
 import FiltrosAmbientes from '../components/ambientes/FiltrosAmbientes';
@@ -17,16 +16,16 @@ import Button from '../components/ui/Button';
 import Icono from '../components/ui/Icono';
 
 export default function Ambientes() {
-  const { usuario } = useAuth();
+  const { puede } = usePermisos();
   const ctx = useOutletContext() || {};
-  const { ambientes, responsables, cargando, error, registrarAmbiente } = useAmbientes(usuario);
+  const { ambientes, responsables, cargando, error, registrarAmbiente } = useAmbientes();
   const [texto, setTexto] = useState('');
   const [tipo, setTipo] = useState('');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [mensajeExito, setMensajeExito] = useState('');
 
-  const esAdmin = usuario?.rol === ROLES.ADMINISTRADOR;
-  const puedeReservar = esAdmin || usuario?.rol === ROLES.SOLICITANTE;
+  const puedeCrearAmbiente = puede(PERMISOS.AMBIENTES_CREAR);
+  const puedeCrearReserva = puede(PERMISOS.RESERVAS_CREAR);
 
   const ambientesFiltrados = useMemo(() => {
     const busq = normalizarTexto(texto).toLowerCase();
@@ -46,21 +45,24 @@ export default function Ambientes() {
     {
       clave: 'acciones',
       encabezado: 'Acciones',
-      render: (a) => puedeReservar ? (
-        <Button variante="secundario" aria-label={`Reservar ${a.nombre}`} onClick={() => ctx.abrirModalReserva?.(a.id)} className="text-sm px-3">
-          Reservar
-        </Button>
-      ) : <span className="text-sm text-texto-suave">Solo consulta</span>
+      render: (a) => {
+        if (!puedeCrearReserva) return <span className="text-sm text-texto-suave">Solo consulta</span>;
+        if (a.estado !== 'Disponible') return <span className="text-sm text-texto-suave">No disponible</span>;
+        return (
+          <Button variante="secundario" aria-label={`Reservar ${a.nombre}`} onClick={() => ctx.abrirModalReserva?.(a.id)} className="text-sm px-3">
+            Reservar
+          </Button>
+        );
+      }
     }
   ];
 
   return (
     <div className="space-y-5">
       <EncabezadoPagina
-        migas={[{ etiqueta: 'Inicio', ruta: RUTAS.PANEL }, { etiqueta: 'Ambientes' }]}
         titulo="Ambientes"
         descripcion="Catálogo de laboratorios, auditorios y salas académicas disponibles para reserva."
-        accionPrimaria={esAdmin ? <Button variante="primario" onClick={() => setModalAbierto(true)}><Icono nombre="Plus" className="w-5 h-5" /><span>Nuevo ambiente</span></Button> : null}
+        accionPrimaria={puedeCrearAmbiente ? <Button variante="primario" onClick={() => setModalAbierto(true)}><Icono nombre="Plus" className="w-5 h-5" /><span>Nuevo ambiente</span></Button> : null}
       />
       {ctx.mensajeGlobal && <AlertMessage variante="exito" rol="status" mensaje={ctx.mensajeGlobal} enfocarAlAparecer alCerrar={ctx.limpiarMensajeGlobal} />}
       {mensajeExito && <AlertMessage variante="exito" rol="status" mensaje={mensajeExito} enfocarAlAparecer alCerrar={() => setMensajeExito('')} />}

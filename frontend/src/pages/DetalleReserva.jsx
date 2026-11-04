@@ -1,10 +1,11 @@
-// RF-06 · RF-07 · RN-05 · RN-06 · Detalle de reserva con "Qué sigue" y cambio de estado confirmado · E-19..21
+// RF-06 · RF-07 · RN-05 · RN-06 · Detalle de reserva con acciones permitidas · E-19..21 · E-47
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { usePermisos } from '../hooks/usePermisos';
+import { accionesPermitidas } from '../utils/accionesPermitidas';
 import { obtenerReservaPorIdApi, cambiarEstadoReservaApi } from '../services/reservaService';
 import { interpretarRespuesta } from '../validation/interpretarRespuesta';
-import { ROLES } from '../constants/roles';
 import { ESTADOS_RESERVA, ESTADOS_FINALES } from '../constants/estados';
 import { MENSAJES } from '../constants/mensajes';
 import { RUTAS } from '../constants/rutas';
@@ -21,6 +22,7 @@ const MAPA_VERBO = { [ESTADOS_RESERVA.APROBADA]: 'Aprobar reserva', [ESTADOS_RES
 export default function DetalleReserva() {
   const { id } = useParams();
   const { usuario } = useAuth();
+  const { puede } = usePermisos();
   const [reserva, setReserva] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
@@ -52,11 +54,11 @@ export default function DetalleReserva() {
     if (res.ok) { setReserva(res.datos); setAlerta({ tipo: 'exito', texto: MAPA_MENSAJE[aplicado] || 'Estado actualizado.' }); }
     else setAlerta({ tipo: 'error', texto: res.errorGeneral || MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA });
   };
-  const esAdmin = usuario?.rol === ROLES.ADMINISTRADOR;
-  const puedeCancelar = reserva && !ESTADOS_FINALES.includes(reserva.estado) && (esAdmin || reserva.solicitante?.id === usuario?.id);
+
+  const acciones = accionesPermitidas(reserva, usuario, puede);
   return (
     <div className="space-y-5">
-      <EncabezadoPagina migas={[{ etiqueta: 'Inicio', ruta: RUTAS.PANEL }, { etiqueta: 'Reservas', ruta: RUTAS.RESERVAS }, { etiqueta: 'Detalle' }]} titulo="Detalle de reserva" descripcion="Información completa de la solicitud, estado actual y acciones permitidas." accionPrimaria={<Link to={RUTAS.RESERVAS} className="min-h-control px-4 py-2.5 rounded-control border border-borde bg-superficie-2 text-texto font-semibold inline-flex items-center no-underline">Volver a reservas</Link>} />
+      <EncabezadoPagina titulo="Detalle de reserva" descripcion="Información completa de la solicitud, estado actual y acciones permitidas." accionPrimaria={<Link to={RUTAS.RESERVAS} className="min-h-control px-4 py-2.5 rounded-control border border-borde bg-superficie-2 text-texto font-semibold inline-flex items-center no-underline">Volver a reservas</Link>} />
       {alerta && <AlertMessage variante={alerta.tipo} rol={alerta.tipo === 'error' ? 'alert' : 'status'} mensaje={alerta.texto} enfocarAlAparecer alCerrar={() => setAlerta(null)} />}
       {error && <AlertMessage variante="error" rol="alert" mensaje={error} enfocarAlAparecer />}
       {cargando && <Cargando />}
@@ -64,7 +66,7 @@ export default function DetalleReserva() {
         <>
           <ResumenReserva reserva={reserva} />
           <section aria-label="Acciones sobre la reserva" className="p-5 rounded-tarjeta border border-borde bg-superficie flex flex-wrap items-center justify-between gap-4">
-            {ESTADOS_FINALES.includes(reserva.estado) ? <p className="text-sm font-medium text-texto-suave">{MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA}</p> : <div className="flex flex-wrap items-center gap-3">{esAdmin && reserva.estado === ESTADOS_RESERVA.PENDIENTE && <Button variante="primario" onClick={() => setEstadoModal(ESTADOS_RESERVA.APROBADA)}>Aprobar reserva</Button>}{esAdmin && reserva.estado === ESTADOS_RESERVA.PENDIENTE && <Button variante="peligro" onClick={() => setEstadoModal(ESTADOS_RESERVA.RECHAZADA)}>Rechazar reserva</Button>}{puedeCancelar && <Button variante="secundario" onClick={() => setEstadoModal(ESTADOS_RESERVA.CANCELADA)}>Cancelar reserva</Button>}</div>}
+            {ESTADOS_FINALES.includes(reserva.estado) ? <p className="text-sm font-medium text-texto-suave">{MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA}</p> : <div className="flex flex-wrap items-center gap-3">{acciones.includes('aprobar') && <Button variante="primario" onClick={() => setEstadoModal(ESTADOS_RESERVA.APROBADA)}>Aprobar reserva</Button>}{acciones.includes('rechazar') && <Button variante="peligro" onClick={() => setEstadoModal(ESTADOS_RESERVA.RECHAZADA)}>Rechazar reserva</Button>}{acciones.includes('cancelar') && <Button variante="secundario" onClick={() => setEstadoModal(ESTADOS_RESERVA.CANCELADA)}>Cancelar reserva</Button>}</div>}
           </section>
           <ModalConfirmacion abierto={Boolean(estadoModal)} titulo={`Confirmar: ${MAPA_VERBO[estadoModal] || ''}`} descripcion="Revise los datos antes de confirmar el cambio de estado de la solicitud." reserva={reserva} esIrreversible={estadoModal !== ESTADOS_RESERVA.APROBADA} etiquetaConfirmar={MAPA_VERBO[estadoModal] || 'Confirmar'} varianteConfirmar={estadoModal === ESTADOS_RESERVA.APROBADA ? 'primario' : 'peligro'} enProceso={enProceso} alConfirmar={confirmarTransicion} alCancelar={() => setEstadoModal('')} />
         </>

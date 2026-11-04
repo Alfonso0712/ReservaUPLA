@@ -1,8 +1,9 @@
 // RF-03 · RF-04 · RF-07 · RN-01..06 · RV-08..16 · E-12..21
 import { HORA_APERTURA, HORA_CIERRE, MIN_LONGITUD_MOTIVO, MAX_LONGITUD_MOTIVO } from '../constants/reglas';
 import { ESTADOS_RESERVA, ESTADOS_FINALES } from '../constants/estados';
-import { ROLES } from '../constants/roles';
 import { MENSAJES } from '../constants/mensajes';
+import { PERMISOS } from '../constants/permisos';
+import { obtenerPermisosDeRol } from '../mocks/permisosPorRol';
 import { normalizarTexto } from '../utils/normalizarTexto';
 import { obtenerFechaHoyIso } from '../utils/formatearFecha';
 
@@ -64,7 +65,9 @@ export function validarReserva(
 export function validarTransicionEstado(estadoActual, nuevoEstado, rolUsuario) {
   if (ESTADOS_FINALES.includes(estadoActual)) return { valido: false, error: MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA };
   if (nuevoEstado === ESTADOS_RESERVA.APROBADA || nuevoEstado === ESTADOS_RESERVA.RECHAZADA) {
-    if (rolUsuario !== ROLES.ADMINISTRADOR) return { valido: false, error: MENSAJES.ACCION_SOLO_ADMINISTRADOR };
+    const permisos = obtenerPermisosDeRol(rolUsuario);
+    const req = nuevoEstado === ESTADOS_RESERVA.APROBADA ? PERMISOS.RESERVAS_APROBAR : PERMISOS.RESERVAS_RECHAZAR;
+    if (!permisos.includes(req)) return { valido: false, error: MENSAJES.ACCION_SOLO_ADMINISTRADOR };
     return estadoActual === ESTADOS_RESERVA.PENDIENTE ? { valido: true, error: '' } : { valido: false, error: MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA };
   }
   if (nuevoEstado === ESTADOS_RESERVA.CANCELADA && (estadoActual === ESTADOS_RESERVA.PENDIENTE || estadoActual === ESTADOS_RESERVA.APROBADA)) return { valido: true, error: '' };

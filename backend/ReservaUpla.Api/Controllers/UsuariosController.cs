@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
+using ReservaUpla.Domain.Constants;
 
 namespace ReservaUpla.Api.Controllers;
 
@@ -37,5 +39,14 @@ public class UsuariosController : ControllerBase
             return NotFound();
 
         return Ok(usuario);
+    }
+
+    // RF-02 · Permiso usuarios.listarResponsables
+    [HttpGet("responsables")]
+    [Authorize(Policy = Permisos.UsuariosListarResponsables)]
+    public async Task<ActionResult<IReadOnlyList<UsuarioDto>>> ListarResponsables(CancellationToken ct)
+    {
+        var lista = await _usuarioService.ListarResponsablesAsync(ct);
+        return Ok(lista);
     }
 }

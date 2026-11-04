@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
-using ReservaUpla.Application.Mappers;
 using ReservaUpla.Domain.Constants;
 using ReservaUpla.Domain.Entities;
 using ReservaUpla.Domain.Enums;
@@ -39,13 +40,36 @@ public class UsuarioService : IUsuarioService
         await _usuarioRepo.AgregarAsync(usuario, ct);
         await _unitOfWork.GuardarCambiosAsync(ct);
 
-        return UsuarioMapper.ToDto(usuario);
+        return new UsuarioDto(
+            usuario.Id_Usuario,
+            usuario.Nom_Usuario,
+            usuario.Cor_Usuario,
+            usuario.Rol_Usuario.ToString(),
+            usuario.Act_Usuario);
     }
 
     public async Task<UsuarioDto?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default)
     {
         var usuario = await _usuarioRepo.ObtenerPorIdAsync(id, ct);
-        return usuario == null ? null : UsuarioMapper.ToDto(usuario);
+        if (usuario == null) return null;
+
+        return new UsuarioDto(
+            usuario.Id_Usuario,
+            usuario.Nom_Usuario,
+            usuario.Cor_Usuario,
+            usuario.Rol_Usuario.ToString(),
+            usuario.Act_Usuario);
+    }
+
+    public async Task<IReadOnlyList<UsuarioDto>> ListarResponsablesAsync(CancellationToken ct = default)
+    {
+        var lista = await _usuarioRepo.ListarResponsablesAsync(ct);
+        return lista.Select(u => new UsuarioDto(
+            u.Id_Usuario,
+            u.Nom_Usuario,
+            u.Cor_Usuario,
+            u.Rol_Usuario.ToString(),
+            u.Act_Usuario)).ToList();
     }
 
     private static void ValidarPrecondiciones(RegistroUsuarioDto dto)
