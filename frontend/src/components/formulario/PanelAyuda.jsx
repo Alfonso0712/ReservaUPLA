@@ -13,14 +13,14 @@ export default function PanelAyuda({ alRellenarDemo = null, deshabilitado = fals
           Solo para pruebas
         </span>
       </div>
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-3 gap-1">
         {CUENTAS_DEMO.map((cuenta) => (
           <button
             key={cuenta.rol}
             type="button"
             disabled={deshabilitado}
             onClick={() => alRellenarDemo(cuenta)}
-            className="py-1 px-1.5 rounded-control border border-borde bg-superficie text-texto hover:bg-fondo text-xs font-medium transition-colors text-center truncate cursor-pointer"
+            className="py-1 px-1 rounded-control border border-borde bg-superficie text-texto hover:bg-fondo text-[11px] font-semibold transition-colors text-center cursor-pointer whitespace-nowrap"
           >
             {cuenta.etiqueta}
           </button>
