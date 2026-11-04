@@ -18,7 +18,7 @@ export default function ModalConfirmacion({
   if (!abierto) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-fondo/80">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={contenedorRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-lg p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
         <h2 id={idTitulo} className="text-xl font-semibold text-texto mb-2">{titulo}</h2>
         {descripcion && <p className="text-base text-texto-suave mb-4">{descripcion}</p>}

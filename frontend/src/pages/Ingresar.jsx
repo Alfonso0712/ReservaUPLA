@@ -69,7 +69,7 @@ export default function Ingresar() {
       <p className="text-sm text-texto-suave text-center">
         ¿No tiene cuenta? <Link to={RUTAS.REGISTRO} className="font-semibold text-primario-enlace">Registrarse como solicitante</Link>
       </p>
-      <PanelAyuda deshabilitado={form.enProceso} alRellenarDemo={(c) => { form.cambiarValor('correo', c.correo); form.cambiarValor('contrasena', c.contrasenaDemo); }} />
+      <PanelAyuda deshabilitado={form.enProceso} alRellenarDemo={(c) => { form.cambiarValores({ correo: c.correo, contrasena: c.contrasenaDemo }); form.camposRef.current.correo?.focus(); }} />
     </div>
   );
 }

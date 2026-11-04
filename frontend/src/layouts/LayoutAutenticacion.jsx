@@ -44,7 +44,7 @@ export default function LayoutAutenticacion({ children }) {
           </p>
         </div>
 
-        <div className="relative z-10 hidden sm:flex items-center justify-between text-sm text-lateral-texto pt-4 border-t border-borde/40">
+        <div className="relative z-10 hidden sm:flex items-center justify-between text-sm text-lateral-texto pt-4 border-t border-borde">
           <span>Universidad Peruana Los Andes © 2026</span>
           <span>Gestión de ambientes universitarios</span>
         </div>

@@ -36,6 +36,15 @@ export default {
       borderRadius: {
         control: 'var(--radio-control)',
         tarjeta: 'var(--radio-tarjeta)'
+      },
+      minHeight: {
+        control: 'var(--alto-control)'
+      },
+      minWidth: {
+        control: 'var(--alto-control)'
+      },
+      height: {
+        control: 'var(--alto-control)'
       }
     }
   },

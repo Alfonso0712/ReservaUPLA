@@ -7,7 +7,7 @@ import { CUENTAS_DEMO } from '../../mocks/datosSemilla';
 export default function PanelAyuda({ alRellenarDemo = null, deshabilitado = false }) {
   const [abierto, setAbierto] = useState(false);
   const idPanel = useId();
-  const mostrarDemo = Boolean(alRellenarDemo) && Boolean(import.meta.env?.DEV || import.meta.env?.VITE_MOSTRAR_DEMO === 'true');
+  const mostrarDemo = Boolean(alRellenarDemo) && import.meta.env?.VITE_MOSTRAR_DEMO !== 'false';
 
   return (
     <div className="space-y-3">

@@ -1,125 +1,48 @@
 /* Shneiderman 2 · WCAG 2.2 AA · E-25 · E-27 · E-28 */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
+*, *::before, *::after { box-sizing: border-box; }
 html {
   font-family: "Montserrat Variable", "Segoe UI", system-ui, Arial, sans-serif;
-  font-size: 100%;
-  line-height: 1.6;
-  background-color: var(--fondo);
-  color: var(--texto);
+  font-size: 100%; line-height: 1.6; background-color: var(--fondo); color: var(--texto);
 }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: var(--fondo);
-  color: var(--texto);
-  overflow-x: hidden;
+body { margin: 0; min-height: 100vh; background-color: var(--fondo); color: var(--texto); overflow-x: hidden; }
+h1 { font-size: 1.75rem; font-weight: 700; line-height: 1.3; margin: 0; }
+h2 { font-size: 1.25rem; font-weight: 600; line-height: 1.3; margin: 0; }
+h3 { font-size: 1rem; font-weight: 600; line-height: 1.3; margin: 0; }
+p { max-width: 70ch; line-height: 1.6; margin: 0; }
+.ancho-lectura { max-width: 70ch; }
+.cifra-tabular { font-variant-numeric: tabular-nums; }
+.capa-superposicion-login {
+  background: linear-gradient(135deg, var(--superposicion-marca-inicio), var(--superposicion-marca-fin));
 }
-
-h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  line-height: 1.3;
-  margin: 0;
+.fondo-modal {
+  background-color: rgba(11, 18, 32, 0.7);
 }
-
-h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  line-height: 1.3;
-  margin: 0;
-}
-
-h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  line-height: 1.3;
-  margin: 0;
-}
-
-p {
-  max-width: 70ch;
-  line-height: 1.6;
-  margin: 0;
-}
-
-.cifra-tabular {
-  font-variant-numeric: tabular-nums;
-}
-
-:focus-visible {
-  outline: 0.125rem solid var(--anillo-foco);
-  outline-offset: 0.125rem;
-}
-
-.barra-lateral :focus-visible {
-  outline: 0.125rem solid var(--acento-sobre-oscuro);
-  outline-offset: 0.125rem;
-}
-
+:focus-visible { outline: 0.125rem solid var(--anillo-foco); outline-offset: 0.125rem; }
+.barra-lateral :focus-visible { outline: 0.125rem solid var(--acento-sobre-oscuro); outline-offset: 0.125rem; }
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important; scroll-behavior: auto !important;
   }
 }
-
 @media (max-width: 47.9375rem) {
   .tabla-responsiva thead {
-    position: absolute;
-    width: 0.0625rem;
-    height: 0.0625rem;
-    padding: 0;
-    margin: -0.0625rem;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    position: absolute; width: 0.0625rem; height: 0.0625rem; padding: 0; margin: -0.0625rem;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
-
-  .tabla-responsiva,
-  .tabla-responsiva tbody,
-  .tabla-responsiva tr,
-  .tabla-responsiva td {
-    display: block;
-    width: 100%;
+  .tabla-responsiva, .tabla-responsiva tbody, .tabla-responsiva tr, .tabla-responsiva td {
+    display: block; width: 100%;
   }
-
   .tabla-responsiva tr {
-    margin-bottom: 1rem;
-    border: 0.0625rem solid var(--borde);
-    border-radius: var(--radio-tarjeta);
-    background-color: var(--superficie);
-    padding: 0.75rem;
+    margin-bottom: 1rem; border: 0.0625rem solid var(--borde);
+    border-radius: var(--radio-tarjeta); background-color: var(--superficie); padding: 0.75rem;
   }
-
   .tabla-responsiva td {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0;
-    border-bottom: 0.0625rem solid var(--borde);
-    text-align: right;
+    display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+    padding: 0.5rem 0; border-bottom: 0.0625rem solid var(--borde); text-align: right;
   }
-
-  .tabla-responsiva td:last-child {
-    border-bottom: 0;
-  }
-
+  .tabla-responsiva td:last-child { border-bottom: 0; }
   .tabla-responsiva td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: var(--texto-suave);
-    text-align: left;
+    content: attr(data-label); font-weight: 600; color: var(--texto-suave); text-align: left;
   }
 }

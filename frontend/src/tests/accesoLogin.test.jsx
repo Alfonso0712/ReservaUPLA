@@ -1,44 +1,29 @@
-// Pruebas automatizadas E-07 a E-09: Inicio de sesión, error 401 uniforme y límite 429
+// Pruebas automatizadas E-07 a E-09 e integración con <App /> · E-07..09
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from '../hooks/useAuth';
-import Ingresar from '../pages/Ingresar';
+import { MemoryRouter } from 'react-router-dom';
+import App from '../App';
 import { reiniciarBaseMock, configurarFalloMock } from '../mocks/baseDatosMock';
 import { MENSAJES } from '../constants/mensajes';
 
-beforeEach(() => {
-  reiniciarBaseMock();
-  sessionStorage.clear();
-  localStorage.clear();
-});
+beforeEach(() => { reiniciarBaseMock(); sessionStorage.clear(); localStorage.clear(); });
 
-function renderizarLogin() {
-  return render(
-    <MemoryRouter initialEntries={['/ingresar']}>
-      <AuthProvider>
-        <Routes>
-          <Route path="/ingresar" element={<Ingresar />} />
-          <Route path="/panel" element={<h1>Panel</h1>} />
-        </Routes>
-      </AuthProvider>
-    </MemoryRouter>
-  );
-}
+const renderAppEnIngresar = () => render(
+  <MemoryRouter initialEntries={['/ingresar']}><App /></MemoryRouter>
+);
 
 describe('Inicio de sesión institucional (E-07..09)', () => {
-  it('E-07: login correcto redirige al panel institucional', async () => {
+  it('E-07: login integración con App y botón demo redirige a /panel con h1', async () => {
     const user = userEvent.setup();
-    renderizarLogin();
-    await user.type(screen.getByLabelText(/correo institucional/i), 'admin@upla.edu.pe');
-    await user.type(screen.getByLabelText(/^contraseña/i), 'AdminUpla2026!');
+    renderAppEnIngresar();
+    await user.click(await screen.findByRole('button', { name: /^administrador$/i }));
     await user.click(screen.getByRole('button', { name: /iniciar sesión/i }));
     expect(await screen.findByRole('heading', { level: 1, name: 'Panel' })).toBeInTheDocument();
   });
 
   it('E-08: login incorrecto con mensaje uniforme y foco en contraseña', async () => {
     const user = userEvent.setup();
-    renderizarLogin();
+    renderAppEnIngresar();
     const inputClave = screen.getByLabelText(/^contraseña/i);
     await user.type(screen.getByLabelText(/correo institucional/i), 'admin@upla.edu.pe');
     await user.type(inputClave, 'ClaveErronea123');
@@ -50,7 +35,7 @@ describe('Inicio de sesión institucional (E-07..09)', () => {
   it('E-09: límite de intentos 429 muestra alerta de espera y recibe foco', async () => {
     configurarFalloMock(429);
     const user = userEvent.setup();
-    renderizarLogin();
+    renderAppEnIngresar();
     await user.type(screen.getByLabelText(/correo institucional/i), 'admin@upla.edu.pe');
     await user.type(screen.getByLabelText(/^contraseña/i), 'AdminUpla2026!');
     await user.click(screen.getByRole('button', { name: /iniciar sesión/i }));
