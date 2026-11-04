@@ -51,13 +51,13 @@ export default function Ingresar() {
   }, [form.camposRef]);
 
   return (
-    <div className="w-full max-w-[330px] mx-auto space-y-3">
+    <div className="w-full max-w-[340px] mx-auto space-y-3">
       <div className="flex flex-col items-center text-center">
-        <div className="flex flex-col items-center gap-0.5 mb-1">
-          <LogoUpla variante="libre" className="w-9 h-9" />
-          <span className="text-xs font-bold tracking-wider text-primario">UPLA</span>
+        <div className="flex flex-col items-center gap-1 mb-1.5">
+          <LogoUpla variante="libre" className="w-12 h-12" />
+          <span className="text-sm font-bold tracking-wider text-primario">UPLA</span>
         </div>
-        <h1 className="text-xl font-bold text-texto">Iniciar sesión</h1>
+        <h1 className="text-2xl sm:text-[26px] font-bold text-texto tracking-tight">Iniciar sesión</h1>
         <p className="mt-0.5 text-xs text-texto-suave">Ingrese sus credenciales para continuar.</p>
       </div>
       <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
