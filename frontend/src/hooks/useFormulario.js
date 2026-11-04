@@ -1,4 +1,4 @@
-// Nielsen 5 · Nielsen 9 · Shneiderman 6 · E-22 · E-25 · E-26
+// Nielsen 5 · Nielsen 9 · Shneiderman 6 · Estado de formulario, reversión de errores y bloqueo de doble envío · E-22 · E-25
 import { useState, useRef, useCallback } from 'react';
 import { MENSAJES } from '../constants/mensajes';
 
@@ -36,15 +36,13 @@ export function useFormulario({ valoresIniciales, validar, alEnviar }) {
     setTocados((prev) => ({ ...prev, [nombre]: true }));
     if (typeof validar === 'function') {
       const resultado = validar(valores);
-      const mensajeCampo = resultado.errores?.[nombre] || '';
-      setErrores((prev) => ({ ...prev, [nombre]: mensajeCampo }));
+      setErrores((prev) => ({ ...prev, [nombre]: resultado.errores?.[nombre] || '' }));
     }
   }, [validar, valores]);
 
   const manejarEnvio = useCallback(async (evento) => {
     evento?.preventDefault();
     if (enProcesoRef.current) return;
-
     if (typeof validar === 'function') {
       const validacion = validar(valores);
       if (!validacion.valido) {
@@ -54,20 +52,12 @@ export function useFormulario({ valoresIniciales, validar, alEnviar }) {
         return;
       }
     }
-
     enProcesoRef.current = true;
     setEnProceso(true);
     setErrorGeneral('');
     setResumenEstado('');
-
     try {
-      await alEnviar?.(valores, {
-        setErrores,
-        setErrorGeneral,
-        setValores,
-        enfocarPrimerError,
-        camposRef
-      });
+      await alEnviar?.(valores, { setErrores, setErrorGeneral, setValores, enfocarPrimerError, camposRef });
     } finally {
       enProcesoRef.current = false;
       setEnProceso(false);
@@ -75,19 +65,8 @@ export function useFormulario({ valoresIniciales, validar, alEnviar }) {
   }, [validar, valores, alEnviar, enfocarPrimerError]);
 
   return {
-    valores,
-    setValores,
-    errores,
-    setErrores,
-    tocados,
-    enProceso,
-    errorGeneral,
-    setErrorGeneral,
-    resumenEstado,
-    cambiarValor,
-    manejarBlur,
-    manejarEnvio,
-    registrarRef,
-    camposRef
+    valores, setValores, errores, setErrores, tocados, enProceso,
+    errorGeneral, setErrorGeneral, resumenEstado, cambiarValor,
+    manejarBlur, manejarEnvio, registrarRef, camposRef
   };
 }
