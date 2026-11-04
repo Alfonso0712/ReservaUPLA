@@ -3,12 +3,8 @@ import { ROLES } from '../constants/roles';
 import { ESTADOS_AMBIENTE, ESTADOS_RESERVA } from '../constants/estados';
 import { MENSAJES } from '../constants/mensajes';
 import { validarAmbiente, validarEstadoAmbiente, validarNombreAmbienteUnico } from '../validation/validadores';
-import { dbMock, obtenerUsuarioActualMock, respuestaExito, respuestaError } from './estadoMock';
+import { dbMock, obtenerUsuarioActualMock, respuestaExito, respuestaError, formatearErroresCampo } from './estadoMock';
 import { obtenerFechaHoyIso } from '../utils/formatearFecha';
-
-function formatearErroresCampo(errores) {
-  return Object.fromEntries(Object.entries(errores).map(([k, v]) => [k, [v]]));
-}
 
 export function contarReservasFuturasActivas(ambienteId) {
   const hoy = obtenerFechaHoyIso();

@@ -2,12 +2,8 @@
 import { ROLES } from '../constants/roles';
 import { MENSAJES } from '../constants/mensajes';
 import { validarLogin, validarRegistroSolicitante } from '../validation/validadores';
-import { dbMock, guardarIdSesionMock, obtenerUsuarioActualMock, respuestaExito, respuestaError } from './estadoMock';
+import { dbMock, guardarIdSesionMock, obtenerUsuarioActualMock, respuestaExito, respuestaError, formatearErroresCampo } from './estadoMock';
 import { obtenerPermisosDeRol } from './permisosPorRol';
-
-function formatearErroresCampo(errores) {
-  return Object.fromEntries(Object.entries(errores).map(([k, v]) => [k, [v]]));
-}
 
 export function mockLogin(cuerpo = {}) {
   const val = validarLogin(cuerpo);
