@@ -35,7 +35,7 @@ const Button = forwardRef(function Button(
       disabled={bloqueado}
       aria-busy={enProceso || undefined}
       onClick={manejarClick}
-      className={`inline-flex items-center justify-center gap-2 min-h-[38px] px-3.5 py-1.5 rounded-control font-semibold text-sm transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${estiloVariante} ${className}`.trim()}
+      className={`inline-flex items-center justify-center gap-2 min-h-[42px] px-4 py-2 rounded-control font-semibold text-sm sm:text-base transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${estiloVariante} ${className}`.trim()}
       {...props}
     >
       {enProceso ? <Icono nombre="Loader2" className="w-4 h-4 animate-spin" /> : icono && <Icono nombre={icono} className="w-4 h-4" />}

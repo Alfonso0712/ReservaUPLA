@@ -54,10 +54,10 @@ const PasswordInput = forwardRef(function PasswordInput(
           enterKeyHint={enterKeyHint}
           aria-invalid={tieneError}
           aria-describedby={describedBy}
-          className={`w-full min-h-[38px] pl-3 pr-10 py-1.5 rounded-control border bg-superficie text-texto text-sm transition-colors read-only:bg-superficie-2 ${tieneError ? 'border-rechazada-texto' : 'border-borde-control'}`}
+          className={`w-full min-h-[42px] pl-3.5 pr-11 py-2 rounded-control border bg-superficie text-texto text-sm sm:text-base transition-colors read-only:bg-superficie-2 ${tieneError ? 'border-rechazada-texto' : 'border-borde-control'}`}
           {...props}
         />
-        <button type="button" aria-label={mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setMostrar((a) => !a)} className="absolute right-1 inline-flex items-center justify-center h-7 w-7 rounded-control text-texto-suave hover:text-texto bg-transparent border-0 cursor-pointer">
+        <button type="button" aria-label={mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setMostrar((a) => !a)} className="absolute right-1.5 inline-flex items-center justify-center h-8 w-8 rounded-control text-texto-suave hover:text-texto bg-transparent border-0 cursor-pointer">
           <Icono nombre={mostrar ? 'EyeOff' : 'Eye'} className="w-4 h-4" />
         </button>
       </div>

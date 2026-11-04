@@ -1,6 +1,7 @@
 // Pruebas automatizadas E-10 a E-17: Ambientes, solicitudes de reserva y disponibilidad
 import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { vi, it, expect, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../hooks/useAuth';
 import Ambientes from '../pages/Ambientes';
@@ -68,6 +69,7 @@ it('E-17: solape con reserva aprobada se rechaza y horario consecutivo es permit
   await user.click(screen.getByRole('button', { name: /registrar solicitud/i }));
   expect(await screen.findAllByText(MENSAJES.RESERVA_SOLAPE_HORARIO)).not.toHaveLength(0);
   fireEvent.change(screen.getByLabelText(/hora de inicio/i), { target: { value: '12:00' } });
-  await user.click(screen.getByRole('button', { name: /registrar solicitud/i }));
+  const botonReenvio = await screen.findByRole('button', { name: /registrar solicitud/i });
+  await user.click(botonReenvio);
   await vi.waitFor(() => expect(alExito).toHaveBeenCalled());
 });
