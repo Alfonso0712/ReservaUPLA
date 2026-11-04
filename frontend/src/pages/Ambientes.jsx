@@ -10,7 +10,7 @@ import FiltrosAmbientes from '../components/ambientes/FiltrosAmbientes';
 import FormularioAmbiente from '../components/ambientes/FormularioAmbiente';
 import ModalCambiarEstadoAmbiente from '../components/ambientes/ModalCambiarEstadoAmbiente';
 import AccionesFilaAmbiente from '../components/ambientes/AccionesFilaAmbiente';
-import EstadoAmbienteBadge from '../components/ui/EstadoAmbienteBadge';
+import Badge from '../components/ui/Badge';
 import TableList from '../components/ui/TableList';
 import TipoAmbienteChip from '../components/ui/TipoAmbienteChip';
 import AlertMessage from '../components/ui/AlertMessage';
@@ -41,11 +41,11 @@ export default function Ambientes() {
 
   const columnas = [
     { clave: 'nombre', encabezado: 'Nombre', render: (a) => <span className="font-semibold text-texto">{a.nombre}</span> },
-    { clave: 'tipo', encabezado: 'Tipo', render: (a) => <TipoAmbienteChip tipo={a.tipo} /> },
+    { clave: 'tipo', encabezado: 'Tipo', claseCelda: 'whitespace-nowrap', render: (a) => <TipoAmbienteChip tipo={a.tipo} /> },
     { clave: 'capacidad', encabezado: 'Capacidad', claseCelda: 'whitespace-nowrap cifra-tabular', render: (a) => `${a.capacidad} personas` },
     { clave: 'ubicacion', encabezado: 'Ubicación', render: (a) => a.ubicacion },
     { clave: 'responsable', encabezado: 'Responsable', render: (a) => a.responsableNombre || 'Sin asignar' },
-    { clave: 'estado', encabezado: 'Estado', render: (a) => <EstadoAmbienteBadge estado={a.estado} /> },
+    { clave: 'estado', encabezado: 'Estado', render: (a) => <Badge estado={a.estado} /> },
     {
       clave: 'acciones', encabezado: 'Acciones', claseCelda: 'whitespace-nowrap',
       render: (a) => (
