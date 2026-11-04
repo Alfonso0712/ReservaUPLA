@@ -39,6 +39,7 @@ export default function Ambientes() {
     const busq = normalizarTexto(texto).toLowerCase();
     return ambientes.filter((amb) => (!tipo || amb.tipo === tipo) && (!busq || `${amb.nombre} ${amb.ubicacion}`.toLowerCase().includes(busq)));
   }, [ambientes, texto, tipo]);
+  const todosDisponibles = useMemo(() => filtrados.length > 0 && filtrados.every((a) => a.estado === 'Disponible'), [filtrados]);
 
   const columnas = [
     { clave: 'nombre', encabezado: 'Nombre', ordenable: true, render: (a) => <span className="font-semibold text-texto">{a.nombre}</span> },
@@ -46,7 +47,7 @@ export default function Ambientes() {
     { clave: 'capacidad', encabezado: 'Capacidad', ordenable: true, claseEncabezado: 'text-right', claseCelda: 'text-right whitespace-nowrap cifra-tabular', render: (a) => <span className="cifra-tabular">{a.capacidad}</span> },
     { clave: 'ubicacion', encabezado: 'Ubicación', render: (a) => <span title={a.ubicacion} className="truncate max-w-[12rem] block">{a.ubicacion}</span> },
     { clave: 'responsable', encabezado: 'Responsable', render: (a) => <span title={a.responsableNombre || 'Sin asignar'} className="truncate max-w-[12rem] block">{a.responsableNombre || 'Sin asignar'}</span> },
-    { clave: 'estado', encabezado: 'Estado', render: (a) => <Badge estado={a.estado} /> },
+    { clave: 'estado', encabezado: 'Estado', render: (a) => <Badge estado={a.estado} discreto={todosDisponibles && a.estado === 'Disponible'} /> },
     {
       clave: 'acciones', encabezado: 'Acciones', claseCelda: 'whitespace-nowrap',
       render: (a) => (

@@ -9,7 +9,8 @@ const ESTILOS_POR_VARIANTE = {
   aprobada: 'bg-aprobada-fondo text-aprobada-texto border border-aprobada-texto/20',
   pendiente: 'bg-pendiente-fondo text-pendiente-texto border border-pendiente-texto/20',
   rechazada: 'bg-rechazada-fondo text-rechazada-texto border border-rechazada-texto/20',
-  cancelada: 'bg-cancelada-fondo text-cancelada-texto border border-cancelada-texto/20'
+  cancelada: 'bg-cancelada-fondo text-cancelada-texto border border-cancelada-texto/20',
+  discreto: 'bg-superficie-2 text-texto-suave border border-borde/60'
 };
 
 const VARIANTE_POR_ESTADO = {
@@ -24,9 +25,9 @@ const VARIANTE_POR_ESTADO = {
   [ESTADOS_AMBIENTE.FUERA_DE_SERVICIO]: 'cancelada'
 };
 
-export default function Badge({ estado, variante: vProp, icono: iProp, children }) {
+export default function Badge({ estado, variante: vProp, icono: iProp, discreto = false, children }) {
   const etiqueta = children || estado || '';
-  const variante = vProp || VARIANTE_POR_ESTADO[estado] || 'cancelada';
+  const variante = discreto ? 'discreto' : (vProp || VARIANTE_POR_ESTADO[estado] || 'cancelada');
   const nombreIcono = iProp || ICONO_POR_ESTADO[estado] || ICONO_POR_ESTADO_AMBIENTE[estado] || 'Info';
   const clases = ESTILOS_POR_VARIANTE[variante] || ESTILOS_POR_VARIANTE.cancelada;
 
