@@ -16,7 +16,7 @@ import AlertMessage from '../components/ui/AlertMessage';
 export default function Ingresar() {
   const navegar = useNavigate();
   const { iniciarSesion } = useAuth();
-  const { correoInicial, recordar, setRecordar, guardarCorreo } = useCorreoRecordado();
+  const { correoInicial, guardarCorreo } = useCorreoRecordado();
   const [enfocarAlerta, setEnfocarAlerta] = useState(false);
 
   const form = useFormulario({
@@ -26,7 +26,7 @@ export default function Ingresar() {
       const { correoNormalizado } = validarLogin(valores);
       const res = await iniciarSesion({ correo: correoNormalizado, contrasena: valores.contrasena });
       if (res.ok) {
-        guardarCorreo(correoNormalizado, recordar);
+        guardarCorreo(correoNormalizado, false);
         navegar(RUTAS.PANEL, { replace: true });
         return;
       }
@@ -53,17 +53,13 @@ export default function Ingresar() {
     <div className="space-y-5">
       <div>
         <h1 className="text-2xl font-bold text-texto">Iniciar sesión</h1>
-        <p className="mt-1 text-base text-texto-suave">Ingrese con su correo institucional para gestionar sus reservas.</p>
+        <p className="mt-1 text-base text-texto-suave">Ingrese sus credenciales para continuar.</p>
       </div>
       <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
       {form.errorGeneral && <AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer={enfocarAlerta} />}
       <form onSubmit={form.manejarEnvio} noValidate className="space-y-4">
         <TextInput ref={form.registrarRef('correo')} nombre="correo" etiqueta="Correo institucional" tipo="email" obligatorio valor={form.valores.correo} alCambiar={(e) => form.cambiarValor('correo', e.target.value)} alSalir={() => form.manejarBlur('correo')} error={form.errores.correo} ayuda={MENSAJES.AYUDA_CORREO} placeholder="nombre@upla.edu.pe" autoComplete="username" inputMode="email" enterKeyHint="next" soloLectura={form.enProceso} />
-        <PasswordInput ref={form.registrarRef('contrasena')} nombre="contrasena" etiqueta="Contraseña" obligatorio valor={form.valores.contrasena} alCambiar={(e) => form.cambiarValor('contrasena', e.target.value)} alSalir={() => form.manejarBlur('contrasena')} error={form.errores.contrasena} ayuda={MENSAJES.AYUDA_CONTRASENA_LOGIN} placeholder="••••••••" autoComplete="current-password" enterKeyHint="done" soloLectura={form.enProceso} />
-        <label className="inline-flex items-center gap-2.5 min-h-control cursor-pointer text-sm text-texto">
-          <input type="checkbox" checked={recordar} onChange={(e) => setRecordar(e.target.checked)} readOnly={form.enProceso} className="w-4 h-4 rounded border-borde-control text-primario" />
-          <span>Recordar correo</span>
-        </label>
+        <PasswordInput ref={form.registrarRef('contrasena')} nombre="contrasena" etiqueta="Contraseña" obligatorio valor={form.valores.contrasena} alCambiar={(e) => form.cambiarValor('contrasena', e.target.value)} alSalir={() => form.manejarBlur('contrasena')} error={form.errores.contrasena} ayuda="" placeholder="••••••••" autoComplete="current-password" enterKeyHint="done" soloLectura={form.enProceso} />
         <Button tipo="submit" variante="primario" enProceso={form.enProceso} textoProceso={MENSAJES.VALIDANDO} className="w-full">Iniciar sesión</Button>
       </form>
       <p className="text-sm text-texto-suave text-center">
