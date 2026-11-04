@@ -1,4 +1,4 @@
-// Norman · Nielsen 1 · Nielsen 5 · WCAG 2.2 AA · Guarda contra doble clic y estado ocupado · E-22
+// Norman · Nielsen 1 · Nielsen 5 · WCAG 2.2 AA · Botón accesible multivariante y tamaño · E-22
 import { forwardRef } from 'react';
 import Icono from './Icono';
 
@@ -9,9 +9,14 @@ const ESTILOS_VARIANTE = {
   fantasma: 'bg-transparent text-texto hover:bg-superficie-2 border border-transparent'
 };
 
+const ESTILOS_TAMANO = {
+  md: 'min-h-control px-4 py-2 font-semibold text-sm sm:text-base gap-2',
+  sm: 'min-h-[32px] h-8 px-2.5 py-1 font-semibold text-xs gap-1.5'
+};
+
 const Button = forwardRef(function Button(
   {
-    children, type, tipo, variante = 'primario', enProceso = false,
+    children, type, tipo, variante = 'primario', tamano = 'md', enProceso = false,
     textoProceso = 'Validando…', icono = null, className = '', disabled = false, onClick, ...props
   },
   ref
@@ -19,26 +24,21 @@ const Button = forwardRef(function Button(
   const tipoBoton = tipo || type || 'button';
   const bloqueado = disabled || enProceso;
   const estiloVariante = ESTILOS_VARIANTE[variante] || ESTILOS_VARIANTE.primario;
+  const estiloTamano = ESTILOS_TAMANO[tamano] || ESTILOS_TAMANO.md;
+  const tamanoIcono = tamano === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4';
 
   const manejarClick = (evento) => {
-    if (bloqueado) {
-      evento.preventDefault();
-      return;
-    }
+    if (bloqueado) { evento.preventDefault(); return; }
     onClick?.(evento);
   };
 
   return (
     <button
-      ref={ref}
-      type={tipoBoton}
-      disabled={bloqueado}
-      aria-busy={enProceso || undefined}
-      onClick={manejarClick}
-      className={`inline-flex items-center justify-center gap-2 min-h-control px-4 py-2 rounded-control font-semibold text-sm sm:text-base whitespace-nowrap transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 hover:shadow-[0_6px_16px_rgba(10,61,145,0.28)] dark:hover:shadow-[0_6px_16px_rgba(37,99,235,0.35)] disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none ${estiloVariante} ${className}`.trim()}
+      ref={ref} type={tipoBoton} disabled={bloqueado} aria-busy={enProceso || undefined} onClick={manejarClick}
+      className={`inline-flex items-center justify-center rounded-control whitespace-nowrap transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none ${estiloTamano} ${estiloVariante} ${className}`.trim()}
       {...props}
     >
-      {enProceso ? <Icono nombre="Loader2" className="w-4 h-4 animate-spin shrink-0" /> : icono && <Icono nombre={icono} className="w-4 h-4 shrink-0" />}
+      {enProceso ? <Icono nombre="Loader2" className={`${tamanoIcono} animate-spin shrink-0`} /> : icono && <Icono nombre={icono} className={`${tamanoIcono} shrink-0`} />}
       <span className="whitespace-nowrap">{enProceso ? textoProceso : children}</span>
     </button>
   );
