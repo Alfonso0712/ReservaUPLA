@@ -1,0 +1,58 @@
+// Nielsen 4 · Nielsen 6 · Nielsen 9 · WCAG 2.2 AA · E-26
+export function construirDescribedBy(id, ayuda, error, extraId = '') {
+  const ids = [];
+  if (ayuda) ids.push(`${id}-ayuda`);
+  if (error) ids.push(`${id}-error`);
+  if (extraId) ids.push(extraId);
+  return ids.length > 0 ? ids.join(' ') : undefined;
+}
+
+export default function CampoFormulario({
+  id,
+  etiqueta,
+  obligatorio = true,
+  ayuda = '',
+  error = '',
+  contador = null,
+  avisoExtra = null,
+  children,
+  className = ''
+}) {
+  return (
+    <div className={`flex flex-col gap-1.5 w-full ${className}`.trim()}>
+      <label htmlFor={id} className="text-base font-semibold text-texto">
+        <span>{etiqueta}</span>{' '}
+        <span className="text-sm font-normal text-texto-suave">
+          ({obligatorio ? 'obligatorio' : 'opcional'})
+        </span>
+      </label>
+
+      {children}
+
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        {ayuda && (
+          <span id={`${id}-ayuda`} className="text-sm text-texto-suave">
+            {ayuda}
+          </span>
+        )}
+        {contador && (
+          <span className="text-sm text-texto-suave cifra-tabular ml-auto">
+            {contador}
+          </span>
+        )}
+      </div>
+
+      {avisoExtra}
+
+      {error && (
+        <p
+          id={`${id}-error`}
+          role="alert"
+          className="text-sm font-semibold text-rechazada-texto m-0"
+        >
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
