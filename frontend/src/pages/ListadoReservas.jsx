@@ -57,9 +57,9 @@ export default function ListadoReservas() {
     } else if (res.errorGeneral) setToasts((prev) => [...prev.slice(-2), { id: Date.now(), tipo: 'error', mensaje: res.errorGeneral }]);
   };
   const columnas = [
-    { clave: 'solicitante', encabezado: 'Solicitante', render: (r) => <div><Link to={RUTAS.crearDetalleReserva(r.id)} className="font-semibold text-texto hover:text-primario-enlace hover:underline">{r.solicitante?.nombreCompleto}</Link><p className="text-sm text-texto-suave">{r.solicitante?.correo}</p></div> },
+    { clave: 'solicitante', encabezado: 'Solicitante', ordenable: true, render: (r) => <div><Link to={RUTAS.crearDetalleReserva(r.id)} className="font-semibold text-texto hover:text-primario-enlace hover:underline">{r.solicitante?.nombreCompleto}</Link><p className="text-sm text-texto-suave">{r.solicitante?.correo}</p></div> },
     { clave: 'ambiente', encabezado: 'Ambiente', render: (r) => <div><p className="font-semibold text-texto">{r.ambiente?.nombre}</p>{r.ambiente?.tipo && <p className="text-xs text-texto-suave mt-0.5">{r.ambiente.tipo}</p>}</div> },
-    { clave: 'fecha', encabezado: 'Fecha', claseCelda: 'whitespace-nowrap cifra-tabular', render: (r) => formatearFecha(r.fecha) },
+    { clave: 'fecha', encabezado: 'Fecha', ordenable: true, claseCelda: 'whitespace-nowrap cifra-tabular', render: (r) => formatearFecha(r.fecha) },
     { clave: 'horario', encabezado: 'Horario', claseCelda: 'whitespace-nowrap cifra-tabular', render: (r) => formatearRangoHorario(r.horaInicio, r.horaFin) },
     { clave: 'estado', encabezado: 'Estado', render: (r) => <Badge estado={r.estado} /> },
     { clave: 'acciones', encabezado: 'Acciones', render: (r) => <AccionesReserva reserva={r} enProceso={enProcesoAccion} alSolicitarAprobar={(item) => setConf({ reserva: item, nuevoEstado: ESTADOS_RESERVA.APROBADA })} alSolicitarRechazar={(item) => setConf({ reserva: item, nuevoEstado: ESTADOS_RESERVA.RECHAZADA })} alSolicitarCancelar={(item) => setConf({ reserva: item, nuevoEstado: ESTADOS_RESERVA.CANCELADA })} /> }

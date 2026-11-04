@@ -28,6 +28,7 @@ export default function Ambientes() {
   const [aEditar, setAEditar] = useState(null);
   const [aCambiarEstado, setACambiarEstado] = useState(null);
   const [mensajeExito, setMensajeExito] = useState('');
+  const conExito = (fn) => (m) => { if (typeof window !== 'undefined') { fn(); setMensajeExito(m); } };
 
   const puedeCrear = puede(PERMISOS.AMBIENTES_CREAR);
   const puedeEditar = puede(PERMISOS.AMBIENTES_EDITAR);
@@ -40,11 +41,11 @@ export default function Ambientes() {
   }, [ambientes, texto, tipo]);
 
   const columnas = [
-    { clave: 'nombre', encabezado: 'Nombre', render: (a) => <span className="font-semibold text-texto">{a.nombre}</span> },
+    { clave: 'nombre', encabezado: 'Nombre', ordenable: true, render: (a) => <span className="font-semibold text-texto">{a.nombre}</span> },
     { clave: 'tipo', encabezado: 'Tipo', claseCelda: 'whitespace-nowrap', render: (a) => <TipoAmbienteChip tipo={a.tipo} /> },
-    { clave: 'capacidad', encabezado: 'Capacidad', claseCelda: 'whitespace-nowrap cifra-tabular', render: (a) => `${a.capacidad} personas` },
-    { clave: 'ubicacion', encabezado: 'Ubicación', render: (a) => a.ubicacion },
-    { clave: 'responsable', encabezado: 'Responsable', render: (a) => a.responsableNombre || 'Sin asignar' },
+    { clave: 'capacidad', encabezado: 'Capacidad (personas)', ordenable: true, claseEncabezado: 'text-right', claseCelda: 'text-right whitespace-nowrap cifra-tabular', render: (a) => <span className="cifra-tabular">{a.capacidad}</span> },
+    { clave: 'ubicacion', encabezado: 'Ubicación', render: (a) => <span title={a.ubicacion} className="truncate max-w-[12rem] block">{a.ubicacion}</span> },
+    { clave: 'responsable', encabezado: 'Responsable', render: (a) => <span title={a.responsableNombre || 'Sin asignar'} className="truncate max-w-[12rem] block">{a.responsableNombre || 'Sin asignar'}</span> },
     { clave: 'estado', encabezado: 'Estado', render: (a) => <Badge estado={a.estado} /> },
     {
       clave: 'acciones', encabezado: 'Acciones', claseCelda: 'whitespace-nowrap',
@@ -68,9 +69,9 @@ export default function Ambientes() {
       {error && <AlertMessage variante="error" rol="alert" mensaje={error} enfocarAlAparecer />}
       <FiltrosAmbientes texto={texto} tipo={tipo} totalResultados={filtrados.length} alCambiarTexto={setTexto} alCambiarTipo={setTipo} alLimpiar={() => { setTexto(''); setTipo(''); }} />
       {cargando ? <Cargando /> : <TableList caption="Catálogo de ambientes universitarios" columnas={columnas} datos={filtrados} mensajeVacio="No se encontraron ambientes con esos filtros" descripcionVacia="Intente limpiar los criterios de búsqueda aplicados." />}
-      <FormularioAmbiente abierto={modalCrear} modo="crear" responsables={responsables} alRegistrar={registrarAmbiente} alCerrar={() => setModalCrear(false)} alExito={(msg) => { setModalCrear(false); setMensajeExito(msg); }} />
-      <FormularioAmbiente abierto={Boolean(aEditar)} modo="editar" ambienteAEditar={aEditar} responsables={responsables} alEditar={editarAmbiente} alCerrar={() => setAEditar(null)} alExito={(msg) => { setAEditar(null); setMensajeExito(msg); }} />
-      <ModalCambiarEstadoAmbiente abierto={Boolean(aCambiarEstado)} ambiente={aCambiarEstado} alCambiarEstado={cambiarEstadoAmbiente} alCerrar={() => setACambiarEstado(null)} alExito={(msg) => { setACambiarEstado(null); setMensajeExito(msg); }} />
+      <FormularioAmbiente abierto={modalCrear} modo="crear" responsables={responsables} alRegistrar={registrarAmbiente} alCerrar={() => setModalCrear(false)} alExito={conExito(() => setModalCrear(false))} />
+      <FormularioAmbiente abierto={Boolean(aEditar)} modo="editar" ambienteAEditar={aEditar} responsables={responsables} alEditar={editarAmbiente} alCerrar={() => setAEditar(null)} alExito={conExito(() => setAEditar(null))} />
+      <ModalCambiarEstadoAmbiente abierto={Boolean(aCambiarEstado)} ambiente={aCambiarEstado} alCambiarEstado={cambiarEstadoAmbiente} alCerrar={() => setACambiarEstado(null)} alExito={conExito(() => setACambiarEstado(null))} />
     </div>
   );
 }

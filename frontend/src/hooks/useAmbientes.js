@@ -27,7 +27,7 @@ export function useAmbientes() {
       promesas.push(listarResponsablesApi(signal));
     }
     const [respAmb, respUsr] = await Promise.all(promesas);
-    if (signal?.aborted || idPeticion !== peticionRef.current) return;
+    if (typeof window === 'undefined' || signal?.aborted || idPeticion !== peticionRef.current) return;
     const resAmb = interpretarRespuesta(respAmb);
     if (resAmb.ok) setAmbientes(Array.isArray(resAmb.datos) ? resAmb.datos : []);
     else setError(resAmb.errorGeneral);

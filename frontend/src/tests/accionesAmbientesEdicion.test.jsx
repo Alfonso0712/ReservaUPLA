@@ -23,7 +23,7 @@ it('E-39: editar ambiente con datos correctos actualiza catálogo y muestra aler
   await user.type(inputCap, '55');
   await user.click(screen.getByRole('button', { name: /guardar cambios/i }));
   expect(await screen.findByText(MENSAJES.AMBIENTE_ACTUALIZADO_EXITO)).toBeInTheDocument();
-  expect(await screen.findByText('55 personas')).toBeInTheDocument();
+  expect(await screen.findByText('55')).toBeInTheDocument();
 });
 
 it('E-40: editar con campos vacíos, capacidad inválida y nombre duplicado (409)', async () => {
