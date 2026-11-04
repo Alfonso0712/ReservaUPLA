@@ -17,18 +17,18 @@ export default function EncabezadoPagina({
   }, [titulo]);
 
   return (
-    <header className="mb-6 pb-4 border-b border-borde">
+    <header className="mb-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1
             ref={refTitulo}
             tabIndex={-1}
-            className="text-2xl font-bold text-texto outline-none"
+            className="text-[1.75rem] font-bold text-texto outline-none leading-tight"
           >
             {titulo}
           </h1>
           {descripcion && (
-            <p className="mt-1 text-base text-texto-suave ancho-lectura">
+            <p className="mt-1 text-[1rem] text-texto-suave ancho-lectura">
               {descripcion}
             </p>
           )}

@@ -1,16 +1,10 @@
-// WCAG 2.2 AA · Información no solo por color (ícono distinto + texto)
+// WCAG 2.2 AA · Información no solo por color (ícono distinto + texto) · E-52
 import Icono from './Icono';
-import { ESTADOS_RESERVA, ICONO_POR_ESTADO } from '../../constants/estados';
-
-const CLASES_POR_ESTADO = {
-  [ESTADOS_RESERVA.PENDIENTE]: 'bg-pendiente-fondo text-pendiente-texto border-pendiente-texto',
-  [ESTADOS_RESERVA.APROBADA]: 'bg-aprobada-fondo text-aprobada-texto border-aprobada-texto',
-  [ESTADOS_RESERVA.RECHAZADA]: 'bg-rechazada-fondo text-rechazada-texto border-rechazada-texto',
-  [ESTADOS_RESERVA.CANCELADA]: 'bg-cancelada-fondo text-cancelada-texto border-cancelada-texto'
-};
+import { ESTADOS_RESERVA, ICONO_POR_ESTADO, TONOS_ESTADO } from '../../constants/estados';
 
 export default function EstadoBadge({ estado }) {
-  const clases = CLASES_POR_ESTADO[estado] || CLASES_POR_ESTADO[ESTADOS_RESERVA.CANCELADA];
+  const tono = TONOS_ESTADO[estado] || TONOS_ESTADO[ESTADOS_RESERVA.CANCELADA];
+  const clases = tono?.badge || `${tono?.fondo} ${tono?.texto} ${tono?.borde}`;
   const nombreIcono = ICONO_POR_ESTADO[estado] || 'Info';
 
   return (

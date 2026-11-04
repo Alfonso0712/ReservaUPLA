@@ -1,4 +1,4 @@
-// Nielsen 3 · Nielsen 6 · Shneiderman 8 · Migas de pan orientativas · E-25 · E-37
+// Nielsen 3 · Shneiderman 8 · Migas de pan orientativas · E-25 · E-37
 import { Link, useLocation } from 'react-router-dom';
 import { RUTAS } from '../../constants/rutas';
 import Icono from '../ui/Icono';
@@ -24,6 +24,10 @@ export default function MigasDePan({ items = null }) {
   const { pathname } = useLocation();
   const lista = items && items.length > 0 ? items : construirMigasPorRuta(pathname);
 
+  if (lista.length <= 1) {
+    return null;
+  }
+
   return (
     <nav aria-label="Ruta de navegación" className="text-sm">
       <ol className="flex flex-wrap items-center gap-1.5 text-texto-suave">
@@ -33,7 +37,7 @@ export default function MigasDePan({ items = null }) {
             <li key={`${item.etiqueta}-${indice}`} className="inline-flex items-center gap-1.5">
               {indice > 0 && <Icono nombre="ChevronRight" className="w-4 h-4 text-texto-suave" />}
               {esUltimo || !item.ruta ? (
-                <span aria-current="page" className="font-semibold text-texto">
+                <span aria-current="page" className="font-normal text-texto">
                   {item.etiqueta}
                 </span>
               ) : (

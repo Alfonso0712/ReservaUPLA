@@ -15,6 +15,7 @@
   --lateral-fondo: #0A2540;
   --lateral-texto: #CBD5E1;
   --lateral-activo-fondo: #13395E;
+  --lateral-hover: rgb(255 255 255 / 0.08);
   --acento-sobre-oscuro: #38BDF8;
   --anillo-foco: #0B4DA2;
   --pendiente-texto: #6B3F00;
@@ -49,6 +50,7 @@
     --lateral-fondo: #08101F;
     --lateral-texto: #C9D6EE;
     --lateral-activo-fondo: #16305F;
+    --lateral-hover: rgb(255 255 255 / 0.08);
     --acento-sobre-oscuro: #5CC8FF;
     --anillo-foco: #7DB8FF;
     --pendiente-texto: #FFD58A;
@@ -80,6 +82,7 @@ html[data-tema="oscuro"] {
   --lateral-fondo: #08101F;
   --lateral-texto: #C9D6EE;
   --lateral-activo-fondo: #16305F;
+  --lateral-hover: rgb(255 255 255 / 0.08);
   --acento-sobre-oscuro: #5CC8FF;
   --anillo-foco: #7DB8FF;
   --pendiente-texto: #FFD58A;
@@ -92,4 +95,22 @@ html[data-tema="oscuro"] {
   --cancelada-fondo: #232C3F;
   --superposicion-marca-inicio: rgba(4, 12, 32, 0.90);
   --superposicion-marca-fin: rgba(4, 12, 32, 0.0);
+}
+
+/* Nielsen 4 · Shneiderman 1 · CardIndicador hover y chip primario en tema oscuro */
+html[data-tema="oscuro"] .card-indicador:hover {
+  border-color: var(--primario-enlace);
+  box-shadow: none;
+}
+html[data-tema="oscuro"] .chip-icono-primario {
+  color: var(--primario-enlace) !important;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-tema="claro"]) .card-indicador:hover {
+    border-color: var(--primario-enlace);
+    box-shadow: none;
+  }
+  html:not([data-tema="claro"]) .chip-icono-primario {
+    color: var(--primario-enlace) !important;
+  }
 }
