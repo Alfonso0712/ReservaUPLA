@@ -14,8 +14,8 @@ function construirMigasPorRuta(pathname) {
   if (pathname.startsWith(RUTAS.AMBIENTES)) {
     return [...base, { etiqueta: 'Ambientes' }];
   }
-  if (pathname === RUTAS.PANEL) {
-    return [...base, { etiqueta: 'Panel' }];
+  if (pathname === RUTAS.PANEL || pathname === '/') {
+    return [{ etiqueta: 'Inicio' }];
   }
   return [...base, { etiqueta: 'Página no encontrada' }];
 }

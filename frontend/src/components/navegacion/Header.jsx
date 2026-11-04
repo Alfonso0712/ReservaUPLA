@@ -6,6 +6,7 @@ import { RUTAS } from '../../constants/rutas';
 import ControlTamanoFuente from './ControlTamanoFuente';
 import ConmutadorTema from './ConmutadorTema';
 import MenuUsuario from './MenuUsuario';
+import MigasDePan from './MigasDePan';
 import Icono from '../ui/Icono';
 
 export default function Header({ menuAbierto = false, alAlternarMenu, botonMenuRef }) {
@@ -20,7 +21,7 @@ export default function Header({ menuAbierto = false, alAlternarMenu, botonMenuR
 
   return (
     <header aria-label="Cabecera principal" className="sticky top-0 z-30 h-16 px-4 sm:px-6 lg:px-8 border-b border-borde bg-superficie text-texto flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         <button
           ref={botonMenuRef}
           type="button"
@@ -32,6 +33,9 @@ export default function Header({ menuAbierto = false, alAlternarMenu, botonMenuR
         >
           <Icono nombre={menuAbierto ? 'X' : 'Menu'} className="w-5 h-5" />
         </button>
+        <div className="min-w-0">
+          <MigasDePan />
+        </div>
       </div>
 
       <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">

@@ -48,19 +48,21 @@ it('E-36: Cerrar sesión lleva a /ingresar con foco en primer campo y evita dobl
   expect(document.activeElement).toBe(inputCorreo);
 });
 
-it('E-37: orden DOM en cabecera, Sidebar limpio y migas una sola vez', async () => {
+it('E-37: orden DOM en cabecera, Sidebar limpio y migas en cabecera', async () => {
   guardarIdSesionMock('usr-admin');
   render(<MemoryRouter initialEntries={['/panel']}><App /></MemoryRouter>);
   const header = screen.getByRole('banner', { name: /cabecera/i });
+  expect(within(header).getByText('Inicio')).toBeInTheDocument();
   const ctrlFuente = within(header).getByRole('group', { name: /tamaño de fuente/i });
   const ctrlTema = within(header).getByRole('button', { name: /modo/i });
   const ctrlMenu = within(header).getByRole('button', { name: /menú de cuenta/i });
-  const siguiente = window.Node.DOCUMENT_POSITION_FOLLOWING;
-  expect(ctrlFuente.compareDocumentPosition(ctrlTema) & siguiente).toBeTruthy();
-  expect(ctrlTema.compareDocumentPosition(ctrlMenu) & siguiente).toBeTruthy();
+  const sig = window.Node.DOCUMENT_POSITION_FOLLOWING;
+  expect(ctrlFuente.compareDocumentPosition(ctrlTema) & sig).toBeTruthy();
+  expect(ctrlTema.compareDocumentPosition(ctrlMenu) & sig).toBeTruthy();
   const { container } = render(<MemoryRouter><Sidebar usuario={{ rol: 'Administrador' }} /></MemoryRouter>);
   expect(within(container).queryByRole('button', { name: /cerrar sesión/i })).not.toBeInTheDocument();
-  expect(within(container).queryByText('usr-admin')).not.toBeInTheDocument();
+  expect(within(container).queryByRole('button', { name: /nueva reserva/i })).not.toBeInTheDocument();
+  expect(within(container).queryByText(/resumen|catálogo/i)).not.toBeInTheDocument();
   expect(screen.getAllByRole('navigation', { name: /ruta de navegación/i })).toHaveLength(1);
 });
 
