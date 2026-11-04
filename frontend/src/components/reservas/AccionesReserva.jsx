@@ -24,7 +24,7 @@ export default function AccionesReserva({
   const puedeRechazar = esPend && acciones.includes('rechazar');
 
   return (
-    <div className="flex items-center justify-center gap-1">
+    <div className="flex items-center justify-start gap-1">
       <Button
         variante="neutral-info"
         tamano="sm"
