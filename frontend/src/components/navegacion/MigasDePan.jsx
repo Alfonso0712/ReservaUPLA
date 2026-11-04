@@ -24,7 +24,7 @@ export default function MigasDePan({ items = null }) {
   const { pathname } = useLocation();
   const lista = items && items.length > 0 ? items : construirMigasPorRuta(pathname);
 
-  if (lista.length <= 1) {
+  if (!lista.length) {
     return null;
   }
 

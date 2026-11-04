@@ -25,64 +25,37 @@ describe('FASE 1: Sistema de iconos y botones', () => {
   });
 
   it('3. Button soporta variantes requeridas y tamaños estándar sm (36px) y md (40px)', () => {
-    const { rerender } = render(
-      <Button variante="success" tamano="sm" icono={MAPA_ICONOS.APROBAR}>
-        Aprobar
-      </Button>
-    );
+    const { rerender } = render(<Button variante="success" tamano="sm" icono={MAPA_ICONOS.APROBAR}>Aprobar</Button>);
     let boton = screen.getByRole('button', { name: 'Aprobar' });
     expect(boton.className).toContain('h-9');
     expect(boton.className).toContain('bg-aprobada-texto');
 
-    rerender(
-      <Button variante="danger-outline" tamano="md" icono={MAPA_ICONOS.RECHAZAR}>
-        Rechazar
-      </Button>
-    );
+    rerender(<Button variante="danger-outline" tamano="md" icono={MAPA_ICONOS.RECHAZAR}>Rechazar</Button>);
     boton = screen.getByRole('button', { name: 'Rechazar' });
     expect(boton.className).toContain('h-10');
     expect(boton.className).toContain('border-rechazada-texto');
 
-    rerender(
-      <Button variante="secondary" tamano="sm" icono={MAPA_ICONOS.CANCELAR}>
-        Cancelar
-      </Button>
-    );
+    rerender(<Button variante="secondary" tamano="sm" icono={MAPA_ICONOS.CANCELAR}>Cancelar</Button>);
     boton = screen.getByRole('button', { name: 'Cancelar' });
     expect(boton.className).toContain('bg-superficie');
   });
 
   it('4. El icono se posiciona siempre antes del texto en orden DOM', () => {
-    const { container } = render(
-      <Button variante="primary" icono={MAPA_ICONOS.EDITAR}>
-        Editar ambiente
-      </Button>
-    );
+    const { container } = render(<Button variante="primary" icono={MAPA_ICONOS.EDITAR}>Editar ambiente</Button>);
     const boton = container.querySelector('button');
     const svg = boton.querySelector('svg');
     const span = boton.querySelector('span');
-
     expect(svg).toBeInTheDocument();
     expect(span).toBeInTheDocument();
     expect(boton.firstElementChild).toBe(svg);
   });
 
   it('5. Botón icon-only exige aria-label y expone tooltip accesible', () => {
-    render(
-      <Button
-        variante="icon-only"
-        tamano="sm"
-        icono={MAPA_ICONOS.EDITAR}
-        aria-label="Editar registro"
-        tooltip="Editar registro"
-      />
-    );
+    render(<Button variante="icon-only" tamano="sm" icono={MAPA_ICONOS.EDITAR} aria-label="Editar registro" tooltip="Editar registro" />);
     const boton = screen.getByRole('button', { name: 'Editar registro' });
     expect(boton).toBeInTheDocument();
     expect(boton.className).toContain('w-9');
     expect(boton.className).toContain('h-9');
-
-    const tooltip = screen.getByRole('tooltip');
-    expect(tooltip).toHaveTextContent('Editar registro');
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Editar registro');
   });
 });

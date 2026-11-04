@@ -1,4 +1,4 @@
-// Nielsen 3 · Norman · WCAG 2.2 AA · Modal de confirmación con resumen y foco seguro · E-19 · E-33
+// Nielsen 3 · Norman · WCAG 2.2 AA · Modal de confirmación con resumen y motivo opcional
 import { useId } from 'react';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import Button from './Button';
@@ -7,10 +7,13 @@ import { formatearRangoHorario } from '../../utils/formatearHora';
 
 export default function ModalConfirmacion({
   abierto, titulo, descripcion, reserva = null, esIrreversible = false,
+  requiereMotivo = false, motivo = '', alCambiarMotivo, errorMotivo = '',
   etiquetaConfirmar = 'Confirmar', varianteConfirmar = 'primario',
   enProceso = false, alConfirmar, alCancelar
 }) {
   const idTitulo = useId();
+  const idMotivo = useId();
+  const idError = useId();
   const contenedorRef = useTrampaFoco(abierto, () => {
     if (!enProceso) alCancelar?.();
   }, '[data-foco-seguro="true"]');
@@ -24,12 +27,35 @@ export default function ModalConfirmacion({
         {descripcion && <p className="text-base text-texto-suave mb-4">{descripcion}</p>}
 
         {reserva && (
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 mb-4 rounded-control border border-borde bg-superficie-2 text-sm">
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 mb-4 rounded-control border border-borde bg-superficie-2 text-sm">
             <div><dt className="font-semibold text-texto-suave">Ambiente</dt><dd className="text-texto font-medium">{reserva.ambiente?.nombre || '—'}</dd></div>
             <div><dt className="font-semibold text-texto-suave">Solicitante</dt><dd className="text-texto font-medium">{reserva.solicitante?.nombreCompleto || '—'}</dd></div>
             <div><dt className="font-semibold text-texto-suave">Fecha</dt><dd className="text-texto cifra-tabular">{formatearFecha(reserva.fecha)}</dd></div>
             <div><dt className="font-semibold text-texto-suave">Horario</dt><dd className="text-texto cifra-tabular">{formatearRangoHorario(reserva.horaInicio, reserva.horaFin)}</dd></div>
           </dl>
+        )}
+
+        {requiereMotivo && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor={idMotivo} className="block text-sm font-semibold text-texto">
+                Motivo <span className="text-rechazada-texto" aria-hidden="true">*</span>
+              </label>
+              <span className="text-xs text-texto-suave">{motivo.length}/200</span>
+            </div>
+            <textarea
+              id={idMotivo}
+              required
+              rows={3}
+              maxLength={200}
+              value={motivo}
+              onChange={(e) => alCambiarMotivo?.(e.target.value)}
+              aria-describedby={errorMotivo ? idError : undefined}
+              placeholder="Indique el motivo detallado de esta acción"
+              className={`w-full p-2.5 rounded-control border ${errorMotivo ? 'border-rechazada-texto' : 'border-borde-control'} bg-fondo text-texto text-sm outline-none focus:ring-2 focus:ring-anillo-foco`}
+            />
+            {errorMotivo && <p id={idError} className="mt-1 text-xs text-rechazada-texto">{errorMotivo}</p>}
+          </div>
         )}
 
         {esIrreversible && (
@@ -39,7 +65,7 @@ export default function ModalConfirmacion({
         )}
 
         <div className="flex flex-wrap items-center justify-end gap-3 pt-3 border-t border-borde">
-          <Button variante="secundario" data-foco-seguro="true" disabled={enProceso} onClick={alCancelar}>Volver</Button>
+          <Button variante="secondary" data-foco-seguro="true" disabled={enProceso} onClick={alCancelar}>Volver</Button>
           <Button variante={varianteConfirmar} enProceso={enProceso} onClick={alConfirmar}>{etiquetaConfirmar}</Button>
         </div>
       </div>

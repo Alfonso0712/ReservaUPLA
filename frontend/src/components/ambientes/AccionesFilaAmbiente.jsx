@@ -1,6 +1,7 @@
-// ISO 9241-110 · Acciones de fila en catálogo de ambientes unificadas
+// ISO 9241-110 · Jerarquía de acciones por fila en catálogo de ambientes
 import Button from '../ui/Button';
 import Icono from '../ui/Icono';
+import MenuAccionesFila from '../ui/MenuAccionesFila';
 import { MAPA_ICONOS } from '../../constants/iconos';
 
 export default function AccionesFilaAmbiente({
@@ -8,27 +9,33 @@ export default function AccionesFilaAmbiente({
   alEditar, alCambiarEstado, alReservar
 }) {
   if (puedeEditar || puedeCambiarEstado) {
+    const itemsMenu = [];
+    if (puedeCambiarEstado) {
+      itemsMenu.push({
+        etiqueta: 'Cambiar estado',
+        icono: MAPA_ICONOS.CAMBIAR_ESTADO,
+        onClick: () => alCambiarEstado(ambiente)
+      });
+    }
+
     return (
       <div className="flex items-center gap-2">
         {puedeEditar && (
           <Button
             variante="secondary"
             tamano="sm"
+            iconOnly
             icono={MAPA_ICONOS.EDITAR}
+            tooltip={`Editar ${ambiente.nombre}`}
+            aria-label="Editar"
             onClick={() => alEditar(ambiente)}
-          >
-            Editar
-          </Button>
+          />
         )}
-        {puedeCambiarEstado && (
-          <Button
-            variante="secondary"
-            tamano="sm"
-            icono={MAPA_ICONOS.CAMBIAR_ESTADO}
-            onClick={() => alCambiarEstado(ambiente)}
-          >
-            Cambiar estado
-          </Button>
+        {itemsMenu.length > 0 && (
+          <MenuAccionesFila
+            items={itemsMenu}
+            ariaLabel={`Más acciones para ${ambiente.nombre}`}
+          />
         )}
       </div>
     );
