@@ -43,7 +43,7 @@ export default function Ambientes() {
   const columnas = [
     { clave: 'nombre', encabezado: 'Nombre', ordenable: true, render: (a) => <span className="font-semibold text-texto">{a.nombre}</span> },
     { clave: 'tipo', encabezado: 'Tipo', claseCelda: 'whitespace-nowrap', render: (a) => <TipoAmbienteChip tipo={a.tipo} /> },
-    { clave: 'capacidad', encabezado: 'Capacidad (personas)', ordenable: true, claseEncabezado: 'text-right', claseCelda: 'text-right whitespace-nowrap cifra-tabular', render: (a) => <span className="cifra-tabular">{a.capacidad}</span> },
+    { clave: 'capacidad', encabezado: 'Capacidad', ordenable: true, claseEncabezado: 'text-right', claseCelda: 'text-right whitespace-nowrap cifra-tabular', render: (a) => <span className="cifra-tabular">{a.capacidad}</span> },
     { clave: 'ubicacion', encabezado: 'Ubicación', render: (a) => <span title={a.ubicacion} className="truncate max-w-[12rem] block">{a.ubicacion}</span> },
     { clave: 'responsable', encabezado: 'Responsable', render: (a) => <span title={a.responsableNombre || 'Sin asignar'} className="truncate max-w-[12rem] block">{a.responsableNombre || 'Sin asignar'}</span> },
     { clave: 'estado', encabezado: 'Estado', render: (a) => <Badge estado={a.estado} /> },

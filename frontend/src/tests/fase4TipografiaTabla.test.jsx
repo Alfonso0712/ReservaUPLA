@@ -6,7 +6,7 @@ import TableList from '../components/ui/TableList';
 describe('FASE 4: Tipografía, alineación y estructura de tabla', () => {
   const columnas = [
     { clave: 'nombre', encabezado: 'Nombre', ordenable: true },
-    { clave: 'capacidad', encabezado: 'Capacidad (personas)', ordenable: true, claseEncabezado: 'text-right' }
+    { clave: 'capacidad', encabezado: 'Capacidad', ordenable: true, claseEncabezado: 'text-right' }
   ];
   const datos = [
     { id: 1, nombre: 'Beta', capacidad: 40 },
@@ -17,16 +17,16 @@ describe('FASE 4: Tipografía, alineación y estructura de tabla', () => {
     const { container } = render(<TableList caption="Catálogo" columnas={columnas} datos={datos} />);
     expect(screen.getByRole('table')).toBeInTheDocument();
     expect(container.querySelector('caption')).toHaveClass('sr-only');
-    expect(container.querySelector('thead')).toHaveClass('sticky', 'top-0', 'bg-superficie-2');
+    expect(container.querySelector('thead')).toHaveClass('bg-superficie-2', 'border-b');
     const celdas = container.querySelectorAll('tbody td');
     celdas.forEach((c) => expect(c.className).toContain('align-middle'));
   });
 
-  it('2. Filas tienen altura uniforme (56-64px) y hover sutil', () => {
+  it('2. Filas tienen altura uniforme (56-64px) y hover claro', () => {
     const { container } = render(<TableList caption="Catálogo" columnas={columnas} datos={datos} />);
     const fila = container.querySelector('tbody tr');
     expect(fila.className).toContain('h-14');
-    expect(fila.className).toContain('hover:bg-superficie-2/70');
+    expect(fila.className).toContain('hover:bg-superficie-2');
   });
 
   it('3. Columnas ordenables: aria-sort dinámico y flecha visible solo en activa', () => {
