@@ -15,8 +15,8 @@ export default function CampoFormulario({
     <div className={`flex flex-col gap-1 w-full ${className}`.trim()}>
       <label htmlFor={id} className="text-sm font-semibold text-texto">
         <span>{etiqueta}</span>{' '}
-        <span className="text-xs font-normal text-texto-suave">
-          ({obligatorio ? 'obligatorio' : 'opcional'})
+        <span className="text-xs font-normal text-texto-suave" title={obligatorio ? 'Campo obligatorio' : 'Campo opcional'}>
+          {obligatorio ? '(*)' : '(opcional)'}
         </span>
       </label>
       {children}
