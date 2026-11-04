@@ -34,16 +34,16 @@ function ToastItem({ toast, alCerrar }) {
       onMouseLeave={reanudar}
       onFocus={pausar}
       onBlur={reanudar}
-      className="pointer-events-auto flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-control border border-borde bg-superficie shadow-lg text-sm text-texto max-w-sm w-full transition-all"
+      className="pointer-events-auto flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-control border border-borde bg-superficie shadow-lg text-sm text-texto max-w-md w-full transition-all"
     >
       <div className="flex items-center gap-2.5 min-w-0">
         <Icono
           nombre={esError ? 'CircleX' : 'CircleCheck'}
           className={`w-5 h-5 shrink-0 ${esError ? 'text-rechazada-texto' : 'text-aprobada-texto'}`}
         />
-        <span className="truncate">{mensaje}</span>
+        <span className="leading-snug">{mensaje}</span>
         {alDeshacer && (
-          <button type="button" onClick={alDeshacer} className="text-xs font-semibold text-primario-enlace hover:underline">
+          <button type="button" onClick={alDeshacer} className="text-xs font-semibold text-primario-enlace hover:underline shrink-0 ml-1">
             Deshacer
           </button>
         )}

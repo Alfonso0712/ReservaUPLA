@@ -42,7 +42,7 @@ export default function TableList({
               const activo = orden.clave === col.clave;
               const ariaSort = col.ordenable ? (activo ? (orden.dir === 'asc' ? 'ascending' : 'descending') : 'none') : undefined;
               return (
-                <th key={col.clave} scope="col" aria-sort={ariaSort} className={`px-4 py-3 text-[0.8125rem] font-semibold text-texto-suave align-middle ${col.claseEncabezado || ''}`.trim()}>
+                <th key={col.clave} scope="col" aria-sort={ariaSort} className={`${col.claseEncabezado?.includes('px-') ? '' : 'px-4'} py-3 text-[0.8125rem] font-semibold text-texto-suave align-middle ${col.claseEncabezado || ''}`.trim()}>
                   {col.ordenable ? (
                     <button type="button" onClick={() => alternar(col.clave)} className="inline-flex items-center gap-1.5 font-semibold text-texto-suave hover:text-texto focus:outline-none focus:underline" aria-label={`Ordenar por ${col.encabezado}`}>
                       <span>{col.encabezado}</span>{activo && <Icono nombre={orden.dir === 'asc' ? 'ArrowUp' : 'ArrowDown'} className="w-3.5 h-3.5 text-primario shrink-0" />}
@@ -58,7 +58,7 @@ export default function TableList({
             <tr key={`skel-${i}`} className="h-14 animate-pulse">{columnas.map((c, ci) => <td key={c.clave || ci} className="px-4 py-3"><div className="h-4 bg-superficie-2 rounded w-4/5" /></td>)}</tr>
           )) : datosVisibles.map((fila, indice) => (
             <tr key={fila[claveFila] ?? indice} className={`h-14 sm:h-16 hover:bg-superficie-2 transition-colors ${obtenerClaseFila ? obtenerClaseFila(fila) : ''}`.trim()}>
-              {columnas.map((col) => <td key={col.clave} data-label={col.encabezado} className={`px-4 py-3 text-[0.9375rem] text-texto align-middle ${col.claseCelda || ''}`.trim()}>{col.render ? col.render(fila) : fila[col.clave]}</td>)}
+              {columnas.map((col) => <td key={col.clave} data-label={col.encabezado} className={`${col.claseCelda?.includes('px-') ? '' : 'px-4'} py-3 text-[0.9375rem] text-texto align-middle ${col.claseCelda || ''}`.trim()}>{col.render ? col.render(fila) : fila[col.clave]}</td>)}
             </tr>
           ))}
         </tbody>

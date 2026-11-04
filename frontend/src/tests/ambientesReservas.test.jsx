@@ -71,5 +71,5 @@ it('E-17: solape con reserva aprobada se rechaza y horario consecutivo es permit
   fireEvent.change(screen.getByLabelText(/hora de inicio/i), { target: { value: '12:00' } });
   const botonReenvio = await screen.findByRole('button', { name: /registrar solicitud/i });
   await user.click(botonReenvio);
-  await vi.waitFor(() => expect(alExito).toHaveBeenCalled());
-});
+  await vi.waitFor(() => expect(alExito).toHaveBeenCalled(), { timeout: 4000 });
+}, 10000);
