@@ -1,6 +1,7 @@
-// Acciones de fila en catálogo de ambientes con íconos de color y tamaño armonizado · E-39..44
+// ISO 9241-110 · Acciones de fila en catálogo de ambientes unificadas
 import Button from '../ui/Button';
 import Icono from '../ui/Icono';
+import { MAPA_ICONOS } from '../../constants/iconos';
 
 export default function AccionesFilaAmbiente({
   ambiente, puedeEditar, puedeCambiarEstado, puedeCrearReserva,
@@ -8,17 +9,25 @@ export default function AccionesFilaAmbiente({
 }) {
   if (puedeEditar || puedeCambiarEstado) {
     return (
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-2">
         {puedeEditar && (
-          <Button variante="secundario" tamano="sm" className="border-borde hover:border-primario" onClick={() => alEditar(ambiente)}>
-            <Icono nombre="Pencil" className="w-3.5 h-3.5 text-primario" />
-            <span>Editar</span>
+          <Button
+            variante="secondary"
+            tamano="sm"
+            icono={MAPA_ICONOS.EDITAR}
+            onClick={() => alEditar(ambiente)}
+          >
+            Editar
           </Button>
         )}
         {puedeCambiarEstado && (
-          <Button variante="secundario" tamano="sm" className="border-borde hover:border-pendiente-texto" onClick={() => alCambiarEstado(ambiente)}>
-            <Icono nombre="ArrowRightLeft" className="w-3.5 h-3.5 text-pendiente-texto" />
-            <span>Cambiar estado</span>
+          <Button
+            variante="secondary"
+            tamano="sm"
+            icono={MAPA_ICONOS.CAMBIAR_ESTADO}
+            onClick={() => alCambiarEstado(ambiente)}
+          >
+            Cambiar estado
           </Button>
         )}
       </div>
@@ -28,15 +37,20 @@ export default function AccionesFilaAmbiente({
   if (puedeCrearReserva) {
     if (ambiente.estado === 'Disponible') {
       return (
-        <Button variante="secundario" tamano="sm" className="border-aprobada-texto text-aprobada-texto hover:bg-aprobada-fondo" aria-label={`Reservar ${ambiente.nombre}`} onClick={() => alReservar(ambiente.id)}>
-          <Icono nombre="CalendarPlus" className="w-3.5 h-3.5 text-aprobada-texto" />
-          <span>Reservar</span>
+        <Button
+          variante="success"
+          tamano="sm"
+          icono="CalendarPlus"
+          aria-label={`Reservar ${ambiente.nombre}`}
+          onClick={() => alReservar(ambiente.id)}
+        >
+          Reservar
         </Button>
       );
     }
     return (
       <span className="inline-flex items-center gap-1.5 text-xs text-texto-suave">
-        <Icono nombre="Ban" className="w-3.5 h-3.5 text-cancelada-texto" />
+        <Icono nombre={MAPA_ICONOS.CANCELAR} className="w-4 h-4 text-cancelada-texto" />
         <span>{`No disponible por ${ambiente.estado.toLowerCase()}`}</span>
       </span>
     );

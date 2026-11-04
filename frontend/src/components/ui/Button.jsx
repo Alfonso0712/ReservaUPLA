@@ -1,45 +1,64 @@
-// Norman · Nielsen 1 · Nielsen 5 · WCAG 2.2 AA · Botón accesible multivariante y tamaño · E-22
+// ISO 9241-110 · WCAG 2.2 AA · Botón accesible unificado con variantes y tooltip
 import { forwardRef } from 'react';
 import Icono from './Icono';
 
-const ESTILOS_VARIANTE = {
+const VARIANTES = {
+  primary: 'bg-primario text-sobre-primario hover:bg-primario-hover border border-transparent',
   primario: 'bg-primario text-sobre-primario hover:bg-primario-hover border border-transparent',
-  secundario: 'bg-superficie text-texto hover:bg-superficie-2 border border-borde-control',
-  peligro: 'bg-rechazada-fondo text-rechazada-texto hover:opacity-90 border border-rechazada-texto',
-  fantasma: 'bg-transparent text-texto hover:bg-superficie-2 border border-transparent'
-};
-
-const ESTILOS_TAMANO = {
-  md: 'min-h-control px-4 py-2 font-semibold text-sm sm:text-base gap-2',
-  sm: 'min-h-[32px] h-8 px-2.5 py-1 font-semibold text-xs gap-1.5'
+  success: 'bg-aprobada-texto text-sobre-primario hover:opacity-90 border border-transparent',
+  'danger-outline': 'bg-transparent text-rechazada-texto border border-rechazada-texto hover:bg-rechazada-fondo',
+  peligro: 'bg-transparent text-rechazada-texto border border-rechazada-texto hover:bg-rechazada-fondo',
+  secondary: 'bg-superficie text-texto border border-borde hover:bg-superficie-2 hover:border-borde-control',
+  secundario: 'bg-superficie text-texto border border-borde hover:bg-superficie-2 hover:border-borde-control',
+  ghost: 'bg-transparent text-texto border border-transparent hover:bg-superficie-2',
+  fantasma: 'bg-transparent text-texto border border-transparent hover:bg-superficie-2',
+  'icon-only': 'bg-superficie text-texto border border-borde hover:bg-superficie-2'
 };
 
 const Button = forwardRef(function Button(
   {
-    children, type, tipo, variante = 'primario', tamano = 'md', enProceso = false,
-    textoProceso = 'Validando…', icono = null, className = '', disabled = false, onClick, ...props
+    children, type, tipo, variante = 'primary', tamano = 'md', enProceso = false,
+    textoProceso = 'Cargando…', icono = null, className = '', disabled = false,
+    iconOnly = false, tooltip = '', 'aria-label': ariaLabelProp, onClick, ...props
   },
   ref
 ) {
+  const esIconOnly = iconOnly || variante === 'icon-only';
   const tipoBoton = tipo || type || 'button';
   const bloqueado = disabled || enProceso;
-  const estiloVariante = ESTILOS_VARIANTE[variante] || ESTILOS_VARIANTE.primario;
-  const estiloTamano = ESTILOS_TAMANO[tamano] || ESTILOS_TAMANO.md;
-  const tamanoIcono = tamano === 'sm' ? 'w-3.5 h-3.5' : 'w-4 h-4';
+  const clasesVariante = VARIANTES[variante] || VARIANTES.primary;
+  const tamanoIcono = tamano === 'sm' ? 'w-4 h-4' : 'w-[18px] h-[18px]';
+  const label = ariaLabelProp || tooltip || (typeof children === 'string' ? children : undefined);
 
-  const manejarClick = (evento) => {
-    if (bloqueado) { evento.preventDefault(); return; }
-    onClick?.(evento);
-  };
+  const clasesTamano = tamano === 'sm'
+    ? (esIconOnly ? 'h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-0' : 'h-9 min-h-[2.25rem] px-3 text-sm gap-2')
+    : (esIconOnly ? 'h-10 w-10 min-h-[2.5rem] min-w-[2.5rem] p-0' : 'h-10 min-h-[2.5rem] px-4 text-sm sm:text-base gap-2');
 
   return (
     <button
-      ref={ref} type={tipoBoton} disabled={bloqueado} aria-busy={enProceso || undefined} onClick={manejarClick}
-      className={`inline-flex items-center justify-center rounded-control whitespace-nowrap transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 hover:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none ${estiloTamano} ${estiloVariante} ${className}`.trim()}
+      ref={ref}
+      type={tipoBoton}
+      disabled={bloqueado}
+      aria-busy={enProceso || undefined}
+      aria-label={label}
+      onClick={(e) => { if (bloqueado) { e.preventDefault(); return; } onClick?.(e); }}
+      className={`group relative inline-flex items-center justify-center rounded-control whitespace-nowrap font-medium transition-colors cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-anillo-foco disabled:opacity-50 disabled:cursor-not-allowed ${clasesTamano} ${clasesVariante} ${className}`.trim()}
       {...props}
     >
-      {enProceso ? <Icono nombre="Loader2" className={`${tamanoIcono} animate-spin shrink-0`} /> : icono && <Icono nombre={icono} className={`${tamanoIcono} shrink-0`} />}
-      <span className="whitespace-nowrap">{enProceso ? textoProceso : children}</span>
+      {enProceso ? (
+        <Icono nombre="Loader2" className={`${tamanoIcono} animate-spin`} />
+      ) : icono ? (
+        <Icono nombre={icono} className={tamanoIcono} />
+      ) : null}
+      {!esIconOnly && <span>{enProceso ? textoProceso : children}</span>}
+      {esIconOnly && tooltip && (
+        <span
+          role="tooltip"
+          className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap rounded px-2 py-0.5 text-xs bg-lateral-fondo text-white shadow-sm opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"
+        >
+          {tooltip}
+        </span>
+      )}
     </button>
   );
 });

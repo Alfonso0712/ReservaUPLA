@@ -1,4 +1,4 @@
-// RF-07 · RN-05 · RN-06 · Acciones sobre reserva con íconos de color y tamaño armonizado · E-18..20 · E-47
+// RF-07 · RN-05 · RN-06 · ISO 9241-110 · Acciones sobre reserva unificadas
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ContextoAuth } from '../../hooks/useAuth';
@@ -7,6 +7,7 @@ import { accionesPermitidas } from '../../utils/accionesPermitidas';
 import { ESTADOS_FINALES } from '../../constants/estados';
 import { RUTAS } from '../../constants/rutas';
 import { formatearFecha } from '../../utils/formatearFecha';
+import { MAPA_ICONOS } from '../../constants/iconos';
 import Button from '../ui/Button';
 import Icono from '../ui/Icono';
 
@@ -22,34 +23,52 @@ export default function AccionesReserva({
   const contexto = `${reserva?.ambiente?.nombre || 'ambiente'} del ${formatearFecha(reserva?.fecha)}`;
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 min-w-[16rem]">
+    <div className="flex flex-wrap items-center gap-2">
       <Link
         to={RUTAS.crearDetalleReserva(reserva.id)}
         aria-label={`Ver detalle de reserva en ${contexto}`}
-        className="min-h-[32px] h-8 px-2.5 py-1 rounded-control border border-borde bg-superficie text-texto hover:bg-superficie-2 hover:border-borde-control text-xs font-semibold inline-flex items-center gap-1.5 no-underline transition-all"
+        className="h-9 min-h-[2.25rem] px-3 rounded-control border border-borde bg-superficie text-texto hover:bg-superficie-2 hover:border-borde-control text-sm font-medium inline-flex items-center gap-2 no-underline transition-colors focus-visible:ring-2 focus-visible:ring-anillo-foco outline-none"
       >
-        <Icono nombre="Eye" className="w-3.5 h-3.5 text-primario" />
+        <Icono nombre={MAPA_ICONOS.VER_DETALLE} className="w-4 h-4 text-primario" />
         <span>Ver detalle</span>
       </Link>
 
       {acciones.includes('aprobar') && (
-        <Button variante="secundario" tamano="sm" disabled={enProceso} aria-label={`Aprobar reserva en ${contexto}`} onClick={() => alSolicitarAprobar?.(reserva)} className="border-aprobada-texto text-aprobada-texto hover:bg-aprobada-fondo">
-          <Icono nombre="CircleCheck" className="w-3.5 h-3.5 text-aprobada-texto" />
-          <span>Aprobar</span>
+        <Button
+          variante="success"
+          tamano="sm"
+          disabled={enProceso}
+          icono={MAPA_ICONOS.APROBAR}
+          aria-label={`Aprobar reserva en ${contexto}`}
+          onClick={() => alSolicitarAprobar?.(reserva)}
+        >
+          Aprobar
         </Button>
       )}
 
       {acciones.includes('rechazar') && (
-        <Button variante="secundario" tamano="sm" disabled={enProceso} aria-label={`Rechazar reserva en ${contexto}`} onClick={() => alSolicitarRechazar?.(reserva)} className="border-rechazada-texto text-rechazada-texto hover:bg-rechazada-fondo">
-          <Icono nombre="CircleX" className="w-3.5 h-3.5 text-rechazada-texto" />
-          <span>Rechazar</span>
+        <Button
+          variante="danger-outline"
+          tamano="sm"
+          disabled={enProceso}
+          icono={MAPA_ICONOS.RECHAZAR}
+          aria-label={`Rechazar reserva en ${contexto}`}
+          onClick={() => alSolicitarRechazar?.(reserva)}
+        >
+          Rechazar
         </Button>
       )}
 
       {acciones.includes('cancelar') && (
-        <Button variante="secundario" tamano="sm" disabled={enProceso} aria-label={`Cancelar reserva en ${contexto}`} onClick={() => alSolicitarCancelar?.(reserva)} className="border-borde text-texto hover:border-rechazada-texto hover:text-rechazada-texto hover:bg-rechazada-fondo/20">
-          <Icono nombre="Ban" className="w-3.5 h-3.5 text-rechazada-texto" />
-          <span>Cancelar</span>
+        <Button
+          variante="secondary"
+          tamano="sm"
+          disabled={enProceso}
+          icono={MAPA_ICONOS.CANCELAR}
+          aria-label={`Cancelar reserva en ${contexto}`}
+          onClick={() => alSolicitarCancelar?.(reserva)}
+        >
+          Cancelar
         </Button>
       )}
 
