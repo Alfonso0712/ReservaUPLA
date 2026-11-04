@@ -1,4 +1,4 @@
-// Nielsen 5 · RV-12 · Contador de caracteres n / 500 (mínimo 10)
+// Nielsen 5 · RV-12 · Área de texto con contador "n / 500 (mínimo 10)" · E-05 · E-26
 import { forwardRef, useId } from 'react';
 import CampoFormulario, { construirDescribedBy } from './CampoFormulario';
 import { MIN_LONGITUD_MOTIVO, MAX_LONGITUD_MOTIVO } from '../../constants/reglas';
@@ -8,17 +8,23 @@ const TextAreaInput = forwardRef(function TextAreaInput(
   {
     id,
     name,
+    nombre,
     etiqueta = 'Motivo',
     obligatorio = true,
     ayuda = MENSAJES.AYUDA_MOTIVO,
     error = '',
-    value = '',
-    rows = 3,
+    value,
+    valor,
+    rows,
+    filas = 3,
     minLength = MIN_LONGITUD_MOTIVO,
     maxLength = MAX_LONGITUD_MOTIVO,
     onChange,
+    alCambiar,
     onBlur,
+    alSalir,
     readOnly = false,
+    soloLectura = false,
     placeholder = 'Ejemplo: Práctica calificada del curso Construcción de Software',
     className = '',
     ...props
@@ -26,32 +32,30 @@ const TextAreaInput = forwardRef(function TextAreaInput(
   ref
 ) {
   const idGenerado = useId();
-  const idFinal = id || `textarea-${name || idGenerado}`;
+  const nombreCampo = nombre || name || '';
+  const idFinal = id || `textarea-${nombreCampo || idGenerado}`;
+  const valorActual = valor !== undefined ? valor : (value ?? '');
+  const manejarCambio = alCambiar || onChange;
+  const manejarSalida = alSalir || onBlur;
+  const esSoloLectura = Boolean(soloLectura || readOnly);
+  const filasFinal = rows || filas || 3;
   const describedBy = construirDescribedBy(idFinal, ayuda, error);
   const tieneError = Boolean(error);
-  const longitudActual = typeof value === 'string' ? value.trim().length : 0;
+  const longitudActual = typeof valorActual === 'string' ? valorActual.trim().length : 0;
   const textoContador = `${longitudActual} / ${maxLength} (mínimo ${minLength})`;
 
   return (
-    <CampoFormulario
-      id={idFinal}
-      etiqueta={etiqueta}
-      obligatorio={obligatorio}
-      ayuda={ayuda}
-      error={error}
-      contador={textoContador}
-      className={className}
-    >
+    <CampoFormulario id={idFinal} etiqueta={etiqueta} obligatorio={obligatorio} ayuda={ayuda} error={error} contador={textoContador} className={className}>
       <textarea
         ref={ref}
         id={idFinal}
-        name={name}
-        rows={rows}
-        value={value}
+        name={nombreCampo}
+        rows={filasFinal}
+        value={valorActual}
         maxLength={maxLength}
-        onChange={readOnly ? undefined : onChange}
-        onBlur={onBlur}
-        readOnly={readOnly}
+        onChange={esSoloLectura ? undefined : manejarCambio}
+        onBlur={manejarSalida}
+        readOnly={esSoloLectura}
         placeholder={placeholder}
         aria-invalid={tieneError}
         aria-describedby={describedBy}
