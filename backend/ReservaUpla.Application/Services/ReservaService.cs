@@ -76,7 +76,7 @@ public class ReservaService : IReservaService
         if (_usuarioActual == null || !_usuarioActual.EstaAutenticado)
             throw new DomainException(Mensajes.AccesoDenegado);
 
-        return await CambiarEstadoAsync(id, nuevoEstado, _usuarioActual.Id, _usuarioActual.Rol, ct);
+        return await CambiarEstadoAsync(id, nuevoEstado, _usuarioActual, ct);
     }
 
     public Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
@@ -92,19 +92,15 @@ public class ReservaService : IReservaService
             var ambiente = await _ambienteRepo.ObtenerPorIdAsync(reserva.Ida_Reserva, ct)
                 ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
 
-            // RN-06: Si la reserva ya fue Rechazada o Cancelada, rechaza inmediatamente con 409
-            if (reserva.Est_Reserva == EstadoReserva.Rechazada || reserva.Est_Reserva == EstadoReserva.Cancelada)
-                throw new DomainException(Mensajes.ReservaRechazadaInmodificable, esConflicto: true);
+            ValidarVisibilidadPorAlcance(reserva, ambiente, actor);
 
-            // Alcance de visibilidad: si el recurso no es visible para el actor, responde 404 (no 403)
-            ValidarVisibilidadPorAlcance(reserva, ambiente, actor.Rol, actor.Id);
+            reserva.CambiarEstado(nuevoEstado, actor);
 
             if (nuevoEstado == EstadoReserva.Aprobada)
             {
                 await ValidarConflictoAprobacionAsync(reserva, ct);
             }
 
-            reserva.CambiarEstado(nuevoEstado, actor);
             await _reservaRepo.ActualizarAsync(reserva, ct);
             await _unitOfWork.GuardarCambiosAsync(ct);
 
@@ -124,14 +120,13 @@ public class ReservaService : IReservaService
 
     public async Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, CancellationToken ct = default)
     {
-        var rol = _usuarioActual?.Rol ?? RolUsuario.Solicitante;
-        var usuarioId = _usuarioActual?.Id ?? Guid.Empty;
-        return await ListarReservasAsync(filtro, usuarioId, rol, ct);
+        var actor = (IActor?)_usuarioActual ?? new ActorReserva(Guid.Empty, RolUsuario.Solicitante);
+        return await ListarReservasAsync(filtro, actor, ct);
     }
 
-    public async Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
+    public async Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, IActor actor, CancellationToken ct = default)
     {
-        var (solId, respId) = ResolverAlcanceVisibilidad(rol, usuarioId);
+        var (solId, respId) = ResolverAlcanceVisibilidad(actor);
         EstadoReserva? estEnum = !string.IsNullOrWhiteSpace(filtro.Estado) && Enum.TryParse<EstadoReserva>(filtro.Estado, true, out var e) ? e : null;
 
         var parametros = new ParametrosConsultaReservas(estEnum, filtro.AmbienteId, filtro.Fecha, solId, respId, filtro.Pagina, filtro.TamanoPagina);
@@ -149,14 +144,16 @@ public class ReservaService : IReservaService
         return new PaginadoDto<ReservaDto>(dtos, total, filtro.Pagina, filtro.TamanoPagina);
     }
 
+    public Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
+        => ListarReservasAsync(filtro, new ActorReserva(usuarioId, rol), ct);
+
     public async Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, CancellationToken ct = default)
     {
-        var rol = _usuarioActual?.Rol ?? RolUsuario.Solicitante;
-        var usuarioId = _usuarioActual?.Id ?? Guid.Empty;
-        return await ObtenerDetalleAsync(id, usuarioId, rol, ct);
+        var actor = (IActor?)_usuarioActual ?? new ActorReserva(Guid.Empty, RolUsuario.Solicitante);
+        return await ObtenerDetalleAsync(id, actor, ct);
     }
 
-    public async Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
+    public async Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, IActor actor, CancellationToken ct = default)
     {
         var reserva = await _reservaRepo.ObtenerPorIdAsync(id, ct)
             ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
@@ -164,8 +161,7 @@ public class ReservaService : IReservaService
         var ambiente = await _ambienteRepo.ObtenerPorIdAsync(reserva.Ida_Reserva, ct)
             ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
 
-        // Recurso no visible responde 404 para no revelar su existencia
-        ValidarVisibilidadPorAlcance(reserva, ambiente, rol, usuarioId);
+        ValidarVisibilidadPorAlcance(reserva, ambiente, actor);
 
         var solicitante = await _usuarioRepo.ObtenerPorIdAsync(reserva.Idu_Reserva, ct)
             ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
@@ -179,18 +175,20 @@ public class ReservaService : IReservaService
             ambiente.Tip_Ambiente.ToString());
     }
 
+    public Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
+        => ObtenerDetalleAsync(id, new ActorReserva(usuarioId, rol), ct);
+
     public async Task<DashboardEstadisticasDto> ObtenerDashboardAsync(CancellationToken ct = default)
     {
-        var rol = _usuarioActual?.Rol ?? RolUsuario.Solicitante;
-        var usuarioId = _usuarioActual?.Id ?? Guid.Empty;
-        return await ObtenerDashboardAsync(usuarioId, rol, ct);
+        var actor = (IActor?)_usuarioActual ?? new ActorReserva(Guid.Empty, RolUsuario.Solicitante);
+        return await ObtenerDashboardAsync(actor, ct);
     }
 
-    public async Task<DashboardEstadisticasDto> ObtenerDashboardAsync(Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
+    public async Task<DashboardEstadisticasDto> ObtenerDashboardAsync(IActor actor, CancellationToken ct = default)
     {
-        var (solId, respId) = ResolverAlcanceVisibilidad(rol, usuarioId);
+        var (solId, respId) = ResolverAlcanceVisibilidad(actor);
         var stats = await _reservaRepo.ObtenerEstadisticasDashboardAsync(solId, respId, ct);
-        var alcance = rol switch
+        var alcance = actor.Rol switch
         {
             RolUsuario.Solicitante => "propio",
             RolUsuario.Responsable => "asignado",
@@ -198,6 +196,12 @@ public class ReservaService : IReservaService
         };
         return stats with { Alcance = alcance };
     }
+
+    public Task<DashboardEstadisticasDto> ObtenerDashboardAsync(Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
+        => ObtenerDashboardAsync(new ActorReserva(usuarioId, rol), ct);
+
+    private static (Guid? SolicitanteId, Guid? ResponsableId) ResolverAlcanceVisibilidad(IActor actor)
+        => ResolverAlcanceVisibilidad(actor.Rol, actor.Id);
 
     private static (Guid? SolicitanteId, Guid? ResponsableId) ResolverAlcanceVisibilidad(RolUsuario rol, Guid usuarioId)
     {
@@ -208,6 +212,9 @@ public class ReservaService : IReservaService
             _ => (null, null)
         };
     }
+
+    private static void ValidarVisibilidadPorAlcance(Reserva reserva, Ambiente ambiente, IActor actor)
+        => ValidarVisibilidadPorAlcance(reserva, ambiente, actor.Rol, actor.Id);
 
     private static void ValidarVisibilidadPorAlcance(Reserva reserva, Ambiente ambiente, RolUsuario rol, Guid usuarioId)
     {

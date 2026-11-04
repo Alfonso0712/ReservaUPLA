@@ -203,4 +203,39 @@ public class ServicesAndConcurrencyTests
         Assert.Single(lista);
         Assert.Equal(reserva1.Id_Reserva, lista[0].Id_Reserva);
     }
+
+    [Fact]
+    public async Task ReservaService_CambiarEstado_ConIActor_Y_ProteccionInvarianteDominio()
+    {
+        var context = CrearContextoEnMemoria(nameof(ReservaService_CambiarEstado_ConIActor_Y_ProteccionInvarianteDominio));
+        var userRepo = new UsuarioRepository(context);
+        var ambRepo = new AmbienteRepository(context);
+        var resRepo = new ReservaRepository(context);
+        var uow = new UnitOfWork(context);
+        var service = new ReservaService(resRepo, ambRepo, userRepo, uow);
+
+        var admin = Usuario.Crear("Admin Solid", "admin.solid@upla.edu.pe", "Hash123", RolUsuario.Administrador);
+        var solic = Usuario.Crear("Solic Solid", "solic.solid@upla.edu.pe", "Hash123", RolUsuario.Solicitante);
+        var amb = Ambiente.Crear("Aula Magna", TipoAmbiente.Auditorio, 150, "Pabellon Central");
+        await context.Usuarios.AddRangeAsync(admin, solic);
+        await context.Ambientes.AddAsync(amb);
+        await context.SaveChangesAsync();
+
+        var manana = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1));
+        var creada = await service.CrearReservaAsync(
+            new CrearReservaDto(amb.Id_Ambiente, manana, new TimeSpan(14, 0, 0), new TimeSpan(16, 0, 0), "Evento Academico"),
+            solic.Id_Usuario);
+
+        // Rechazar usando la abstracción IActor
+        IActor actorAdmin = new ActorReserva(admin.Id_Usuario, RolUsuario.Administrador);
+        var rechazada = await service.CambiarEstadoAsync(creada.Id, EstadoReserva.Rechazada, actorAdmin);
+        Assert.Equal(EstadoReserva.Rechazada.ToString(), rechazada.Estado);
+
+        // La entidad de dominio debe impedir modificar una reserva rechazada (invariante encapsulada)
+        var ex = await Assert.ThrowsAsync<DomainException>(() =>
+            service.CambiarEstadoAsync(creada.Id, EstadoReserva.Aprobada, actorAdmin));
+
+        Assert.True(ex.EsConflicto);
+        Assert.Equal(Mensajes.ReservaRechazadaInmodificable, ex.Message);
+    }
 }

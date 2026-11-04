@@ -39,9 +39,11 @@ public interface IReservaService
     Task<ReservaDto> CrearReservaAsync(CrearReservaDto dto, Guid solicitanteId, CancellationToken ct = default);
     // RF-05 · E-32
     Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, CancellationToken ct = default);
+    Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, IActor actor, CancellationToken ct = default);
     Task<PaginadoDto<ReservaDto>> ListarReservasAsync(FiltroReservasDto filtro, Guid usuarioId, RolUsuario rol, CancellationToken ct = default);
     // RF-06
     Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, CancellationToken ct = default);
+    Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, IActor actor, CancellationToken ct = default);
     Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, Guid usuarioId, RolUsuario rol, CancellationToken ct = default);
     // RF-07 · RN-05 · RN-06 · RV-15 a RV-17 · E-18 a E-21 · E-31
     Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, CancellationToken ct = default);
@@ -49,5 +51,6 @@ public interface IReservaService
     Task<ReservaDto> CambiarEstadoAsync(Guid id, EstadoReserva nuevoEstado, Guid usuarioId, RolUsuario rol, CancellationToken ct = default);
     // RF-08 · E-30
     Task<DashboardEstadisticasDto> ObtenerDashboardAsync(CancellationToken ct = default);
+    Task<DashboardEstadisticasDto> ObtenerDashboardAsync(IActor actor, CancellationToken ct = default);
     Task<DashboardEstadisticasDto> ObtenerDashboardAsync(Guid usuarioId, RolUsuario rol, CancellationToken ct = default);
 }
