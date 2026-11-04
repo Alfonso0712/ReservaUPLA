@@ -22,7 +22,7 @@ export default function CardIndicador({
   const nombreAccesible = `${txtEtiqueta}: ${valor}. ${textoAccion}`;
 
   return (
-    <div className="card-indicador relative flex flex-col h-full p-5 rounded-tarjeta border border-borde bg-superficie hover:border-primario focus-within:ring-2 focus-within:ring-anillo-foco focus-within:border-primario transition-colors motion-reduce:transition-none">
+    <div className="card-indicador relative flex flex-col h-full px-5 py-[1.125rem] rounded-tarjeta border border-borde bg-superficie hover:border-primario focus-within:ring-2 focus-within:ring-anillo-foco focus-within:border-primario transition-colors motion-reduce:transition-none">
       <div className="flex items-center justify-between gap-3">
         <span className="text-[1rem] font-semibold text-texto-suave leading-snug">
           {txtEtiqueta}
@@ -35,23 +35,23 @@ export default function CardIndicador({
         </span>
       </div>
 
-      <div className="min-h-[3.5rem] flex items-center my-2">
+      <div className="min-h-[2.5rem] flex items-center mt-2.5">
         {esNumero ? (
-          <div className="text-[2.5rem] font-bold text-texto leading-[1.1] [font-variant-numeric:tabular-nums]">
+          <div className="text-[2.25rem] font-bold text-texto leading-none [font-variant-numeric:tabular-nums]">
             {valor}
           </div>
         ) : (
-          <div className="text-[1.375rem] font-bold text-texto leading-[1.25] line-clamp-2 break-words">
+          <div className="text-[1.3125rem] font-semibold text-texto leading-snug line-clamp-2 break-words">
             {valor}
           </div>
         )}
       </div>
 
-      <p className="text-[0.9375rem] text-texto-suave leading-normal">
+      <p className="mt-1 text-[0.9375rem] text-texto-suave leading-snug">
         {txtDescripcion}
       </p>
 
-      <div className="mt-auto pt-3 border-t border-borde">
+      <div className="mt-auto pt-2.5 border-t border-borde">
         {destino ? (
           <Link
             to={destino}

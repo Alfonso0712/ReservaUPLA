@@ -17,7 +17,7 @@ export default function EncabezadoPagina({
   }, [titulo]);
 
   return (
-    <header className="mb-6">
+    <header className="mb-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1

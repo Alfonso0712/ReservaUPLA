@@ -33,7 +33,7 @@ export default function Panel() {
   const listaTarjetas = indicadores ? construirIndicadores(indicadores, puede) : [];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <EncabezadoPagina
         titulo="Panel"
         descripcion="Resumen general del estado de las reservas y uso de ambientes académicos."
@@ -51,13 +51,13 @@ export default function Panel() {
               variante="advertencia"
               rol="status"
               mensaje={`Hay ${pendientes} ${pendientes === 1 ? 'reserva pendiente' : 'reservas pendientes'} de aprobación.`}
-              accion={<Link to={`${RUTAS.RESERVAS}?estado=Pendiente`} className="font-semibold text-primario-enlace">Revisar pendientes</Link>}
+              accion={<Link to={`${RUTAS.RESERVAS}?estado=Pendiente`} className="font-semibold text-primario-enlace hover:underline">Revisar pendientes</Link>}
             />
           )}
 
           <section aria-labelledby="titulo-indicadores-reservas">
             <h2 id="titulo-indicadores-reservas" className="sr-only">Indicadores de reservas</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 [grid-auto-rows:1fr]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 [grid-auto-rows:1fr]">
               {listaTarjetas.map((item) => (
                 <CardIndicador key={item.clave} {...item} />
               ))}

@@ -9,7 +9,7 @@ export default function PageContainer({ children, ancho = 'completo' }) {
       <main
         id="contenido-principal"
         tabIndex={-1}
-        className={`flex-1 w-full ${claseAncho} px-4 sm:px-6 lg:px-8 py-4 sm:py-5 outline-none`}
+        className={`flex-1 w-full ${claseAncho} px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 outline-none`}
       >
         {children}
       </main>

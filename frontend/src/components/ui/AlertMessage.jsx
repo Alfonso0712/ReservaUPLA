@@ -39,7 +39,7 @@ const AlertMessage = forwardRef(function AlertMessage(
       }}
       role={rolFinal}
       tabIndex={-1}
-      className={`flex flex-wrap items-start justify-between ${compacto ? 'gap-2 p-2 sm:p-2.5 text-xs sm:text-sm' : 'gap-3 p-4 text-base'} rounded-control border outline-none ${config.clases} ${className}`.trim()}
+      className={`flex flex-wrap items-start justify-between ${compacto ? 'gap-2 p-2 sm:p-2.5 text-xs sm:text-sm' : 'gap-3 py-3 px-4 text-base'} rounded-control border outline-none ${config.clases} ${className}`.trim()}
       {...props}
     >
       <div className={`flex items-start ${compacto ? 'gap-2' : 'gap-3'}`}>
