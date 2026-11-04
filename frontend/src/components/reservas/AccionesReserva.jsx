@@ -24,7 +24,7 @@ export default function AccionesReserva({
   const puedeRechazar = esPend && acciones.includes('rechazar');
 
   return (
-    <div className="flex items-center justify-start gap-1">
+    <div className="flex items-center justify-start gap-1 w-full">
       <Button
         variante="neutral-info"
         tamano="sm"
@@ -48,7 +48,7 @@ export default function AccionesReserva({
           <span className="inline sm:hidden xl:inline">Aprobar</span>
         </Button>
       ) : (
-        <div className="hidden sm:inline-flex items-center text-xs text-texto-suave select-none whitespace-nowrap pl-1" aria-hidden="true">
+        <div className="flex-1 hidden sm:inline-flex items-center justify-center text-xs text-texto-suave select-none whitespace-nowrap" aria-hidden="true">
           Sin acciones pendientes
         </div>
       )}
