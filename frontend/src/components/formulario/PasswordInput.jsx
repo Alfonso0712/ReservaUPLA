@@ -29,8 +29,8 @@ const PasswordInput = forwardRef(function PasswordInput(
   const tieneError = Boolean(error);
 
   const avisoMayus = bloqMayusActivo ? (
-    <p id={idAvisoMayus} role="status" className="flex items-center gap-1.5 text-sm font-medium text-pendiente-texto m-0">
-      <Icono nombre="AlertTriangle" className="w-4 h-4 shrink-0" />
+    <p id={idAvisoMayus} role="status" className="flex items-center gap-1.5 text-xs font-medium text-pendiente-texto m-0">
+      <Icono nombre="AlertTriangle" className="w-3.5 h-3.5 shrink-0" />
       <span>{MENSAJES.BLOQ_MAYUS_ACTIVO}</span>
     </p>
   ) : null;
@@ -54,11 +54,11 @@ const PasswordInput = forwardRef(function PasswordInput(
           enterKeyHint={enterKeyHint}
           aria-invalid={tieneError}
           aria-describedby={describedBy}
-          className={`w-full min-h-control pl-3.5 pr-12 py-2 rounded-control border bg-superficie text-texto text-base transition-colors read-only:bg-superficie-2 ${tieneError ? 'border-rechazada-texto' : 'border-borde-control'}`}
+          className={`w-full min-h-[38px] pl-3 pr-10 py-1.5 rounded-control border bg-superficie text-texto text-sm transition-colors read-only:bg-superficie-2 ${tieneError ? 'border-rechazada-texto' : 'border-borde-control'}`}
           {...props}
         />
-        <button type="button" aria-label={mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setMostrar((a) => !a)} className="absolute right-1 inline-flex items-center justify-center min-h-control min-w-control rounded-control text-texto-suave hover:text-texto bg-transparent border-0 cursor-pointer">
-          <Icono nombre={mostrar ? 'EyeOff' : 'Eye'} className="w-5 h-5" />
+        <button type="button" aria-label={mostrar ? 'Ocultar contraseña' : 'Mostrar contraseña'} onClick={() => setMostrar((a) => !a)} className="absolute right-1 inline-flex items-center justify-center h-7 w-7 rounded-control text-texto-suave hover:text-texto bg-transparent border-0 cursor-pointer">
+          <Icono nombre={mostrar ? 'EyeOff' : 'Eye'} className="w-4 h-4" />
         </button>
       </div>
     </CampoFormulario>

@@ -51,14 +51,14 @@ export default function Ingresar() {
   }, [form.camposRef]);
 
   return (
-    <div className="space-y-3">
+    <div className="w-full max-w-[330px] mx-auto space-y-3">
       <div className="flex flex-col items-center text-center">
         <div className="flex flex-col items-center gap-0.5 mb-1">
-          <LogoUpla variante="libre" className="w-10 h-10" />
+          <LogoUpla variante="libre" className="w-9 h-9" />
           <span className="text-xs font-bold tracking-wider text-primario">UPLA</span>
         </div>
-        <h1 className="text-xl sm:text-2xl font-bold text-texto">Iniciar sesión</h1>
-        <p className="mt-0.5 text-sm text-texto-suave">Ingrese sus credenciales para continuar.</p>
+        <h1 className="text-xl font-bold text-texto">Iniciar sesión</h1>
+        <p className="mt-0.5 text-xs text-texto-suave">Ingrese sus credenciales para continuar.</p>
       </div>
       <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
       {form.errorGeneral && <AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer={enfocarAlerta} />}

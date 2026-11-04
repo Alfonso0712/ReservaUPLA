@@ -8,7 +8,7 @@ export default function ControlTamanoFuente({ tamanoActual, alCambiar, mimetizad
   const estiloCaja = mimetizado ? 'border-white/20 bg-white/10 backdrop-blur-md' : 'border-borde bg-superficie';
 
   return (
-    <div role="group" aria-label="Tamaño de fuente" className={`inline-flex items-center gap-1 p-1 rounded-control border ${estiloCaja}`}>
+    <div role="group" aria-label="Tamaño de fuente" className={`h-[38px] inline-flex items-center gap-0.5 p-0.5 rounded-control border ${estiloCaja}`}>
       {ESCALAS_FUENTE.map((escala) => {
         const activo = actual === escala.porcentaje;
         const estiloActivo = mimetizado ? 'bg-white text-primario shadow-sm' : 'bg-primario text-sobre-primario';
@@ -20,7 +20,7 @@ export default function ControlTamanoFuente({ tamanoActual, alCambiar, mimetizad
             aria-label={escala.descripcion}
             aria-pressed={activo}
             onClick={() => manejarCambio?.(escala.porcentaje)}
-            className={`min-h-control min-w-control px-2.5 rounded-control text-sm font-semibold transition-colors cursor-pointer ${activo ? estiloActivo : estiloInactivo}`}
+            className={`h-full px-2 rounded-control text-xs font-semibold transition-colors cursor-pointer inline-flex items-center justify-center ${activo ? estiloActivo : estiloInactivo}`}
           >
             {escala.etiqueta}
           </button>

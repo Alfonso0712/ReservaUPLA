@@ -4,30 +4,10 @@ import CampoFormulario, { construirDescribedBy } from './CampoFormulario';
 
 const TextInput = forwardRef(function TextInput(
   {
-    id,
-    name,
-    nombre,
-    etiqueta,
-    obligatorio = true,
-    ayuda = 'Ingrese el dato solicitado',
-    error = '',
-    type,
-    tipo,
-    value,
-    valor,
-    onChange,
-    alCambiar,
-    onBlur,
-    alSalir,
-    readOnly = false,
-    soloLectura = false,
-    placeholder = '',
-    autoComplete,
-    inputMode,
-    enterKeyHint,
-    maxLength,
-    className = '',
-    ...props
+    id, name, nombre, etiqueta, obligatorio = true, ayuda = '', error = '',
+    type, tipo, value, valor, onChange, alCambiar, onBlur, alSalir,
+    readOnly = false, soloLectura = false, placeholder = '', autoComplete,
+    inputMode, enterKeyHint, maxLength, className = '', ...props
   },
   ref
 ) {
@@ -60,7 +40,7 @@ const TextInput = forwardRef(function TextInput(
         maxLength={maxLength}
         aria-invalid={tieneError}
         aria-describedby={describedBy}
-        className={`w-full min-h-control px-3.5 py-2 rounded-control border bg-superficie text-texto text-base transition-colors read-only:bg-superficie-2 read-only:cursor-not-allowed ${
+        className={`w-full min-h-[38px] px-3 py-1.5 rounded-control border bg-superficie text-texto text-sm transition-colors read-only:bg-superficie-2 read-only:cursor-not-allowed ${
           tieneError ? 'border-rechazada-texto' : 'border-borde-control'
         }`}
         {...props}

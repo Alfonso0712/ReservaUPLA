@@ -25,8 +25,8 @@
   --rechazada-fondo: #FDE2E2;
   --cancelada-texto: #3A465C;
   --cancelada-fondo: #E6EBF3;
-  --superposicion-marca-inicio: rgba(6, 20, 50, 0.70);
-  --superposicion-marca-fin: rgba(6, 20, 50, 0.20);
+  --superposicion-marca-inicio: rgba(5, 18, 48, 0.85);
+  --superposicion-marca-fin: rgba(5, 18, 48, 0.0);
   --radio-control: 0.5rem;
   --radio-tarjeta: 0.75rem;
   --alto-control: 2.75rem;
@@ -59,8 +59,8 @@
     --rechazada-fondo: #3C1517;
     --cancelada-texto: #C9D3E8;
     --cancelada-fondo: #232C3F;
-    --superposicion-marca-inicio: rgba(4, 12, 32, 0.80);
-    --superposicion-marca-fin: rgba(4, 12, 32, 0.30);
+    --superposicion-marca-inicio: rgba(4, 12, 32, 0.90);
+    --superposicion-marca-fin: rgba(4, 12, 32, 0.0);
   }
 }
 
@@ -90,6 +90,6 @@ html[data-tema="oscuro"] {
   --rechazada-fondo: #3C1517;
   --cancelada-texto: #C9D3E8;
   --cancelada-fondo: #232C3F;
-  --superposicion-marca-inicio: rgba(4, 12, 32, 0.80);
-  --superposicion-marca-fin: rgba(4, 12, 32, 0.30);
+  --superposicion-marca-inicio: rgba(4, 12, 32, 0.90);
+  --superposicion-marca-fin: rgba(4, 12, 32, 0.0);
 }
