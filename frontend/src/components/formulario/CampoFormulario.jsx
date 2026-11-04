@@ -8,51 +8,24 @@ export function construirDescribedBy(id, ayuda, error, extraId = '') {
 }
 
 export default function CampoFormulario({
-  id,
-  etiqueta,
-  obligatorio = true,
-  ayuda = '',
-  error = '',
-  contador = null,
-  avisoExtra = null,
-  children,
-  className = ''
+  id, etiqueta, obligatorio = true, ayuda = '', error = '',
+  contador = null, avisoExtra = null, children, className = ''
 }) {
   return (
-    <div className={`flex flex-col gap-1.5 w-full ${className}`.trim()}>
-      <label htmlFor={id} className="text-base font-semibold text-texto">
+    <div className={`flex flex-col gap-1 w-full ${className}`.trim()}>
+      <label htmlFor={id} className="text-sm font-semibold text-texto">
         <span>{etiqueta}</span>{' '}
-        <span className="text-sm font-normal text-texto-suave">
+        <span className="text-xs font-normal text-texto-suave">
           ({obligatorio ? 'obligatorio' : 'opcional'})
         </span>
       </label>
-
       {children}
-
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        {ayuda && (
-          <span id={`${id}-ayuda`} className="text-sm text-texto-suave">
-            {ayuda}
-          </span>
-        )}
-        {contador && (
-          <span className="text-sm text-texto-suave cifra-tabular ml-auto">
-            {contador}
-          </span>
-        )}
+      <div className="flex flex-wrap items-center justify-between gap-1.5">
+        {ayuda && <span id={`${id}-ayuda`} className="text-xs text-texto-suave">{ayuda}</span>}
+        {contador && <span className="text-xs text-texto-suave cifra-tabular ml-auto">{contador}</span>}
       </div>
-
       {avisoExtra}
-
-      {error && (
-        <p
-          id={`${id}-error`}
-          role="alert"
-          className="text-sm font-semibold text-rechazada-texto m-0"
-        >
-          {error}
-        </p>
-      )}
+      {error && <p id={`${id}-error`} role="alert" className="text-xs font-semibold text-rechazada-texto m-0">{error}</p>}
     </div>
   );
 }

@@ -1,22 +1,21 @@
-/* Nielsen 4 · Shneiderman 1 · WCAG 2.2 AA · E-29 */
-:root,
-html[data-tema="claro"] {
-  --fondo: #F4F7FC;
+/* Shneiderman 2 · WCAG 2.2 AA · Tokens semánticos de color, tipografía y espacio · E-28 */
+:root {
+  --fondo: #F4F6FA;
   --superficie: #FFFFFF;
-  --superficie-2: #EAF0FA;
-  --borde: #D5DEEE;
-  --borde-control: #6B7C99;
-  --texto: #0F1B33;
-  --texto-suave: #4A5A78;
-  --primario: #0B4DA2;
-  --primario-hover: #083C80;
+  --superficie-2: #EBF0F8;
+  --borde: #D0D8E8;
+  --borde-control: #8C9BB5;
+  --texto: #0F172A;
+  --texto-suave: #4A5568;
+  --primario: #0A3D91;
+  --primario-hover: #072C6A;
   --primario-enlace: #0B4DA2;
-  --primario-suave: #E3EDFB;
+  --primario-suave: #E5EEF9;
   --sobre-primario: #FFFFFF;
-  --lateral-fondo: #0A2A66;
-  --lateral-texto: #D3DEF3;
-  --lateral-activo-fondo: #1558B8;
-  --acento-sobre-oscuro: #5CC8FF;
+  --lateral-fondo: #0A2540;
+  --lateral-texto: #CBD5E1;
+  --lateral-activo-fondo: #13395E;
+  --acento-sobre-oscuro: #38BDF8;
   --anillo-foco: #0B4DA2;
   --pendiente-texto: #6B3F00;
   --pendiente-fondo: #FFF1CC;
@@ -26,8 +25,8 @@ html[data-tema="claro"] {
   --rechazada-fondo: #FDE2E2;
   --cancelada-texto: #3A465C;
   --cancelada-fondo: #E6EBF3;
-  --superposicion-marca-inicio: rgba(10, 42, 102, 0.90);
-  --superposicion-marca-fin: rgba(8, 16, 31, 0.86);
+  --superposicion-marca-inicio: rgba(6, 20, 50, 0.70);
+  --superposicion-marca-fin: rgba(6, 20, 50, 0.20);
   --radio-control: 0.5rem;
   --radio-tarjeta: 0.75rem;
   --alto-control: 2.75rem;
@@ -60,8 +59,8 @@ html[data-tema="claro"] {
     --rechazada-fondo: #3C1517;
     --cancelada-texto: #C9D3E8;
     --cancelada-fondo: #232C3F;
-    --superposicion-marca-inicio: rgba(8, 16, 31, 0.92);
-    --superposicion-marca-fin: rgba(11, 18, 32, 0.88);
+    --superposicion-marca-inicio: rgba(4, 12, 32, 0.80);
+    --superposicion-marca-fin: rgba(4, 12, 32, 0.30);
   }
 }
 
@@ -91,6 +90,6 @@ html[data-tema="oscuro"] {
   --rechazada-fondo: #3C1517;
   --cancelada-texto: #C9D3E8;
   --cancelada-fondo: #232C3F;
-  --superposicion-marca-inicio: rgba(8, 16, 31, 0.92);
-  --superposicion-marca-fin: rgba(11, 18, 32, 0.88);
+  --superposicion-marca-inicio: rgba(4, 12, 32, 0.80);
+  --superposicion-marca-fin: rgba(4, 12, 32, 0.30);
 }
