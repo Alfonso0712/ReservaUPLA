@@ -32,8 +32,8 @@ export default function LayoutAutenticacion({ children }) {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <ControlTamanoFuente />
-              <ConmutadorTema />
+              <ControlTamanoFuente mimetizado />
+              <ConmutadorTema mimetizado />
             </div>
           </div>
 
