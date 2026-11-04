@@ -1,7 +1,7 @@
 // Nielsen 9 · Shneiderman 3 · ISO 9241-11 · RV-01..16 · E-01..24
 export const MENSAJES = {
   CORREO_OBLIGATORIO: 'Ingrese su correo institucional.',
-  CORREO_FORMATO_INVALIDO: 'Ingrese un correo institucional válido con el dominio @upla.edu.pe.',
+  CORREO_FORMATO_INVALIDO: 'Ingrese un correo institucional válido.',
   CORREO_LONGITUD_MAXIMA: 'El correo no puede superar los 254 caracteres. Recórtelo e intente de nuevo.',
   CORREO_DUPLICADO: 'Ya existe una cuenta con ese correo institucional. Inicie sesión o utilice otro correo.',
   NOMBRE_OBLIGATORIO: 'Ingrese su nombre completo (mínimo 3 caracteres).',
