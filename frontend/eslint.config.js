@@ -19,6 +19,17 @@ export default [
     }
   },
   {
+    files: ['scripts/**/*.js', '*.config.js'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        process: 'readonly',
+        console: 'readonly'
+      }
+    }
+  },
+  {
     files: ['src/**/*.{js,jsx}'],
     plugins: {
       'react-hooks': reactHooks,
