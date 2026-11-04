@@ -40,7 +40,7 @@ const TextInput = forwardRef(function TextInput(
         maxLength={maxLength}
         aria-invalid={tieneError}
         aria-describedby={describedBy}
-        className={`w-full min-h-[38px] px-3 py-1.5 rounded-control border bg-superficie text-texto text-sm transition-colors read-only:bg-superficie-2 read-only:cursor-not-allowed ${
+        className={`w-full min-h-[42px] px-3.5 py-2 rounded-control border bg-superficie text-texto text-sm sm:text-base transition-colors read-only:bg-superficie-2 read-only:cursor-not-allowed ${
           tieneError ? 'border-rechazada-texto' : 'border-borde-control'
         }`}
         {...props}
