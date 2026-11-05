@@ -60,7 +60,7 @@ const Button = forwardRef(function Button(
       {tooltip && (
         <span
           role="tooltip"
-          className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap rounded-sm px-2 py-0.5 text-xs bg-lateral-fondo text-white shadow-sm opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"
+          className="pointer-events-none hidden group-hover:block group-focus-visible:block absolute -top-8 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap rounded-sm px-2 py-0.5 text-xs bg-lateral-fondo text-white shadow-sm transition-opacity"
         >
           {tooltip}
         </span>
