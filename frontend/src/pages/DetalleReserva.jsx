@@ -51,7 +51,7 @@ export default function DetalleReserva() {
   const tieneAcciones = acciones.includes('aprobar') || acciones.includes('cancelar');
 
   return (
-    <div className={`space-y-4 max-w-[1440px] mx-auto w-full ${tieneAcciones ? 'pb-24 sm:pb-0' : ''}`}>
+    <div className={`space-y-3 max-w-[1440px] mx-auto w-full ${tieneAcciones ? 'pb-20 sm:pb-0' : ''}`}>
       <EncabezadoDetalle search={loc.state?.search || ''} reservaId={reserva?.id} />
       {error && (
         <div className="flex items-center justify-between p-4 rounded-control bg-rechazada-fondo text-rechazada-texto border border-rechazada-texto text-sm">
@@ -62,7 +62,7 @@ export default function DetalleReserva() {
       {cargando ? <SkeletonDetalle /> : !reserva ? (
         <EstadoVacio titulo="Reserva no encontrada" descripcion="La reserva solicitada no existe o fue eliminada." accion={<Button variante="primary" onClick={() => navegar(`${RUTAS.RESERVAS}${loc.state?.search || ''}`)}>Volver a reservas</Button>} />
       ) : (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 xl:gap-5 items-start">
           <div className="xl:col-span-2"><InfoPrincipalDetalle reserva={reserva} /></div>
           <div className="xl:col-span-1 xl:sticky xl:top-6"><ColumnaDecision reserva={reserva} puedeAprobar={acciones.includes('aprobar')} puedeCancelar={acciones.includes('cancelar')} conflicto={conflicto} enProceso={accHook.enProceso} alAprobar={accHook.solicitarAprobar} alRechazar={accHook.solicitarRechazar} alCancelar={accHook.solicitarCancelar} /></div>
           <BarraInferiorMovil reserva={reserva} puedeAprobar={acciones.includes('aprobar')} puedeCancelar={acciones.includes('cancelar')} enProceso={accHook.enProceso} alAprobar={accHook.solicitarAprobar} alRechazar={accHook.solicitarRechazar} alCancelar={accHook.solicitarCancelar} />

@@ -16,12 +16,12 @@ export default function ColumnaDecision({
   const motFinal = reserva.motivoEstadoFinal || reserva.motivoCancelacion || reserva.motivoRechazo;
 
   return (
-    <aside aria-label="Decisión sobre la solicitud" className="p-6 rounded-tarjeta border border-borde bg-superficie shadow-sm space-y-4">
-      <div className="flex items-center justify-between gap-3 pb-3 border-b border-borde">
-        <h3 className="text-lg font-semibold text-texto">Decisión</h3>
+    <aside aria-label="Decisión sobre la solicitud" className="p-4 sm:p-5 rounded-tarjeta border border-borde bg-superficie shadow-sm space-y-3">
+      <div className="flex items-center justify-between gap-3 pb-2.5 border-b border-borde">
+        <h3 className="text-base sm:text-lg font-semibold text-texto">Decisión</h3>
         <EstadoBadge estado={reserva.estado} />
       </div>
-      <p className="text-sm text-texto-suave leading-relaxed">{textoEstado}</p>
+      <p className="text-xs sm:text-sm text-texto-suave leading-snug">{textoEstado}</p>
       {esPend && (
         <div>
           {conflicto ? (
