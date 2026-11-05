@@ -38,7 +38,7 @@ export default function RegistroSolicitante() {
   });
 
   useEffect(() => {
-    document.title = 'Registro de solicitante | ReservaUPLA';
+    document.title = 'ReservaUPLA';
     if (!registrado) form.camposRef.current.nombreCompleto?.focus();
   }, [registrado, form.camposRef]);
 

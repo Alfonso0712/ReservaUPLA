@@ -46,7 +46,7 @@ export default function Ingresar() {
   });
 
   useEffect(() => {
-    document.title = 'Iniciar sesión | ReservaUPLA';
+    document.title = 'ReservaUPLA';
     form.camposRef.current.correo?.focus();
   }, [form.camposRef]);
 

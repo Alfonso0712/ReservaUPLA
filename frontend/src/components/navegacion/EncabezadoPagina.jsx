@@ -12,7 +12,7 @@ export default function EncabezadoPagina({
 
   useEffect(() => {
     if (titulo) {
-      document.title = `${titulo} | ReservaUPLA`;
+      document.title = 'ReservaUPLA';
     }
   }, [titulo]);
 
