@@ -1,31 +1,26 @@
-// Cabecera discreta con enlace para volver y foco en h1 · Cambio 1
+// Cabecera normativa con título, descripción y acción para volver · WCAG 2.2 AA
 import { Link } from 'react-router-dom';
-import { useFocoAlMontar } from '../../hooks/useFocoAlMontar';
+import EncabezadoPagina from '../navegacion/EncabezadoPagina';
 import Icono from '../ui/Icono';
 import { RUTAS } from '../../constants/rutas';
 
 export default function EncabezadoDetalle({ search = '', reservaId = null }) {
-  const refTitulo = useFocoAlMontar(true, 'Detalle de reserva');
+  const accionVolver = (
+    <Link
+      to={`${RUTAS.RESERVAS}${search}`}
+      state={reservaId ? { enfocarId: reservaId } : undefined}
+      className="min-h-control px-3.5 py-2 rounded-control border border-borde bg-superficie hover:bg-superficie-2 text-texto font-medium text-sm inline-flex items-center gap-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-anillo-foco outline-none"
+    >
+      <Icono nombre="ArrowLeft" className="w-4 h-4 shrink-0" />
+      <span>Volver a reservas</span>
+    </Link>
+  );
 
   return (
-    <header className="mb-4 space-y-1.5">
-      <div>
-        <Link
-          to={`${RUTAS.RESERVAS}${search}`}
-          state={reservaId ? { enfocarId: reservaId } : undefined}
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-texto-suave hover:text-primario-enlace transition-colors focus-visible:ring-2 focus-visible:ring-anillo-foco rounded-control outline-none py-1"
-        >
-          <Icono nombre="ArrowLeft" className="w-4 h-4 shrink-0" />
-          <span>Volver a reservas</span>
-        </Link>
-      </div>
-      <h1
-        ref={refTitulo}
-        tabIndex={-1}
-        className="text-2xl sm:text-3xl font-bold text-texto tracking-tight outline-none"
-      >
-        Detalle de reserva
-      </h1>
-    </header>
+    <EncabezadoPagina
+      titulo="Detalle de reserva"
+      descripcion="Información completa de la solicitud, estado actual y acciones permitidas."
+      accionPrimaria={accionVolver}
+    />
   );
 }
