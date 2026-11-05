@@ -57,7 +57,7 @@ const AlertMessage = forwardRef(function AlertMessage(
       <div className="flex items-center gap-2 shrink-0 self-center">
         {accion}
         {alCerrar && (
-          <button type="button" onClick={alCerrar} aria-label="Cerrar notificación" className="p-1 rounded text-texto-suave hover:text-texto">
+          <button type="button" onClick={alCerrar} aria-label="Cerrar notificación" className="p-1 rounded-full text-texto-suave hover:text-texto">
             <Icono nombre="X" className="w-4 h-4" />
           </button>
         )}

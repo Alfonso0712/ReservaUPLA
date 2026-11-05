@@ -29,7 +29,7 @@ export default function ModalConfirmacion({
         <div className={`flex items-center justify-between gap-3 ${mostrarBotonCerrar ? 'pb-3 mb-4 border-b border-borde' : 'mb-2'}`}>
           <h2 id={idTitulo} className="text-xl font-semibold text-texto">{titulo}</h2>
           {mostrarBotonCerrar && (
-            <button type="button" onClick={alCancelar} disabled={enProceso} aria-label={`Cerrar ventana de ${titulo.toLowerCase()}`} className="min-h-control min-w-control p-2 inline-flex items-center justify-center rounded-control text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button>
+            <button type="button" onClick={alCancelar} disabled={enProceso} aria-label={`Cerrar ventana de ${titulo.toLowerCase()}`} className="h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-2 inline-flex items-center justify-center rounded-full text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button>
           )}
         </div>
         {descripcion && <p className="text-base text-texto-suave mb-4">{descripcion}</p>}

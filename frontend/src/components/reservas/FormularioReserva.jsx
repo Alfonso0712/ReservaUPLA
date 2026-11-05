@@ -61,7 +61,7 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
-        <div className="flex items-center justify-between gap-3 pb-3 mb-4 border-b border-borde"><h2 id={idTitulo} className="text-xl font-semibold text-texto">Nueva reserva</h2><button type="button" onClick={alCerrar} disabled={form.enProceso} aria-label="Cerrar ventana de nueva reserva" className="min-h-control min-w-control p-2 inline-flex items-center justify-center rounded-control text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button></div>
+        <div className="flex items-center justify-between gap-3 pb-3 mb-4 border-b border-borde"><h2 id={idTitulo} className="text-xl font-semibold text-texto">Nueva reserva</h2><button type="button" onClick={alCerrar} disabled={form.enProceso} aria-label="Cerrar ventana de nueva reserva" className="h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-2 inline-flex items-center justify-center rounded-full text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button></div>
         <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
         {form.errorGeneral && <div className="mb-4"><AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer /></div>}
         <form onSubmit={form.manejarEnvio} noValidate className="space-y-4">

@@ -24,7 +24,7 @@ export default function ProximasReservas({ reservas = [] }) {
           {proximas.map((r) => {
             const fechaHorario = `${formatearFecha(r.fecha)} · ${formatearRangoHorario(r.horaInicio, r.horaFin)}`;
             return (
-              <Link key={r.id} to={RUTAS.crearDetalleReserva(r.id)} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-2.5 hover:bg-superficie-2 px-2 -mx-2 rounded transition-colors group">
+              <Link key={r.id} to={RUTAS.crearDetalleReserva(r.id)} className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-2.5 hover:bg-superficie-2 px-2 -mx-2 rounded-md transition-colors group">
                 <div className="min-w-0">
                   <p className="font-semibold text-sm text-texto group-hover:text-primario-enlace transition-colors truncate">{r.ambiente?.nombre}</p>
                   <p className="text-xs text-texto-suave truncate">{r.solicitante?.nombreCompleto || 'Solicitante'}</p>

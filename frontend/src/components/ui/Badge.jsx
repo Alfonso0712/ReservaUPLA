@@ -32,7 +32,7 @@ export default function Badge({ estado, variante: vProp, icono: iProp, discreto 
   const clases = ESTILOS_POR_VARIANTE[variante] || ESTILOS_POR_VARIANTE.cancelada;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 h-[1.625rem] px-2.5 rounded-full text-xs font-semibold leading-none whitespace-nowrap ${clases}`}>
+    <span className={`inline-flex items-center gap-1.5 h-[1.625rem] px-2.5 rounded-full rounded-pill text-xs font-semibold leading-none whitespace-nowrap ${clases}`}>
       <Icono nombre={nombreIcono} className="w-3.5 h-3.5 shrink-0" />
       <span>{etiqueta}</span>
     </span>

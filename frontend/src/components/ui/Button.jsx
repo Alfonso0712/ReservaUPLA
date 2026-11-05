@@ -48,7 +48,7 @@ const Button = forwardRef(function Button(
       aria-busy={enProceso || undefined}
       aria-label={label}
       onClick={(e) => { if (bloqueado) { e.preventDefault(); return; } onClick?.(e); }}
-      className={`group relative inline-flex items-center justify-center rounded-control whitespace-nowrap font-medium transition-colors cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-anillo-foco disabled:opacity-50 disabled:cursor-not-allowed ${clasesTamano} ${clasesVariante} ${className}`.trim()}
+      className={`group relative inline-flex items-center justify-center ${esIconOnly ? 'rounded-full' : 'rounded-md'} whitespace-nowrap font-medium transition-colors cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-anillo-foco disabled:opacity-50 disabled:cursor-not-allowed ${clasesTamano} ${clasesVariante} ${className}`.trim()}
       {...props}
     >
       {enProceso ? (
@@ -60,7 +60,7 @@ const Button = forwardRef(function Button(
       {tooltip && (
         <span
           role="tooltip"
-          className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap rounded px-2 py-0.5 text-xs bg-lateral-fondo text-white shadow-sm opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"
+          className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 z-50 whitespace-nowrap rounded-sm px-2 py-0.5 text-xs bg-lateral-fondo text-white shadow-sm opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"
         >
           {tooltip}
         </span>

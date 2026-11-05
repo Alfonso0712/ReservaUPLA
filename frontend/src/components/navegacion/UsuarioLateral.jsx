@@ -28,10 +28,10 @@ export default function UsuarioLateral({ compacto = false, alCerrarMenu, usuario
         </span>
         <button
           type="button" onClick={manejarLogout} aria-label="Cerrar sesión"
-          className="group relative p-2 rounded-control text-lateral-texto hover:text-white hover:bg-white/10 transition-colors"
+          className="group relative h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-2 inline-flex items-center justify-center rounded-full text-lateral-texto hover:text-white hover:bg-white/10 transition-colors"
         >
           <Icono nombre="LogOut" className="w-4 h-4" />
-          <span role="tooltip" className="pointer-events-none absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 whitespace-nowrap rounded px-2 py-0.5 text-xs bg-lateral-fondo text-white shadow-sm opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+          <span role="tooltip" className="pointer-events-none absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 whitespace-nowrap rounded-sm px-2 py-0.5 text-xs bg-lateral-fondo text-white shadow-sm opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
             Cerrar sesión
           </span>
         </button>

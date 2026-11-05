@@ -17,7 +17,7 @@ export default function RequiereAtencion({ reservas = [], todasLasReservas = [],
         <div className="flex items-center gap-2.5">
           <h2 id="titulo-requiere-atencion" className="text-base sm:text-lg font-bold text-texto">Requiere tu atención</h2>
           {totalPendientes > 0 && (
-            <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-pendiente-fondo text-pendiente-texto border border-pendiente-texto cifra-tabular">
+            <span className="px-2 py-0.5 rounded-pill text-xs font-bold bg-pendiente-fondo text-pendiente-texto border border-pendiente-texto cifra-tabular">
               {totalPendientes}
             </span>
           )}

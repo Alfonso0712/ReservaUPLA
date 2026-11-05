@@ -51,7 +51,7 @@ export default function Ingresar() {
   }, [form.camposRef]);
 
   return (
-    <div className="w-full max-w-[360px] mx-auto p-4 sm:p-5 rounded-2xl border border-borde/70 bg-superficie text-texto shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_15px_-3px_rgba(0,0,0,0.04)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] space-y-3">
+    <div className="w-full max-w-[360px] mx-auto p-4 sm:p-5 rounded-tarjeta border border-borde/70 bg-superficie text-texto shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_15px_-3px_rgba(0,0,0,0.04)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] space-y-3">
       <div className="flex flex-col items-center text-center">
         <div className="flex flex-col items-center gap-0.5 mb-1">
           <LogoUpla variante="libre" className="w-10 h-10" />

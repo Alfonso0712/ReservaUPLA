@@ -27,7 +27,7 @@ export default function PaginacionTabla({
             value={tamanoPagina}
             onChange={(e) => alCambiarTamanoPagina?.(Number(e.target.value))}
             aria-label="Registros por página"
-            className="h-8 px-2 rounded-control border border-borde bg-superficie text-texto text-xs font-semibold focus:outline-none focus:border-primario-enlace"
+            className="h-8 px-2.5 rounded-pill border border-borde bg-superficie text-texto text-xs font-semibold focus:outline-none focus:border-primario-enlace"
           >
             {[10, 20, 50].map((n) => <option key={n} value={n}>{n} / pág.</option>)}
           </select>

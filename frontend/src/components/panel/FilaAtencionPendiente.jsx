@@ -24,7 +24,7 @@ export default function FilaAtencionPendiente({ r, conflicto, puedeAprobar, enPr
             </Link>
             <span className="text-xs text-texto-suave">• {r.ambiente?.nombre}</span>
             {conflicto && (
-              <span title={conflicto.mensajeTooltip} className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-pendiente-fondo text-pendiente-texto border border-pendiente-texto cursor-help">
+              <span title={conflicto.mensajeTooltip} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-pill text-xs font-semibold bg-pendiente-fondo text-pendiente-texto border border-pendiente-texto cursor-help">
                 <Icono nombre="AlertTriangle" className="w-3.5 h-3.5 shrink-0" />
                 <span>Se cruza con otra reserva</span>
               </span>

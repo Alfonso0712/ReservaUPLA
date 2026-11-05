@@ -34,7 +34,7 @@ function ToastItem({ toast, alCerrar }) {
         </button>
       )}
       {alReintentar && (
-        <button type="button" onClick={alReintentar} className="text-xs font-semibold px-2 py-1 rounded bg-superficie-2 border border-borde hover:bg-fondo">
+        <button type="button" onClick={alReintentar} className="text-xs font-semibold px-2 py-1 rounded-md bg-superficie-2 border border-borde hover:bg-fondo">
           Reintentar
         </button>
       )}

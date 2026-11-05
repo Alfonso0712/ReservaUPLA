@@ -17,19 +17,24 @@ export default function FormularioAmbiente({
 }) {
   const idTitulo = useId();
   const esEdicion = modo === 'editar';
+
   const form = useFormulario({
     valoresIniciales: { nombre: '', tipo: '', capacidad: '', ubicacion: '', responsableId: '' },
     validar: validarAmbiente,
-    alEnviar: async (vals, { setErrores, setErrorGeneral, enfocarPrimerError }) => {
-      const { datosNormalizados } = validarAmbiente(vals);
+    alEnviar: async (valores, { setErrores, setErrorGeneral, enfocarPrimerError }) => {
+      const { datosNormalizados } = validarAmbiente(valores);
       const res = esEdicion ? await alEditar?.(ambienteAEditar.id, datosNormalizados) : await alRegistrar?.(datosNormalizados);
-      if (res?.ok) { alExito?.(esEdicion ? MENSAJES.AMBIENTE_ACTUALIZADO_EXITO : MENSAJES.AMBIENTE_CREADO_EXITO, res.datos); return; }
-      if (Object.keys(res?.errores || {}).length > 0) { setErrores(res.errores); enfocarPrimerError(res.errores); return; }
-      setErrorGeneral(res?.errorGeneral);
+      if (res?.ok) {
+        alExito?.(esEdicion ? MENSAJES.AMBIENTE_EDITADO_EXITO : MENSAJES.AMBIENTE_CREADO_EXITO, res.datos);
+        return;
+      }
+      const errs = res?.accion === 'conflicto' && !Object.keys(res.errores || {}).length ? { nombre: res.errorGeneral || 'El nombre ya está registrado.' } : (res?.errores || {});
+      if (Object.keys(errs).length > 0) { setErrores(errs); enfocarPrimerError(errs); return; }
+      setErrorGeneral(res?.errorGeneral || 'No se pudo guardar el ambiente.');
     }
   });
 
-  const modalRef = useTrampaFoco(abierto, () => { if (!form.enProceso) alCerrar?.(); }, 'input, select');
+  const modalRef = useTrampaFoco(abierto, () => { if (!form.enProceso) alCerrar?.(); }, 'select, input');
 
   useEffect(() => {
     if (!abierto) return;
@@ -49,7 +54,7 @@ export default function FormularioAmbiente({
       <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
         <div className="flex items-center justify-between gap-3 pb-3 mb-4 border-b border-borde">
           <h2 id={idTitulo} className="text-xl font-semibold text-texto">{esEdicion ? 'Editar ambiente' : 'Nuevo ambiente'}</h2>
-          <button type="button" onClick={alCerrar} disabled={form.enProceso} aria-label={`Cerrar ventana de ${esEdicion ? 'editar' : 'nuevo'} ambiente`} className="min-h-control min-w-control p-2 inline-flex items-center justify-center rounded-control text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button>
+          <button type="button" onClick={alCerrar} disabled={form.enProceso} aria-label={`Cerrar ventana de ${esEdicion ? 'editar' : 'nuevo'} ambiente`} className="h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-2 inline-flex items-center justify-center rounded-full text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button>
         </div>
         <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
         {form.errorGeneral && <div className="mb-4"><AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer /></div>}

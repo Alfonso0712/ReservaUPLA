@@ -32,7 +32,7 @@ p { max-width: 70ch; line-height: 1.6; margin: 0; }
   }
   .tabla-responsiva tbody tr {
     display: block; height: auto !important; margin-bottom: 1rem; border: 1px solid var(--borde);
-    border-radius: var(--radio-tarjeta); background-color: var(--superficie); padding: 0.75rem;
+    border-radius: var(--radius-lg); background-color: var(--superficie); padding: 0.75rem;
   }
   .tabla-responsiva tbody td {
     display: flex; justify-content: space-between; align-items: center;

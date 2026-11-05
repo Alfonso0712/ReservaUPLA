@@ -38,7 +38,7 @@ export default function LayoutAutenticacion({ children }) {
 
         <div className="relative z-10 max-w-[340px] my-auto py-4 space-y-4">
           <div>
-            <span className="inline-block px-3 py-1 mb-2.5 rounded-control bg-lateral-activo-fondo text-xs font-semibold text-sobre-primario">
+            <span className="inline-block px-3 py-1 mb-2.5 rounded-pill bg-lateral-activo-fondo text-xs font-semibold text-sobre-primario">
               Sistema institucional
             </span>
             <p className="text-2xl sm:text-3xl font-bold text-sobre-primario mb-2">
@@ -51,7 +51,7 @@ export default function LayoutAutenticacion({ children }) {
           <ul className="space-y-2.5 pt-1 text-xs sm:text-sm text-lateral-texto">
             {BENEFICIOS.map((b) => (
               <li key={b.texto} className="flex items-center gap-2.5">
-                <div className="w-6 h-6 rounded-control bg-white/10 border border-white/20 flex items-center justify-center shrink-0 text-acento-sobre-oscuro">
+                <div className="w-6 h-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 text-acento-sobre-oscuro">
                   <Icono nombre={b.icono} className="w-3.5 h-3.5" />
                 </div>
                 <span className="leading-snug">{b.texto}</span>

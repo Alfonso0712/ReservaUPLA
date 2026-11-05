@@ -28,14 +28,14 @@ export default function PestanasEstado({ estadoActivo = '', conteos = {}, alSele
             aria-selected={esActivo}
             tabIndex={esActivo ? 0 : -1}
             onClick={() => alSeleccionar?.(p.clave)}
-            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-control text-sm font-semibold transition-colors whitespace-nowrap cursor-pointer border ${
+            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-pill text-sm font-semibold transition-colors whitespace-nowrap cursor-pointer border ${
               esActivo
                 ? 'bg-[var(--color-brand)] text-sobre-primario border-[var(--color-brand)] shadow-sm'
                 : 'bg-superficie text-texto hover:bg-superficie-2 border-borde text-texto-suave hover:text-texto'
             }`}
           >
             <span>{p.etiqueta}</span>
-            <span className={`px-1.5 py-0.5 rounded-full text-xs font-bold cifra-tabular ${claseBadge}`}>
+            <span className={`px-1.5 py-0.5 rounded-pill text-xs font-bold cifra-tabular ${claseBadge}`}>
               {total}
             </span>
           </button>

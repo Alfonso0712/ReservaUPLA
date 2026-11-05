@@ -42,7 +42,7 @@ export default function AccionesReserva({
           icono="Check"
           tooltip="Aprobar reserva"
           aria-label={`Aprobar reserva de ${solicitante}`}
-          className="w-auto px-3 sm:w-9 sm:px-0 xl:w-auto xl:px-3"
+          className="w-auto px-3 sm:w-9 sm:px-0 sm:rounded-full xl:w-auto xl:px-3 xl:rounded-md"
           onClick={() => alSolicitarAprobar?.(reserva)}
         >
           <span className="inline sm:hidden xl:inline">Aprobar</span>
@@ -60,7 +60,7 @@ export default function AccionesReserva({
           icono="X"
           tooltip="Rechazar reserva"
           aria-label={`Rechazar reserva de ${solicitante}`}
-          className="w-auto px-3 sm:w-9 sm:px-0 xl:w-auto xl:px-3"
+          className="w-auto px-3 sm:w-9 sm:px-0 sm:rounded-full xl:w-auto xl:px-3 xl:rounded-md"
           onClick={() => alSolicitarRechazar?.(reserva)}
         >
           <span className="inline sm:hidden xl:inline">Rechazar</span>

@@ -37,7 +37,7 @@ export default function CardIndicador({
     <div className="card-indicador relative flex flex-col h-full px-5 py-[1.125rem] rounded-tarjeta border border-borde bg-superficie hover:border-primario focus-within:ring-2 focus-within:ring-anillo-foco focus-within:border-primario transition-colors motion-reduce:transition-none">
       <div className="flex items-center justify-between gap-3">
         <span className="text-[1rem] font-semibold text-texto-suave leading-snug">{txtEtiqueta}</span>
-        <span className={`w-10 h-10 rounded-[0.5rem] flex items-center justify-center shrink-0 ${chipClases}`} aria-hidden="true">
+        <span className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${chipClases}`} aria-hidden="true">
           <Icono nombre={icono} className="w-5 h-5 shrink-0" />
         </span>
       </div>

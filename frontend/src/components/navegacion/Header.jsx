@@ -29,7 +29,7 @@ export default function Header({ menuAbierto = false, alAlternarMenu, botonMenuR
           aria-label={menuAbierto ? 'Cerrar menú de navegación' : 'Abrir menú de navegación'}
           aria-expanded={menuAbierto}
           aria-controls="menu-lateral-principal"
-          className="lg:hidden min-h-control min-w-control p-2 inline-flex items-center justify-center rounded-control border border-borde bg-superficie-2 text-texto hover:bg-fondo"
+          className="lg:hidden h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-2 inline-flex items-center justify-center rounded-full border border-borde bg-superficie-2 text-texto hover:bg-fondo"
         >
           <Icono nombre={menuAbierto ? 'X' : 'Menu'} className="w-5 h-5" />
         </button>

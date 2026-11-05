@@ -55,7 +55,7 @@ export default function TableList({
         </thead>
         <tbody className="divide-y divide-borde">
           {cargando ? Array.from({ length: 5 }).map((_, i) => (
-            <tr key={`skel-${i}`} className="h-14 animate-pulse">{columnas.map((c, ci) => <td key={c.clave || ci} className="px-4 py-3"><div className="h-4 bg-superficie-2 rounded w-4/5" /></td>)}</tr>
+            <tr key={`skel-${i}`} className="h-14 animate-pulse">{columnas.map((c, ci) => <td key={c.clave || ci} className="px-4 py-3"><div className="h-4 bg-superficie-2 rounded-md w-4/5" /></td>)}</tr>
           )) : datosVisibles.map((fila, indice) => (
             <tr key={fila[claveFila] ?? indice} className={`h-14 sm:h-16 hover:bg-superficie-2 transition-colors ${obtenerClaseFila ? obtenerClaseFila(fila) : ''}`.trim()}>
               {columnas.map((col) => <td key={col.clave} data-label={col.encabezado} className={`${col.claseCelda?.includes('px-') ? '' : 'px-4'} py-3 text-[0.9375rem] text-texto align-middle ${col.claseCelda || ''}`.trim()}>{col.render ? col.render(fila) : fila[col.clave]}</td>)}

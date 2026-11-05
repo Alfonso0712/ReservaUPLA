@@ -42,7 +42,7 @@ export default function PanelDisponibilidad({
           {ocupados.map((b, idx) => (
             <li
               key={b.id || `${b.horaInicio}-${idx}`}
-              className="px-2.5 py-1 rounded-control border border-pendiente-texto bg-pendiente-fondo text-pendiente-texto text-sm font-medium cifra-tabular"
+              className="px-2.5 py-1 rounded-pill border border-pendiente-texto bg-pendiente-fondo text-pendiente-texto text-sm font-medium cifra-tabular"
             >
               {`Ocupado: ${b.horaInicio}–${b.horaFin}`}
             </li>

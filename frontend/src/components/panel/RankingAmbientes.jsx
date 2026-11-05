@@ -33,12 +33,12 @@ export default function RankingAmbientes({ reservas = [] }) {
                   <div className="flex items-center gap-2 min-w-0">
                     <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${esPrimero ? 'bg-primario text-sobre-primario' : 'bg-superficie-2 text-texto-suave'}`}>{index + 1}</span>
                     <Link to={ruta} className="font-semibold text-texto hover:text-primario-enlace hover:underline truncate">{amb.nombre}</Link>
-                    {esPrimero && <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold bg-primario-suave text-primario">Más utilizado</span>}
+                    {esPrimero && <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-pill text-[10px] font-bold bg-primario-suave text-primario">Más utilizado</span>}
                   </div>
                   <span className="font-semibold text-texto cifra-tabular shrink-0">{amb.cantidad} {amb.cantidad === 1 ? 'reserva' : 'reservas'}</span>
                 </div>
-                <div className="h-2 w-full rounded-full bg-superficie-2 overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-300 ${esPrimero ? 'bg-primario' : 'bg-primario/60'}`} style={{ width: `${pct}%` }} />
+                <div className="h-2 w-full rounded-pill bg-superficie-2 overflow-hidden">
+                  <div className={`h-full rounded-pill transition-all duration-300 ${esPrimero ? 'bg-primario' : 'bg-primario/60'}`} style={{ width: `${pct}%` }} />
                 </div>
               </div>
             );

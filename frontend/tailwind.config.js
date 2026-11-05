@@ -35,6 +35,11 @@ export default {
         sans: ['"Montserrat Variable"', '"Segoe UI"', 'system-ui', 'Arial', 'sans-serif']
       },
       borderRadius: {
+        sm: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        full: 'var(--radius-full)',
+        pill: 'var(--radius-pill)',
         control: 'var(--radio-control)',
         tarjeta: 'var(--radio-tarjeta)'
       },
