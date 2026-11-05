@@ -32,7 +32,7 @@ it('E-42: ambiente no disponible aparece deshabilitado en Nueva reserva y sin bo
   dbMock.ambientes[0].estado = ESTADOS_AMBIENTE.MANTENIMIENTO;
   guardarIdSesionMock('usr-solic');
   const { unmount } = render(<MemoryRouter><AuthProvider><Ambientes /></AuthProvider></MemoryRouter>);
-  expect(await screen.findByText(/no disponible por mantenimiento/i)).toBeInTheDocument();
+  expect(await screen.findByText(/^no disponible$/i)).toBeInTheDocument();
   unmount();
   render(<MemoryRouter><AuthProvider><FormularioReserva abierto alCerrar={() => {}} /></AuthProvider></MemoryRouter>);
   const optionMantenimiento = await screen.findByRole('option', { name: /en mantenimiento/i });

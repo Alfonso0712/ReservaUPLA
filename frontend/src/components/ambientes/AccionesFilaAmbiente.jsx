@@ -48,9 +48,9 @@ export default function AccionesFilaAmbiente({
       );
     }
     return (
-      <span className="inline-flex items-center gap-1.5 text-xs text-texto-suave">
+      <span className="inline-flex items-center justify-end gap-1.5 text-xs text-texto-suave whitespace-nowrap" title={`No disponible por ${ambiente.estado.toLowerCase()}`}>
         <Icono nombre={MAPA_ICONOS.CANCELAR} className="w-4 h-4 text-cancelada-texto" />
-        <span>{`No disponible por ${ambiente.estado.toLowerCase()}`}</span>
+        <span>No disponible</span>
       </span>
     );
   }
