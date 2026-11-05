@@ -63,6 +63,9 @@ public class ReservaService : IReservaService
             var solicitante = await _usuarioRepo.ObtenerPorIdAsync(solicitanteId, ct)
                 ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
 
+            if (solicitante.Rol_Usuario != RolUsuario.Solicitante)
+                throw new DomainException("Solo los usuarios con rol Solicitante pueden crear reservas.");
+
             var reserva = Reserva.Crear(dto.Fecha, dto.HoraInicio, dto.HoraFin, dto.Motivo, solicitanteId, dto.AmbienteId);
             await _reservaRepo.AgregarAsync(reserva, ct);
             await _unitOfWork.GuardarCambiosAsync(ct);
