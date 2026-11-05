@@ -51,13 +51,13 @@ export default function Ambientes() {
   }, [ambientes, textoDebounce, tipoFiltro]);
 
   const columnas = [
-    { clave: 'nombre', encabezado: 'Nombre', ordenable: true, claseEncabezado: 'w-[22%] px-3', claseCelda: 'px-3', render: (a) => <span className="font-semibold text-texto truncate block" title={a.nombre}>{a.nombre}</span> },
+    { clave: 'nombre', encabezado: 'Nombre', ordenable: true, claseEncabezado: 'w-[20%] px-2.5', claseCelda: 'px-2.5', render: (a) => <span className="font-semibold text-texto truncate block" title={a.nombre}>{a.nombre}</span> },
     { clave: 'tipo', encabezado: 'Tipo', claseEncabezado: 'w-[18%] px-2', claseCelda: 'px-2 whitespace-nowrap', render: (a) => <TipoAmbienteChip tipo={a.tipo} /> },
-    { clave: 'capacidad', encabezado: 'Capacidad', ordenable: true, claseEncabezado: 'w-[8%] text-right px-2', claseCelda: 'text-right px-2 whitespace-nowrap cifra-tabular', render: (a) => <span className="cifra-tabular">{a.capacidad}</span> },
-    { clave: 'ubicacion', encabezado: 'Ubicación', claseEncabezado: 'w-[17%] px-2', claseCelda: 'px-2', render: (a) => <span title={a.ubicacion} className="truncate block">{a.ubicacion}</span> },
-    { clave: 'responsable', encabezado: 'Responsable', claseEncabezado: 'w-[16%] px-2', claseCelda: 'px-2', render: (a) => <span title={a.responsableNombre || 'Sin asignar'} className="truncate block">{a.responsableNombre || 'Sin asignar'}</span> },
-    { clave: 'estado', encabezado: 'Estado', claseEncabezado: 'w-[10%] px-1.5', claseCelda: 'px-1.5 whitespace-nowrap', render: (a) => <Badge estado={a.estado} /> },
-    { clave: 'acciones', encabezado: 'Acciones', claseEncabezado: 'w-[9%] px-1.5 text-center', claseCelda: 'px-1.5 text-center whitespace-nowrap', render: (a) => <AccionesFilaAmbiente ambiente={a} puedeEditar={puedeEditar} puedeCambiarEstado={puedeCambiarEstado} puedeCrearReserva={puedeCrearReserva} alEditar={setAmbienteParaEditar} alCambiarEstado={manejarCambioEstado} alReservar={(id) => abrirModalReserva?.(id)} /> }
+    { clave: 'capacidad', encabezado: 'Capacidad', ordenable: true, claseEncabezado: 'w-[7%] text-center px-1', claseCelda: 'text-center px-1 whitespace-nowrap cifra-tabular', render: (a) => <span className="cifra-tabular">{a.capacidad}</span> },
+    { clave: 'ubicacion', encabezado: 'Ubicación', claseEncabezado: 'w-[16%] px-2', claseCelda: 'px-2', render: (a) => <span title={a.ubicacion} className="truncate block">{a.ubicacion}</span> },
+    { clave: 'responsable', encabezado: 'Responsable', claseEncabezado: 'w-[15%] px-2', claseCelda: 'px-2', render: (a) => <span title={a.responsableNombre || 'Sin asignar'} className="truncate block">{a.responsableNombre || 'Sin asignar'}</span> },
+    { clave: 'estado', encabezado: 'Estado', claseEncabezado: 'w-[12%] px-1.5', claseCelda: 'px-1.5 whitespace-nowrap', render: (a) => <Badge estado={a.estado} /> },
+    { clave: 'acciones', encabezado: 'Acciones', claseEncabezado: 'w-[12%] px-1.5 text-center', claseCelda: 'px-1.5 text-center whitespace-nowrap', render: (a) => <AccionesFilaAmbiente ambiente={a} puedeEditar={puedeEditar} puedeCambiarEstado={puedeCambiarEstado} puedeCrearReserva={puedeCrearReserva} alEditar={setAmbienteParaEditar} alCambiarEstado={manejarCambioEstado} alReservar={(id) => abrirModalReserva?.(id)} /> }
   ];
 
   return (

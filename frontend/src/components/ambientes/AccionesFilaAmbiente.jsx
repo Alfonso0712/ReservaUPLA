@@ -30,6 +30,7 @@ export default function AccionesFilaAmbiente({
             iconOnly
             icono="Power"
             tooltip={tooltipEstado}
+            alineacionTooltip="derecha"
             aria-label={tooltipEstado}
             onClick={() => alCambiarEstado(ambiente)}
           />

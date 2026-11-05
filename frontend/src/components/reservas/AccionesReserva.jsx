@@ -57,6 +57,7 @@ export default function AccionesReserva({
               disabled={enProceso}
               icono="X"
               tooltip="Rechazar reserva"
+              alineacionTooltip="derecha"
               aria-label={`Rechazar reserva de ${solicitante}`}
               className="w-auto px-3 sm:w-9 sm:px-0 sm:rounded-full xl:w-auto xl:px-3 xl:rounded-md"
               onClick={() => alSolicitarRechazar?.(reserva)}
