@@ -49,7 +49,10 @@ public class AppDbContext : DbContext
     {
         mb.Entity<Ambiente>(b =>
         {
-            b.ToTable("ambientes");
+            b.ToTable("ambientes", t =>
+            {
+                t.HasCheckConstraint("CK_ambientes_cap_ambiente", "cap_ambiente > 0");
+            });
             b.HasKey(a => a.Id_Ambiente);
             b.Property(a => a.Id_Ambiente).HasColumnName("id_ambiente");
             b.Property(a => a.Nom_Ambiente).HasColumnName("nom_ambiente").HasMaxLength(100).IsRequired();

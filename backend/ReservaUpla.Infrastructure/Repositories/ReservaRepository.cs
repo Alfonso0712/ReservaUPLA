@@ -135,16 +135,23 @@ public class ReservaRepository : IReservaRepository
 
     private async Task<(string Nombre, int Cantidad)> ObtenerAmbienteMasUtilizadoAsync(IQueryable<Reserva> query, CancellationToken ct)
     {
-        var top = await query
+        var agrupados = await query
             .GroupBy(r => r.Ida_Reserva)
             .Select(g => new { AmbienteId = g.Key, Cantidad = g.Count() })
             .OrderByDescending(x => x.Cantidad)
+            .ToListAsync(ct);
+
+        if (agrupados.Count == 0) return (EtiquetaSinRegistros, 0);
+
+        var maxCantidad = agrupados[0].Cantidad;
+        var topIds = agrupados.Where(x => x.Cantidad == maxCantidad).Select(x => x.AmbienteId).ToList();
+
+        var ambiente = await _context.Ambientes.AsNoTracking()
+            .Where(a => topIds.Contains(a.Id_Ambiente))
+            .OrderBy(a => a.Nom_Ambiente)
             .FirstOrDefaultAsync(ct);
 
-        if (top == null) return (EtiquetaSinRegistros, 0);
-
-        var ambiente = await _context.Ambientes.AsNoTracking().FirstOrDefaultAsync(a => a.Id_Ambiente == top.AmbienteId, ct);
-        return (ambiente?.Nom_Ambiente ?? EtiquetaDesconocido, top.Cantidad);
+        return (ambiente?.Nom_Ambiente ?? EtiquetaDesconocido, maxCantidad);
     }
 
     private IQueryable<Reserva> ConstruirFiltro(ParametrosConsultaReservas parametros)

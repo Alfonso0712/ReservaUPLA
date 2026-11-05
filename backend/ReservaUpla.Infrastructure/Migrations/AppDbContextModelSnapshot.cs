@@ -65,7 +65,10 @@ namespace ReservaUpla.Infrastructure.Migrations
 
                     b.HasIndex("Idr_Ambiente");
 
-                    b.ToTable("ambientes", (string)null);
+                    b.ToTable("ambientes", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_ambientes_cap_ambiente", "cap_ambiente > 0");
+                        });
                 });
 
             modelBuilder.Entity("ReservaUpla.Domain.Entities.Reserva", b =>

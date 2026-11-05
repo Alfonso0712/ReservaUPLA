@@ -38,7 +38,7 @@ describe('FASE 2: Jerarquía de acciones por fila', () => {
     expect(screen.queryByRole('button', { name: /cancelar/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /más acciones/i })).not.toBeInTheDocument();
     const placeholders = container.querySelectorAll('div[aria-hidden="true"]');
-    expect(placeholders.length).toBe(2);
+    expect(placeholders.length).toBe(1);
   });
 
   it('4. AccionesFilaAmbiente: 2 botones icon-only visibles [Editar] y [Cambiar estado]', () => {

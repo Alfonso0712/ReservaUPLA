@@ -36,8 +36,10 @@ it('E-19: Administrador aprueba reserva Pendiente mediante ModalConfirmacion', a
 it('E-20 y E-21: reserva en estado final no ofrece acciones y rechaza transiciones inválidas', async () => {
   guardarIdSesionMock('usr-admin');
   render(<MemoryRouter initialEntries={['/reservas/res-4']}><AuthProvider><Routes><Route path="/reservas/:id" element={<DetalleReserva />} /></Routes></AuthProvider></MemoryRouter>);
-  expect(await screen.findByText(MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA)).toBeInTheDocument();
+  const decision = await screen.findByRole('complementary', { name: /decisión sobre la solicitud/i });
+  expect(decision).toHaveTextContent(/solicitud rechazada/i);
   expect(screen.queryByRole('button', { name: /aprobar reserva/i })).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /rechazar reserva/i })).not.toBeInTheDocument();
   expect(validarTransicionEstado('Rechazada', 'Aprobada', 'Administrador').valido).toBe(false);
   expect(validarTransicionEstado('Pendiente', 'Aprobada', 'Solicitante').error).toBe(MENSAJES.ACCION_SOLO_ADMINISTRADOR);
 });

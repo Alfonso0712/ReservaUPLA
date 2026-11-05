@@ -25,7 +25,7 @@ export default function FormularioAmbiente({
       const { datosNormalizados } = validarAmbiente(valores);
       const res = esEdicion ? await alEditar?.(ambienteAEditar.id, datosNormalizados) : await alRegistrar?.(datosNormalizados);
       if (res?.ok) {
-        alExito?.(esEdicion ? MENSAJES.AMBIENTE_EDITADO_EXITO : MENSAJES.AMBIENTE_CREADO_EXITO, res.datos);
+        alExito?.(esEdicion ? MENSAJES.AMBIENTE_ACTUALIZADO_EXITO : MENSAJES.AMBIENTE_CREADO_EXITO, res.datos);
         return;
       }
       const errs = res?.accion === 'conflicto' && !Object.keys(res.errores || {}).length ? { nombre: res.errorGeneral || 'El nombre ya está registrado.' } : (res?.errores || {});
