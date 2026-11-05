@@ -25,6 +25,11 @@ public class UsuarioRepository : IUsuarioRepository
         return await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Id_Usuario == id, ct);
     }
 
+    public async Task<Usuario?> ObtenerPorIdSeguimientoAsync(Guid id, CancellationToken ct = default)
+    {
+        return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id_Usuario == id, ct);
+    }
+
     public async Task<Usuario?> ObtenerPorCorreoAsync(string correo, CancellationToken ct = default)
     {
         return await _context.Usuarios.AsNoTracking().FirstOrDefaultAsync(u => u.Cor_Usuario == correo, ct);
@@ -38,6 +43,12 @@ public class UsuarioRepository : IUsuarioRepository
     public async Task AgregarAsync(Usuario usuario, CancellationToken ct = default)
     {
         await _context.Usuarios.AddAsync(usuario, ct);
+    }
+
+    public Task ActualizarAsync(Usuario usuario, CancellationToken ct = default)
+    {
+        _context.Usuarios.Update(usuario);
+        return Task.CompletedTask;
     }
 
     public async Task<IReadOnlyList<Usuario>> ListarResponsablesAsync(CancellationToken ct = default)

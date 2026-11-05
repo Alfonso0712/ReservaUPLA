@@ -12,6 +12,8 @@ public static class UsuarioMapper
             usuario.Nom_Usuario,
             usuario.Cor_Usuario,
             usuario.Rol_Usuario.ToString(),
-            usuario.Act_Usuario);
+            usuario.Act_Usuario,
+            usuario.Tema,
+            usuario.TamanoLetra);
     }
 }

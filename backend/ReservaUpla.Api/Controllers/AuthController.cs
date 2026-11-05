@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ReservaUpla.Api.Extensions;
 using ReservaUpla.Application.DTOs;
@@ -25,11 +26,19 @@ public class AuthController : ControllerBase
     private const int Status499ClientClosedRequest = 499;
 
     private readonly IAuthService _authService;
+    private readonly IUsuarioService? _usuarioService;
     private readonly ILogger<AuthController> _logger;
 
     public AuthController(IAuthService authService, ILogger<AuthController> logger)
+        : this(authService, null, logger)
+    {
+    }
+
+    [ActivatorUtilitiesConstructor]
+    public AuthController(IAuthService authService, IUsuarioService? usuarioService, ILogger<AuthController> logger)
     {
         _authService = authService;
+        _usuarioService = usuarioService;
         _logger = logger;
     }
 
@@ -97,16 +106,27 @@ public class AuthController : ControllerBase
 
     [HttpGet("yo")]
     [Authorize]
-    public IActionResult ObtenerUsuarioActual()
+    public async Task<IActionResult> ObtenerUsuarioActual(CancellationToken ct)
     {
         var id = User.GetUserId();
         if (id == Guid.Empty)
             return Unauthorized();
 
-        var nombre = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
-        var correo = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
-        var rol = User.GetUserRole();
-        var usuario = new UsuarioDto(id, nombre, correo, rol.ToString(), true);
+        UsuarioDto? usuario = null;
+        if (_usuarioService != null)
+        {
+            usuario = await _usuarioService.ObtenerPorIdAsync(id, ct);
+        }
+
+        if (usuario == null)
+        {
+            var nombre = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
+            var correo = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
+            var rolClaim = User.GetUserRole();
+            usuario = new UsuarioDto(id, nombre, correo, rolClaim.ToString(), true);
+        }
+
+        var rol = Enum.Parse<RolUsuario>(usuario.Rol, true);
         var permisos = PoliticaDeAcceso.ObtenerPermisos(rol);
 
         return Ok(new { usuario, permisos });

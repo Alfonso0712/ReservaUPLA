@@ -2,7 +2,7 @@
 import { MENSAJES } from '../constants/mensajes';
 import { dbMock, reiniciarBaseMock, configurarFalloMock, guardarIdSesionMock, respuestaExito, respuestaError } from './estadoMock';
 import { CUENTAS_DEMO } from './datosSemilla';
-import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarResponsables } from './manejadoresAuthAmbientes';
+import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarResponsables, mockActualizarPreferencias } from './manejadoresAuthAmbientes';
 import { mockListarAmbientes, mockCrearAmbiente, mockActualizarAmbiente, mockCambiarEstadoAmbiente } from './manejadoresAmbientes';
 import { mockObtenerDisponibilidad, mockListarReservas, mockObtenerReserva, mockCrearReserva, mockCambiarEstadoReserva, mockObtenerDashboard } from './manejadoresReservasDashboard';
 
@@ -19,6 +19,7 @@ const RUTAS_ESTATICAS = {
   'POST /api/auth/logout': () => mockLogout(),
   'GET /api/auth/yo': () => mockObtenerYo(),
   'POST /api/usuarios': (_, cuerpo) => mockRegistrarUsuario(cuerpo),
+  'PATCH /api/usuarios/preferencias': (_, cuerpo) => mockActualizarPreferencias(cuerpo),
   'GET /api/usuarios/responsables': () => mockListarResponsables(),
   'GET /api/usuarios': () => respuestaExito([...dbMock.usuarios]),
   'GET /api/ambientes': () => mockListarAmbientes(),

@@ -25,7 +25,8 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task E01_RegistroSolicitante_DatosCorrectos_Retorna201()
     {
         var client = _factory.CreateClient();
-        var dto = new RegistroUsuarioDto("Juan Perez", "juan.perez@upla.edu.pe", "ClaveValida123*");
+        var email = $"juan.perez.{Guid.NewGuid():N}@upla.edu.pe";
+        var dto = new RegistroUsuarioDto("Juan Perez", email, "ClaveValida123*");
 
         var response = await client.PostAsJsonAsync("/api/usuarios", dto);
 
@@ -33,7 +34,7 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         var usuario = await response.Content.ReadFromJsonAsync<UsuarioDto>();
         Assert.NotNull(usuario);
         Assert.Equal("Juan Perez", usuario.NombreCompleto);
-        Assert.Equal("juan.perez@upla.edu.pe", usuario.Correo);
+        Assert.Equal(email, usuario.Correo);
     }
 
     [Fact]
@@ -162,5 +163,55 @@ public class ApiIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         {
             Assert.True(res.StatusCode == HttpStatusCode.BadRequest || res.StatusCode == HttpStatusCode.NotFound);
         }
+    }
+
+    [Fact]
+    public async Task Preferencias_SinAutenticacion_Retorna401()
+    {
+        var client = _factory.CreateClient();
+        var response = await client.PatchAsJsonAsync("/api/usuarios/preferencias", new ActualizarPreferenciasDto("oscuro", "grande"));
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Preferencias_ValoresValidos_ActualizaYRetorna200()
+    {
+        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions { HandleCookies = true });
+        var loginRes = await client.PostAsJsonAsync("/api/auth/login", new LoginDto("admin@upla.edu.pe", "Admin123*"));
+        Assert.Equal(HttpStatusCode.OK, loginRes.StatusCode);
+
+        var patchRes = await client.PatchAsJsonAsync("/api/usuarios/preferencias", new ActualizarPreferenciasDto("oscuro", "grande"));
+        Assert.Equal(HttpStatusCode.OK, patchRes.StatusCode);
+        var usuario = await patchRes.Content.ReadFromJsonAsync<UsuarioDto>();
+        Assert.NotNull(usuario);
+        Assert.Equal("oscuro", usuario.Tema);
+        Assert.Equal("grande", usuario.TamanoLetra);
+
+        var yoRes = await client.GetAsync("/api/auth/yo");
+        Assert.Equal(HttpStatusCode.OK, yoRes.StatusCode);
+        var yoContent = await yoRes.Content.ReadAsStringAsync();
+        var yoDoc = JsonDocument.Parse(yoContent);
+        Assert.Equal("oscuro", yoDoc.RootElement.GetProperty("usuario").GetProperty("tema").GetString());
+        Assert.Equal("grande", yoDoc.RootElement.GetProperty("usuario").GetProperty("tamanoLetra").GetString());
+
+        await client.PatchAsJsonAsync("/api/usuarios/preferencias", new ActualizarPreferenciasDto("claro", "normal"));
+    }
+
+    [Fact]
+    public async Task Preferencias_ValoresInvalidos_Retorna400ConMensajeClaro()
+    {
+        var client = _factory.CreateClient(new WebApplicationFactoryClientOptions { HandleCookies = true });
+        var loginRes = await client.PostAsJsonAsync("/api/auth/login", new LoginDto("admin@upla.edu.pe", "Admin123*"));
+        Assert.Equal(HttpStatusCode.OK, loginRes.StatusCode);
+
+        var resTemaInvalido = await client.PatchAsJsonAsync("/api/usuarios/preferencias", new ActualizarPreferenciasDto("invalido", "normal"));
+        Assert.Equal(HttpStatusCode.BadRequest, resTemaInvalido.StatusCode);
+        var contentTema = await resTemaInvalido.Content.ReadAsStringAsync();
+        Assert.Contains("claro", contentTema);
+
+        var resTamanoInvalido = await client.PatchAsJsonAsync("/api/usuarios/preferencias", new ActualizarPreferenciasDto("claro", "gigante"));
+        Assert.Equal(HttpStatusCode.BadRequest, resTamanoInvalido.StatusCode);
+        var contentTamano = await resTamanoInvalido.Content.ReadAsStringAsync();
+        Assert.Contains("pequeno", contentTamano, StringComparison.OrdinalIgnoreCase);
     }
 }

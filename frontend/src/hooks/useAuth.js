@@ -4,6 +4,7 @@ import { iniciarSesionApi, cerrarSesionApi, obtenerSesionActualApi } from '../se
 import { interpretarRespuesta } from '../validation/interpretarRespuesta';
 import { obtenerUsuarioActualMock, guardarIdSesionMock } from '../mocks/estadoMock';
 import { obtenerPermisosDeRol } from '../mocks/permisosPorRol';
+import { PreferenciasProvider } from '../context/PreferenciasContext';
 
 export const ContextoAuth = createContext(null);
 
@@ -66,7 +67,7 @@ export function AuthProvider({ children, usuarioInicial = null }) {
     establecerUsuario: setUsuario
   }), [usuario, permisos, puede, cargandoSesion, iniciarSesion, cerrarSesion]);
 
-  return createElement(ContextoAuth.Provider, { value: valor }, children);
+  return createElement(ContextoAuth.Provider, { value: valor }, createElement(PreferenciasProvider, null, children));
 }
 
 export function useAuth() {

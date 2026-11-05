@@ -17,10 +17,10 @@ export const CLAVES_MOCK = {
 };
 
 export const USUARIOS_SEMILLA = [
-  { id: 'usr-admin', nombreCompleto: 'Carlos Mendoza Quispe', correo: 'admin@upla.edu.pe', rol: ROLES.ADMINISTRADOR, activo: true },
-  { id: 'usr-resp', nombreCompleto: 'Elena Huamán Rojas', correo: 'responsable@upla.edu.pe', rol: ROLES.RESPONSABLE, activo: true },
-  { id: 'usr-solic', nombreCompleto: 'Marco Paredes Castro', correo: 'solicitante@upla.edu.pe', rol: ROLES.SOLICITANTE, activo: true },
-  { id: 'usr-solic-2', nombreCompleto: 'Lucía Gómez Soto', correo: 'lgomez@upla.edu.pe', rol: ROLES.SOLICITANTE, activo: true }
+  { id: 'usr-admin', nombreCompleto: 'Carlos Mendoza Quispe', correo: 'admin@upla.edu.pe', rol: ROLES.ADMINISTRADOR, activo: true, tema: 'claro', tamanoLetra: 'normal' },
+  { id: 'usr-resp', nombreCompleto: 'Elena Huamán Rojas', correo: 'responsable@upla.edu.pe', rol: ROLES.RESPONSABLE, activo: true, tema: 'claro', tamanoLetra: 'normal' },
+  { id: 'usr-solic', nombreCompleto: 'Marco Paredes Castro', correo: 'solicitante@upla.edu.pe', rol: ROLES.SOLICITANTE, activo: true, tema: 'claro', tamanoLetra: 'normal' },
+  { id: 'usr-solic-2', nombreCompleto: 'Lucía Gómez Soto', correo: 'lgomez@upla.edu.pe', rol: ROLES.SOLICITANTE, activo: true, tema: 'claro', tamanoLetra: 'normal' }
 ];
 
 export const AMBIENTES_SEMILLA = [

@@ -132,8 +132,8 @@ namespace ReservaUpla.Infrastructure.Migrations
 
                     b.Property<string>("Cor_Usuario")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)")
                         .HasColumnName("cor_usuario");
 
                     b.Property<string>("Has_Usuario")
@@ -153,12 +153,33 @@ namespace ReservaUpla.Infrastructure.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("rol_usuario");
 
+                    b.Property<string>("TamanoLetra")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("normal")
+                        .HasColumnName("tamano_letra");
+
+                    b.Property<string>("Tema")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasDefaultValue("claro")
+                        .HasColumnName("tema");
+
                     b.HasKey("Id_Usuario");
 
                     b.HasIndex("Cor_Usuario")
                         .IsUnique();
 
-                    b.ToTable("usuarios", (string)null);
+                    b.ToTable("usuarios", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_usuarios_tamano_letra", "tamano_letra IN ('pequeno', 'normal', 'grande')");
+
+                            t.HasCheckConstraint("CK_usuarios_tema", "tema IN ('claro', 'oscuro')");
+                        });
                 });
 
             modelBuilder.Entity("ReservaUpla.Domain.Entities.Ambiente", b =>

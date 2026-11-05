@@ -36,7 +36,7 @@ export function mockRegistrarUsuario(cuerpo = {}) {
   if (dbMock.usuarios.some((u) => u.correo === correo)) {
     return respuestaError(409, MENSAJES.CORREO_DUPLICADO, { correo: [MENSAJES.CORREO_DUPLICADO] });
   }
-  const nuevo = { id: `usr-${Date.now()}`, nombreCompleto, correo, rol: ROLES.SOLICITANTE, activo: true };
+  const nuevo = { id: `usr-${Date.now()}`, nombreCompleto, correo, rol: ROLES.SOLICITANTE, activo: true, tema: 'claro', tamanoLetra: 'normal' };
   dbMock.usuarios.push(nuevo);
   dbMock.claves[correo] = contrasena;
   return respuestaExito(nuevo, MENSAJES.REGISTRO_EXITOSO_TITULO, 201);
@@ -49,6 +49,20 @@ export function mockListarResponsables() {
   }
   const lista = dbMock.usuarios.filter((u) => u.activo && u.rol === ROLES.RESPONSABLE);
   return respuestaExito(lista);
+}
+
+export function mockActualizarPreferencias(cuerpo = {}) {
+  const usuario = obtenerUsuarioActualMock();
+  if (!usuario) return respuestaError(401, 'No autenticado.');
+  if (cuerpo.tema && cuerpo.tema !== 'claro' && cuerpo.tema !== 'oscuro') {
+    return respuestaError(400, 'El tema debe ser claro u oscuro.');
+  }
+  if (cuerpo.tamanoLetra && cuerpo.tamanoLetra !== 'pequeno' && cuerpo.tamanoLetra !== 'normal' && cuerpo.tamanoLetra !== 'grande') {
+    return respuestaError(400, 'El tamaño de letra debe ser pequeno, normal o grande.');
+  }
+  if (cuerpo.tema) usuario.tema = cuerpo.tema;
+  if (cuerpo.tamanoLetra) usuario.tamanoLetra = cuerpo.tamanoLetra;
+  return respuestaExito(usuario, 'Preferencias actualizadas.');
 }
 
 export { mockListarAmbientes, mockCrearAmbiente, mockActualizarAmbiente, mockCambiarEstadoAmbiente } from './manejadoresAmbientes';

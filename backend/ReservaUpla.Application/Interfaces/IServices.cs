@@ -20,6 +20,7 @@ public interface IUsuarioService
     Task<UsuarioDto> RegistrarSolicitanteAsync(RegistroUsuarioDto dto, CancellationToken ct = default);
     Task<UsuarioDto?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default);
     Task<IReadOnlyList<UsuarioDto>> ListarResponsablesAsync(CancellationToken ct = default);
+    Task<UsuarioDto> ActualizarPreferenciasAsync(Guid usuarioId, ActualizarPreferenciasDto dto, CancellationToken ct = default);
 }
 
 public interface IAmbienteService

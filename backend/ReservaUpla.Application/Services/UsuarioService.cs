@@ -56,6 +56,19 @@ public class UsuarioService : IUsuarioService
         return lista.Select(UsuarioMapper.ToDto).ToList();
     }
 
+    public async Task<UsuarioDto> ActualizarPreferenciasAsync(Guid usuarioId, ActualizarPreferenciasDto dto, CancellationToken ct = default)
+    {
+        var usuario = await _usuarioRepo.ObtenerPorIdSeguimientoAsync(usuarioId, ct);
+        if (usuario == null)
+            throw new DomainException(Mensajes.RecursoNoEncontrado);
+
+        usuario.ActualizarPreferencias(dto.Tema, dto.TamanoLetra);
+        await _usuarioRepo.ActualizarAsync(usuario, ct);
+        await _unitOfWork.GuardarCambiosAsync(ct);
+
+        return UsuarioMapper.ToDto(usuario);
+    }
+
     private static void ValidarPrecondiciones(RegistroUsuarioDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.Contrasena) ||

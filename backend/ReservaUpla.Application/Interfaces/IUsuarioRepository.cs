@@ -9,8 +9,10 @@ namespace ReservaUpla.Application.Interfaces;
 public interface IUsuarioRepository
 {
     Task<Usuario?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default);
+    Task<Usuario?> ObtenerPorIdSeguimientoAsync(Guid id, CancellationToken ct = default);
     Task<Usuario?> ObtenerPorCorreoAsync(string correo, CancellationToken ct = default);
     Task<bool> ExisteCorreoAsync(string correo, CancellationToken ct = default);
     Task AgregarAsync(Usuario usuario, CancellationToken ct = default);
+    Task ActualizarAsync(Usuario usuario, CancellationToken ct = default);
     Task<IReadOnlyList<Usuario>> ListarResponsablesAsync(CancellationToken ct = default);
 }

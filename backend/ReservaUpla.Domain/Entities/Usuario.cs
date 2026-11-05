@@ -13,6 +13,8 @@ public class Usuario
     public string Has_Usuario { get; private set; } = string.Empty;
     public RolUsuario Rol_Usuario { get; private set; }
     public bool Act_Usuario { get; private set; }
+    public string Tema { get; private set; } = "claro";
+    public string TamanoLetra { get; private set; } = "normal";
 
     // Constructor privado para EF Core
     private Usuario() { }
@@ -32,8 +34,32 @@ public class Usuario
             Cor_Usuario = correoNormalizado,
             Has_Usuario = hashContrasena,
             Rol_Usuario = rol,
-            Act_Usuario = true
+            Act_Usuario = true,
+            Tema = "claro",
+            TamanoLetra = "normal"
         };
+    }
+
+    public void ActualizarPreferencias(string? tema, string? tamanoLetra)
+    {
+        if (tema == null && tamanoLetra == null)
+            throw new DomainException("Debe proporcionar al menos una preferencia válida ('tema' o 'tamanoLetra').");
+
+        if (tema != null)
+        {
+            var temaLimpio = tema.Trim().ToLowerInvariant();
+            if (temaLimpio != "claro" && temaLimpio != "oscuro")
+                throw new DomainException("El tema debe ser 'claro' u 'oscuro'.");
+            Tema = temaLimpio;
+        }
+
+        if (tamanoLetra != null)
+        {
+            var tamanoLimpio = tamanoLetra.Trim().ToLowerInvariant();
+            if (tamanoLimpio != "pequeno" && tamanoLimpio != "normal" && tamanoLimpio != "grande")
+                throw new DomainException("El tamaño de letra debe ser 'pequeno', 'normal' o 'grande'.");
+            TamanoLetra = tamanoLimpio;
+        }
     }
 
     private static void ValidarDatos(string nombre, string correo, string hashContrasena)

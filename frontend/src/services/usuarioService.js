@@ -22,3 +22,11 @@ export async function listarResponsablesApi(signal) {
     signal
   });
 }
+
+export async function actualizarPreferenciasApi({ tema, tamanoLetra }, signal) {
+  return solicitarApi('/api/usuarios/preferencias', {
+    metodo: 'PATCH',
+    cuerpo: { tema, tamanoLetra },
+    signal
+  });
+}

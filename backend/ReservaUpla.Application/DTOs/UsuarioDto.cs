@@ -7,4 +7,6 @@ public record UsuarioDto(
     string NombreCompleto,
     string Correo,
     string Rol,
-    bool Activo);
+    bool Activo,
+    string Tema = "claro",
+    string TamanoLetra = "normal");

@@ -6,6 +6,19 @@
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ReservaUPLA</title>
+    <script>
+      (function() {
+        try {
+          var raw = localStorage.getItem('reservaupla_pref_activa');
+          if (raw) {
+            var p = JSON.parse(raw);
+            if (p.tema === 'oscuro') document.documentElement.setAttribute('data-tema', 'oscuro');
+            else document.documentElement.setAttribute('data-tema', 'claro');
+            if (p.tamanoFuente) document.documentElement.style.fontSize = p.tamanoFuente;
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

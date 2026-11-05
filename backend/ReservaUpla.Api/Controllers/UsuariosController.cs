@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReservaUpla.Api.Extensions;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
 using ReservaUpla.Domain.Constants;
@@ -48,5 +49,17 @@ public class UsuariosController : ControllerBase
     {
         var lista = await _usuarioService.ListarResponsablesAsync(ct);
         return Ok(lista);
+    }
+
+    [HttpPatch("preferencias")]
+    [Authorize]
+    public async Task<ActionResult<UsuarioDto>> ActualizarPreferencias([FromBody] ActualizarPreferenciasDto dto, CancellationToken ct)
+    {
+        var usuarioId = User.GetUserId();
+        if (usuarioId == Guid.Empty)
+            return Unauthorized();
+
+        var usuarioActualizado = await _usuarioService.ActualizarPreferenciasAsync(usuarioId, dto, ct);
+        return Ok(usuarioActualizado);
     }
 }
