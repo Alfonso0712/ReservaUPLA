@@ -1,7 +1,6 @@
 // RF-08 · Rediseño visual y funcional del Panel · Cambio 1 al 8 · E-30..53
 import { useState } from 'react';
 import { useLocation, useOutletContext } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
 import { usePermisos } from '../hooks/usePermisos';
 import { useDashboard } from '../hooks/useDashboard';
 import { useReservas } from '../hooks/useReservas';
@@ -24,7 +23,7 @@ import Toast from '../components/ui/Toast';
 import Button from '../components/ui/Button';
 
 export default function Panel() {
-  const { usuario } = useAuth(); const { puede } = usePermisos(); const ctx = useOutletContext() || {};
+  const { puede } = usePermisos(); const ctx = useOutletContext() || {};
   const ubicacion = useLocation(); const [toasts, setToasts] = useState([]);
   const { indicadores, cargando: cargandoDash, error: errorDash, recargar: recargarDash } = useDashboard(ctx.versionDatos || 0);
   const { reservas, cargando: cargandoResv, error: errorResv, recargar: recargarResv, cambiarEstado } = useReservas({ versionExterna: ctx.versionDatos || 0 });
@@ -41,7 +40,7 @@ export default function Panel() {
 
   return (
     <div className="space-y-5 max-w-[1440px] mx-auto w-full">
-      <EncabezadoPanel usuario={usuario} pendientes={indicadores?.pendientes ?? 0} puedeReservar={puede(PERMISOS.RESERVAS_CREAR)} puedeCrearAmbiente={puede(PERMISOS.AMBIENTES_CREAR)} alNuevaReserva={() => ctx.abrirModalReserva?.('')} />
+      <EncabezadoPanel puedeReservar={puede(PERMISOS.RESERVAS_CREAR)} alNuevaReserva={() => ctx.abrirModalReserva?.('')} />
       {ubicacion.state?.alertaSinPermiso && <AlertMessage variante="error" rol="alert" mensaje={ubicacion.state.alertaSinPermiso} enfocarAlAparecer />}
       {ctx.mensajeGlobal && <AlertMessage variante="exito" rol="status" mensaje={ctx.mensajeGlobal} enfocarAlAparecer alCerrar={ctx.limpiarMensajeGlobal} />}
       {error && <div className="flex items-center justify-between p-4 rounded-control bg-rechazada-fondo text-rechazada-texto border border-rechazada-texto text-sm"><span>{error}</span><Button variante="secondary" tamano="sm" onClick={recargarTodo}>Reintentar</Button></div>}
