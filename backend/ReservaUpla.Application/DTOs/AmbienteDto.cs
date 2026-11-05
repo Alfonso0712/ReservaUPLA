@@ -10,4 +10,7 @@ public record AmbienteDto(
     string Ubicacion,
     string Estado,
     Guid? ResponsableId,
-    string? NombreResponsable);
+    string? NombreResponsable)
+{
+    public string? ResponsableNombre => NombreResponsable;
+}

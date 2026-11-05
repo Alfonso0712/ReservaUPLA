@@ -40,7 +40,7 @@ public class ReservasController : ControllerBase
         [FromQuery] Guid? ambienteId,
         [FromQuery] DateOnly? fecha,
         [FromQuery] int pagina = 1,
-        [FromQuery] int tamanoPagina = 10,
+        [FromQuery] int tamanoPagina = 100,
         CancellationToken ct = default)
     {
         var filtro = new FiltroReservasDto(estado, ambienteId, fecha, pagina, tamanoPagina);

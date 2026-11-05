@@ -67,7 +67,7 @@ public class ReservaService : IReservaService
             await _reservaRepo.AgregarAsync(reserva, ct);
             await _unitOfWork.GuardarCambiosAsync(ct);
 
-            return ReservaMapper.ToDto(reserva, solicitante.Nom_Usuario, ambiente.Nom_Ambiente);
+            return ReservaMapper.ToDto(reserva, solicitante, ambiente);
         }, ct);
     }
 
@@ -106,7 +106,7 @@ public class ReservaService : IReservaService
 
             var solicitante = await _usuarioRepo.ObtenerPorIdAsync(reserva.Idu_Reserva, ct);
 
-            return ReservaMapper.ToDto(reserva, solicitante?.Nom_Usuario ?? string.Empty, ambiente.Nom_Ambiente);
+            return ReservaMapper.ToDto(reserva, solicitante, ambiente);
         }, ct);
     }
 
@@ -138,7 +138,7 @@ public class ReservaService : IReservaService
         {
             var sol = await _usuarioRepo.ObtenerPorIdAsync(r.Idu_Reserva, ct);
             var amb = await _ambienteRepo.ObtenerPorIdAsync(r.Ida_Reserva, ct);
-            dtos.Add(ReservaMapper.ToDto(r, sol?.Nom_Usuario ?? string.Empty, amb?.Nom_Ambiente ?? string.Empty));
+            dtos.Add(ReservaMapper.ToDto(r, sol, amb));
         }
 
         return new PaginadoDto<ReservaDto>(dtos, total, filtro.Pagina, filtro.TamanoPagina);

@@ -19,7 +19,7 @@ export function useReservas({ estado = '', tipo = '', texto = '', versionExterna
     if (signal?.aborted || idPeticion !== peticionRef.current) return;
     const resultado = interpretarRespuesta(resp);
     if (resultado.ok) {
-      setReservas(Array.isArray(resultado.datos) ? resultado.datos : []);
+      setReservas(Array.isArray(resultado.datos) ? resultado.datos : (Array.isArray(resultado.datos?.items) ? resultado.datos.items : []));
     } else {
       setError(resultado.errorGeneral);
     }

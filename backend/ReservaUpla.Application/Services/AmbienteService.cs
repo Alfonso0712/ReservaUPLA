@@ -38,7 +38,8 @@ public class AmbienteService : IAmbienteService
 
     public async Task<AmbienteDto> RegistrarAmbienteAsync(CrearAmbienteDto dto, CancellationToken ct = default)
     {
-        if (!Enum.TryParse<TipoAmbiente>(dto.Tipo, true, out var tipo))
+        var tipoStr = dto.Tipo?.Replace(" ", "").Replace("ó", "o") ?? string.Empty;
+        if (!Enum.TryParse<TipoAmbiente>(tipoStr, true, out var tipo))
             throw new DomainException(Mensajes.AmbienteTipoInvalido);
 
         var ambiente = Ambiente.Crear(dto.Nombre, tipo, dto.Capacidad, dto.Ubicacion, dto.ResponsableId);

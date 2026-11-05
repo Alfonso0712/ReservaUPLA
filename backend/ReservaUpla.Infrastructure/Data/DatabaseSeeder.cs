@@ -69,27 +69,27 @@ public class DatabaseSeeder
 
         // 4. 20 Ambientes del Campus UPLA
         var amb1 = Ambiente.Crear("Laboratorio de Cómputo 101", TipoAmbiente.LaboratorioComputo, 35, "Pabellón B, 1er piso", respElena.Id_Usuario);
-        var amb2 = Ambiente.Crear("Laboratorio de Cómputo 102", TipoAmbiente.LaboratorioComputo, 40, "Pabellón B, 1er piso", respElena.Id_Usuario);
-        var amb3 = Ambiente.Crear("Laboratorio de Cómputo 201", TipoAmbiente.LaboratorioComputo, 30, "Pabellón B, 2do piso", respMiguel.Id_Usuario);
-        var amb4 = Ambiente.Crear("Laboratorio de Cómputo 202", TipoAmbiente.LaboratorioComputo, 35, "Pabellón B, 2do piso", respMiguel.Id_Usuario);
+        var amb2 = Ambiente.Crear("Laboratorio de Cómputo 102", TipoAmbiente.LaboratorioComputo, 40, "Pabellón B, 1er piso", respMiguel.Id_Usuario);
+        var amb3 = Ambiente.Crear("Laboratorio de Cómputo 201", TipoAmbiente.LaboratorioComputo, 30, "Pabellón B, 2do piso", respPatricia.Id_Usuario);
+        var amb4 = Ambiente.Crear("Laboratorio de Cómputo 202", TipoAmbiente.LaboratorioComputo, 35, "Pabellón B, 2do piso");
         amb4.ActualizarEstado(EstadoAmbiente.Mantenimiento);
 
-        var amb5 = Ambiente.Crear("Laboratorio de Simulación y Redes", TipoAmbiente.LaboratorioEspecializado, 28, "Pabellón B, 3er piso", respMiguel.Id_Usuario);
-        var amb6 = Ambiente.Crear("Laboratorio de Inteligencia Artificial", TipoAmbiente.LaboratorioEspecializado, 25, "Pabellón B, 4to piso", respPatricia.Id_Usuario);
-        var amb7 = Ambiente.Crear("Laboratorio de Robótica y Automatización", TipoAmbiente.LaboratorioEspecializado, 24, "Pabellón B, 4to piso", respPatricia.Id_Usuario);
-        var amb8 = Ambiente.Crear("Laboratorio de Física Aplicada", TipoAmbiente.LaboratorioEspecializado, 30, "Pabellón C, 1er piso", respRoberto.Id_Usuario);
-        var amb9 = Ambiente.Crear("Laboratorio de Química e Industrial", TipoAmbiente.LaboratorioEspecializado, 26, "Pabellón C, 1er piso", respRoberto.Id_Usuario);
+        var amb5 = Ambiente.Crear("Laboratorio de Simulación y Redes", TipoAmbiente.LaboratorioEspecializado, 28, "Pabellón B, 3er piso", respRoberto.Id_Usuario);
+        var amb6 = Ambiente.Crear("Laboratorio de Inteligencia Artificial", TipoAmbiente.LaboratorioEspecializado, 25, "Pabellón B, 4to piso", respBeatriz.Id_Usuario);
+        var amb7 = Ambiente.Crear("Laboratorio de Robótica y Automatización", TipoAmbiente.LaboratorioEspecializado, 24, "Pabellón B, 4to piso", respElena.Id_Usuario);
+        var amb8 = Ambiente.Crear("Laboratorio de Física Aplicada", TipoAmbiente.LaboratorioEspecializado, 30, "Pabellón C, 1er piso", respMiguel.Id_Usuario);
+        var amb9 = Ambiente.Crear("Laboratorio de Química e Industrial", TipoAmbiente.LaboratorioEspecializado, 26, "Pabellón C, 1er piso");
         amb9.ActualizarEstado(EstadoAmbiente.Mantenimiento);
 
-        var amb10 = Ambiente.Crear("Auditorio Central UPLA", TipoAmbiente.Auditorio, 350, "Pabellón A, 1er piso", respElena.Id_Usuario);
-        var amb11 = Ambiente.Crear("Auditorio de la Facultad de Ingeniería", TipoAmbiente.Auditorio, 200, "Pabellón B, 5to piso", respElena.Id_Usuario);
+        var amb10 = Ambiente.Crear("Auditorio Central UPLA", TipoAmbiente.Auditorio, 350, "Pabellón A, 1er piso", respPatricia.Id_Usuario);
+        var amb11 = Ambiente.Crear("Auditorio de la Facultad de Ingeniería", TipoAmbiente.Auditorio, 200, "Pabellón B, 5to piso", respRoberto.Id_Usuario);
         var amb12 = Ambiente.Crear("Auditorio de Posgrado y Doctorado", TipoAmbiente.Auditorio, 120, "Edificio de Posgrado, 3er piso", respBeatriz.Id_Usuario);
         var amb13 = Ambiente.Crear("Sala de Reuniones Decanato", TipoAmbiente.SalaReuniones, 18, "Pabellón A, 2do piso");
-        var amb14 = Ambiente.Crear("Sala de Grados y Tesis A", TipoAmbiente.SalaReuniones, 25, "Pabellón A, 3er piso", respBeatriz.Id_Usuario);
-        var amb15 = Ambiente.Crear("Sala de Grados y Tesis B", TipoAmbiente.SalaReuniones, 20, "Pabellón A, 3er piso", respBeatriz.Id_Usuario);
-        var amb16 = Ambiente.Crear("Sala de Videoconferencias UPLA", TipoAmbiente.SalaReuniones, 16, "Edificio Central, 2do piso", respElena.Id_Usuario);
-        var amb17 = Ambiente.Crear("Sala de Profesores de Ingeniería", TipoAmbiente.SalaReuniones, 14, "Pabellón B, 2do piso", respMiguel.Id_Usuario);
-        var amb18 = Ambiente.Crear("Laboratorio de Innovación y Proyectos TIC", TipoAmbiente.LaboratorioEspecializado, 32, "Pabellón D, 2do piso", respPatricia.Id_Usuario);
+        var amb14 = Ambiente.Crear("Sala de Grados y Tesis A", TipoAmbiente.SalaReuniones, 25, "Pabellón A, 3er piso", respElena.Id_Usuario);
+        var amb15 = Ambiente.Crear("Sala de Grados y Tesis B", TipoAmbiente.SalaReuniones, 20, "Pabellón A, 3er piso", respMiguel.Id_Usuario);
+        var amb16 = Ambiente.Crear("Sala de Videoconferencias UPLA", TipoAmbiente.SalaReuniones, 16, "Edificio Central, 2do piso");
+        var amb17 = Ambiente.Crear("Sala de Profesores de Ingeniería", TipoAmbiente.SalaReuniones, 14, "Pabellón B, 2do piso", respPatricia.Id_Usuario);
+        var amb18 = Ambiente.Crear("Laboratorio de Innovación y Proyectos TIC", TipoAmbiente.LaboratorioEspecializado, 32, "Pabellón D, 2do piso", respBeatriz.Id_Usuario);
         var amb19 = Ambiente.Crear("Auditorio Magna Chupaca", TipoAmbiente.Auditorio, 280, "Sede Chupaca, Pabellón Principal", respRoberto.Id_Usuario);
         var amb20 = Ambiente.Crear("Sala de Coordinación Curricular", TipoAmbiente.SalaReuniones, 12, "Pabellón Central, 3er piso");
 

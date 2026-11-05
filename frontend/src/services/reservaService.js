@@ -2,7 +2,7 @@
 import { solicitarApi } from './apiClient';
 
 export async function listarReservasApi({ estado = '', tipo = '', texto = '' } = {}, signal) {
-  const params = new URLSearchParams();
+  const params = new URLSearchParams({ tamanoPagina: '100' });
   if (estado) params.set('estado', estado);
   if (tipo) params.set('tipo', tipo);
   if (texto) params.set('texto', texto);
