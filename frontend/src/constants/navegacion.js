@@ -1,59 +1,51 @@
-// Nielsen 2 · Nielsen 4 · ISO 9241-110 · E-31
-import { ROLES } from './roles';
+// Configuración centralizada de navegación derivada de permisos · E-45..46
 import { RUTAS } from './rutas';
+import { PERMISOS } from './permisos';
+import { obtenerPermisosDeRol } from '../mocks/permisosPorRol';
 
-export const GRUPOS_NAVEGACION = [
+export const ITEMS_NAVEGACION = Object.freeze([
   {
-    id: 'resumen',
-    titulo: 'Resumen',
-    items: [
-      {
-        id: 'panel',
-        etiqueta: 'Panel',
-        ruta: RUTAS.PANEL,
-        icono: 'LayoutDashboard',
-        roles: [ROLES.ADMINISTRADOR, ROLES.RESPONSABLE, ROLES.SOLICITANTE]
-      }
-    ]
+    id: 'panel',
+    etiqueta: 'Inicio',
+    ruta: RUTAS.PANEL,
+    icono: 'LayoutDashboard',
+    permiso: PERMISOS.DASHBOARD_VER
   },
   {
     id: 'reservas',
-    titulo: 'Reservas',
-    items: [
-      {
-        id: 'listado-reservas',
-        etiqueta: 'Reservas',
-        ruta: RUTAS.RESERVAS,
-        icono: 'CalendarDays',
-        roles: [ROLES.ADMINISTRADOR, ROLES.RESPONSABLE, ROLES.SOLICITANTE]
-      },
-      {
-        id: 'nueva-reserva',
-        etiqueta: 'Nueva reserva',
-        accion: 'abrirModalReserva',
-        icono: 'CalendarPlus',
-        roles: [ROLES.ADMINISTRADOR, ROLES.SOLICITANTE]
-      }
-    ]
+    etiqueta: 'Reservas',
+    ruta: RUTAS.RESERVAS,
+    icono: 'CalendarDays',
+    permiso: PERMISOS.RESERVAS_VER
   },
   {
-    id: 'catalogo',
-    titulo: 'Catálogo',
-    items: [
-      {
-        id: 'ambientes',
-        etiqueta: 'Ambientes',
-        ruta: RUTAS.AMBIENTES,
-        icono: 'Building2',
-        roles: [ROLES.ADMINISTRADOR, ROLES.RESPONSABLE, ROLES.SOLICITANTE]
-      }
-    ]
+    id: 'ambientes',
+    etiqueta: 'Ambientes',
+    ruta: RUTAS.AMBIENTES,
+    icono: 'Building2',
+    permiso: PERMISOS.AMBIENTES_VER
   }
-];
+]);
 
+export function obtenerItemsPorPermiso(puede) {
+  if (typeof puede !== 'function') return [];
+  return ITEMS_NAVEGACION.filter((item) => puede(item.permiso));
+}
+
+// Compatibilidad retroactiva para suite de pruebas existente (E-31)
 export function obtenerGruposPorRol(rol) {
-  return GRUPOS_NAVEGACION.map((grupo) => ({
-    ...grupo,
-    items: grupo.items.filter((item) => item.roles.includes(rol))
-  })).filter((grupo) => grupo.items.length > 0);
+  const permisos = obtenerPermisosDeRol(rol);
+  const tieneNueva = permisos.includes(PERMISOS.RESERVAS_CREAR);
+  return [
+    {
+      id: 'principal',
+      titulo: '',
+      items: [
+        { id: 'panel', etiqueta: 'Inicio', ruta: RUTAS.PANEL, permiso: PERMISOS.DASHBOARD_VER },
+        { id: 'listado-reservas', etiqueta: 'Reservas', ruta: RUTAS.RESERVAS, permiso: PERMISOS.RESERVAS_VER },
+        ...(tieneNueva ? [{ id: 'nueva-reserva', etiqueta: 'Nueva reserva', permiso: PERMISOS.RESERVAS_CREAR }] : []),
+        { id: 'ambientes', etiqueta: 'Ambientes', ruta: RUTAS.AMBIENTES, permiso: PERMISOS.AMBIENTES_VER }
+      ]
+    }
+  ];
 }

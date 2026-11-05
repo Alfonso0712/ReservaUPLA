@@ -11,7 +11,7 @@ export default function ControlTamanoFuente({ tamanoActual, alCambiar, mimetizad
     <div role="group" aria-label="Tamaño de fuente" className={`h-[38px] inline-flex items-center gap-0.5 p-0.5 rounded-control border ${estiloCaja}`}>
       {ESCALAS_FUENTE.map((escala) => {
         const activo = actual === escala.porcentaje;
-        const estiloActivo = mimetizado ? 'bg-white text-primario shadow-sm' : 'bg-primario text-sobre-primario';
+        const estiloActivo = mimetizado ? 'bg-white text-primario shadow-sm' : 'bg-[var(--color-brand)] text-sobre-primario';
         const estiloInactivo = mimetizado ? 'bg-transparent text-sobre-primario hover:bg-white/20' : 'bg-transparent text-texto hover:bg-superficie-2';
         return (
           <button

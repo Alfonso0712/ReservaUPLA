@@ -1,4 +1,4 @@
-// RF-02 · RV-04..07 · Modal accesible para registrar nuevo ambiente (solo Administrador) · E-10 · E-11 · E-33
+// RF-02 · RV-04..07 · Modal accesible para registrar o editar ambiente · E-10..11 · E-39..40
 import { useEffect, useId } from 'react';
 import { useFormulario } from '../../hooks/useFormulario';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
@@ -11,17 +11,21 @@ import Button from '../ui/Button';
 import AlertMessage from '../ui/AlertMessage';
 import Icono from '../ui/Icono';
 
-export default function FormularioAmbiente({ abierto, responsables = [], alRegistrar, alCerrar, alExito }) {
+export default function FormularioAmbiente({
+  abierto, modo = 'crear', ambienteAEditar = null, responsables = [],
+  alRegistrar, alEditar, alCerrar, alExito
+}) {
   const idTitulo = useId();
+  const esEdicion = modo === 'editar';
   const form = useFormulario({
     valoresIniciales: { nombre: '', tipo: '', capacidad: '', ubicacion: '', responsableId: '' },
     validar: validarAmbiente,
     alEnviar: async (vals, { setErrores, setErrorGeneral, enfocarPrimerError }) => {
       const { datosNormalizados } = validarAmbiente(vals);
-      const res = await alRegistrar(datosNormalizados);
-      if (res.ok) { alExito?.(MENSAJES.AMBIENTE_CREADO_EXITO, res.datos); return; }
-      if (Object.keys(res.errores || {}).length > 0) { setErrores(res.errores); enfocarPrimerError(res.errores); return; }
-      setErrorGeneral(res.errorGeneral);
+      const res = esEdicion ? await alEditar?.(ambienteAEditar.id, datosNormalizados) : await alRegistrar?.(datosNormalizados);
+      if (res?.ok) { alExito?.(esEdicion ? MENSAJES.AMBIENTE_ACTUALIZADO_EXITO : MENSAJES.AMBIENTE_CREADO_EXITO, res.datos); return; }
+      if (Object.keys(res?.errores || {}).length > 0) { setErrores(res.errores); enfocarPrimerError(res.errores); return; }
+      setErrorGeneral(res?.errorGeneral);
     }
   });
 
@@ -29,10 +33,13 @@ export default function FormularioAmbiente({ abierto, responsables = [], alRegis
 
   useEffect(() => {
     if (!abierto) return;
-    form.setValores({ nombre: '', tipo: '', capacidad: '', ubicacion: '', responsableId: '' });
-    form.setErrores({});
-    form.setErrorGeneral('');
-  }, [abierto]); // eslint-disable-line react-hooks/exhaustive-deps
+    const inicial = esEdicion && ambienteAEditar ? {
+      nombre: ambienteAEditar.nombre || '', tipo: ambienteAEditar.tipo || '',
+      capacidad: String(ambienteAEditar.capacidad ?? ''), ubicacion: ambienteAEditar.ubicacion || '',
+      responsableId: ambienteAEditar.responsableId || ''
+    } : { nombre: '', tipo: '', capacidad: '', ubicacion: '', responsableId: '' };
+    form.setValores(inicial); form.setErrores({}); form.setErrorGeneral('');
+  }, [abierto, esEdicion, ambienteAEditar]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!abierto) return null;
   const opcionesResp = responsables.map((r) => ({ valor: r.id, etiqueta: `${r.nombreCompleto} (${r.correo})` }));
@@ -41,8 +48,8 @@ export default function FormularioAmbiente({ abierto, responsables = [], alRegis
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
         <div className="flex items-center justify-between gap-3 pb-3 mb-4 border-b border-borde">
-          <h2 id={idTitulo} className="text-xl font-semibold text-texto">Nuevo ambiente</h2>
-          <button type="button" onClick={alCerrar} disabled={form.enProceso} aria-label="Cerrar ventana de nuevo ambiente" className="min-h-control min-w-control p-2 inline-flex items-center justify-center rounded-control text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button>
+          <h2 id={idTitulo} className="text-xl font-semibold text-texto">{esEdicion ? 'Editar ambiente' : 'Nuevo ambiente'}</h2>
+          <button type="button" onClick={alCerrar} disabled={form.enProceso} aria-label={`Cerrar ventana de ${esEdicion ? 'editar' : 'nuevo'} ambiente`} className="min-h-control min-w-control p-2 inline-flex items-center justify-center rounded-control text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button>
         </div>
         <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
         {form.errorGeneral && <div className="mb-4"><AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer /></div>}
@@ -56,7 +63,7 @@ export default function FormularioAmbiente({ abierto, responsables = [], alRegis
           <SelectInput ref={form.registrarRef('responsableId')} nombre="responsableId" etiqueta="Responsable" obligatorio={false} valor={form.valores.responsableId} alCambiar={(e) => form.cambiarValor('responsableId', e.target.value)} opciones={opcionesResp} placeholder="Sin asignar (opcional)" ayuda={MENSAJES.AYUDA_RESPONSABLE_AMBIENTE} soloLectura={form.enProceso} />
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-borde">
             <Button variante="secundario" disabled={form.enProceso} onClick={alCerrar}>Cancelar</Button>
-            <Button tipo="submit" variante="primario" enProceso={form.enProceso}>Registrar ambiente</Button>
+            <Button tipo="submit" variante="primario" enProceso={form.enProceso}>{esEdicion ? 'Guardar cambios' : 'Registrar ambiente'}</Button>
           </div>
         </form>
       </div>

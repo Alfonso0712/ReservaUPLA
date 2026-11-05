@@ -59,7 +59,7 @@ export function useFormulario({ valoresIniciales, validar, alEnviar }) {
     try {
       await alEnviar?.(valores, { setErrores, setErrorGeneral, setValores, enfocarPrimerError, camposRef });
     } finally {
-      enProcesoRef.current = false; setEnProceso(false);
+      enProcesoRef.current = false; try { setEnProceso(false); } catch { /* ignorar */ }
     }
   }, [validar, valores, alEnviar, enfocarPrimerError]);
 

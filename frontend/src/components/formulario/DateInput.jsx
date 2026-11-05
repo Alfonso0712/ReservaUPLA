@@ -23,6 +23,8 @@ const DateInput = forwardRef(function DateInput(
     readOnly = false,
     soloLectura = false,
     className = '',
+    tamano = 'md',
+    claseInput = '',
     ...props
   },
   ref
@@ -36,6 +38,7 @@ const DateInput = forwardRef(function DateInput(
   const esSoloLectura = Boolean(soloLectura || readOnly);
   const describedBy = construirDescribedBy(idFinal, ayuda, error);
   const tieneError = Boolean(error);
+  const estiloTamano = tamano === 'sm' ? 'h-9 px-2 text-xs' : 'min-h-control px-3.5 py-2 text-base';
 
   return (
     <CampoFormulario id={idFinal} etiqueta={etiqueta} obligatorio={obligatorio} ayuda={ayuda} error={error} className={className}>
@@ -52,9 +55,9 @@ const DateInput = forwardRef(function DateInput(
         readOnly={esSoloLectura}
         aria-invalid={tieneError}
         aria-describedby={describedBy}
-        className={`w-full min-h-control px-3.5 py-2 rounded-control border bg-superficie text-texto text-base cifra-tabular transition-colors read-only:bg-superficie-2 ${
-          tieneError ? 'border-rechazada-texto' : 'border-borde-control'
-        }`}
+        className={`w-full ${estiloTamano} rounded-control border bg-superficie text-texto cifra-tabular transition-colors read-only:bg-superficie-2 ${
+          tieneError ? 'border-rechazada-texto' : 'border-borde hover:border-borde-control focus:border-primario-enlace focus:outline-none'
+        } ${claseInput}`.trim()}
         {...props}
       />
     </CampoFormulario>

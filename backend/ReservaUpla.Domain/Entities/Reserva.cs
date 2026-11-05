@@ -1,4 +1,5 @@
 using System;
+using ReservaUpla.Domain.Common;
 using ReservaUpla.Domain.Constants;
 using ReservaUpla.Domain.Enums;
 using ReservaUpla.Domain.Exceptions;
@@ -51,30 +52,52 @@ public class Reserva
     }
 
     // RF-07 · RN-05 · RN-06 · RV-15 · RV-16 · RV-17 · E-18 · E-19 · E-20 · E-21
-    public void CambiarEstado(EstadoReserva nuevoEstado, RolUsuario rolActor, Guid usuarioIdActor)
+    public void CambiarEstado(EstadoReserva nuevoEstado, IActor actor)
     {
         if (Est_Reserva == EstadoReserva.Rechazada || Est_Reserva == EstadoReserva.Cancelada)
-            throw new DomainException(Mensajes.ReservaRechazadaInmodificable);
+            throw new DomainException(Mensajes.ReservaRechazadaInmodificable, esConflicto: true);
 
-        if (nuevoEstado == EstadoReserva.Aprobada || nuevoEstado == EstadoReserva.Rechazada)
+        if (nuevoEstado == EstadoReserva.Aprobada)
         {
-            if (rolActor != RolUsuario.Administrador)
+            if (!actor.Tiene(Permisos.ReservasAprobar))
                 throw new DomainException(Mensajes.SoloAdminApruebaRechaza);
 
             if (Est_Reserva != EstadoReserva.Pendiente)
-                throw new DomainException(Mensajes.TransicionEstadoInvalida);
+                throw new DomainException(Mensajes.TransicionEstadoInvalida, esConflicto: true);
+        }
+        else if (nuevoEstado == EstadoReserva.Rechazada)
+        {
+            if (!actor.Tiene(Permisos.ReservasRechazar))
+                throw new DomainException(Mensajes.SoloAdminApruebaRechaza);
+
+            if (Est_Reserva != EstadoReserva.Pendiente)
+                throw new DomainException(Mensajes.TransicionEstadoInvalida, esConflicto: true);
         }
         else if (nuevoEstado == EstadoReserva.Cancelada)
         {
-            if (rolActor == RolUsuario.Solicitante && usuarioIdActor != Idu_Reserva)
+            if (Est_Reserva != EstadoReserva.Pendiente && Est_Reserva != EstadoReserva.Aprobada)
+                throw new DomainException(Mensajes.TransicionEstadoInvalida, esConflicto: true);
+
+            var puedeCancelarCualquiera = actor.Tiene(Permisos.ReservasCancelarCualquiera);
+            var puedeCancelarPropias = actor.Tiene(Permisos.ReservasCancelarPropias);
+
+            if (!puedeCancelarCualquiera && !puedeCancelarPropias)
+                throw new DomainException(Mensajes.AccesoDenegado);
+
+            if (!puedeCancelarCualquiera && puedeCancelarPropias && actor.Id != Idu_Reserva)
                 throw new DomainException(Mensajes.SolicitanteSoloCancelaPropias);
         }
         else
         {
-            throw new DomainException(Mensajes.TransicionEstadoInvalida);
+            throw new DomainException(Mensajes.TransicionEstadoInvalida, esConflicto: true);
         }
 
         Est_Reserva = nuevoEstado;
+    }
+
+    public void CambiarEstado(EstadoReserva nuevoEstado, RolUsuario rolActor, Guid usuarioIdActor)
+    {
+        CambiarEstado(nuevoEstado, new ActorReserva(usuarioIdActor, rolActor));
     }
 
     private static void ValidarHorarioYFecha(DateOnly fecha, TimeSpan inicio, TimeSpan fin, DateOnly hoy)

@@ -1,6 +1,6 @@
 // Nielsen 3 · WCAG 2.2 AA · Layout principal con barra lateral fija, cabecera y contenedor semántico · E-25
 import { useState, useRef, useCallback } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { RUTAS } from '../constants/rutas';
 import SaltarAlContenido from '../components/navegacion/SaltarAlContenido';
@@ -9,8 +9,8 @@ import Header from '../components/navegacion/Header';
 import PageContainer from '../components/navegacion/PageContainer';
 
 export default function LayoutPrincipal({ children, renderModalReserva = null }) {
-  const { usuario, cerrarSesion } = useAuth();
-  const navegar = useNavigate();
+  const { usuario } = useAuth();
+  const ubicacion = useLocation();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [modalReserva, setModalReserva] = useState({ abierto: false, ambienteId: '' });
   const [mensajeGlobal, setMensajeGlobal] = useState('');
@@ -31,11 +31,6 @@ export default function LayoutPrincipal({ children, renderModalReserva = null })
     setVersionDatos((v) => v + 1);
   }, []);
 
-  const manejarCerrarSesion = useCallback(async () => {
-    await cerrarSesion();
-    navegar(RUTAS.INGRESAR, { replace: true });
-  }, [cerrarSesion, navegar]);
-
   const contextoOutlet = {
     abrirModalReserva,
     mensajeGlobal,
@@ -43,6 +38,8 @@ export default function LayoutPrincipal({ children, renderModalReserva = null })
     versionDatos,
     recargarDatos: () => setVersionDatos((v) => v + 1)
   };
+
+  const anchoContenedor = (ubicacion.pathname === RUTAS.PANEL || ubicacion.pathname === '/') ? 'estandar' : 'completo';
 
   return (
     <div className="min-h-screen flex bg-fondo text-texto">
@@ -52,7 +49,6 @@ export default function LayoutPrincipal({ children, renderModalReserva = null })
         abiertoMovil={menuAbierto}
         alCerrarMovil={() => setMenuAbierto(false)}
         alAbrirNuevaReserva={() => abrirModalReserva('')}
-        alCerrarSesion={manejarCerrarSesion}
       />
       <div className="flex-1 flex flex-col min-w-0">
         <Header
@@ -60,7 +56,7 @@ export default function LayoutPrincipal({ children, renderModalReserva = null })
           alAlternarMenu={() => setMenuAbierto((prev) => !prev)}
           botonMenuRef={botonMenuRef}
         />
-        <PageContainer>
+        <PageContainer ancho={anchoContenedor}>
           {children || <Outlet context={contextoOutlet} />}
         </PageContainer>
       </div>

@@ -1,13 +1,9 @@
-// Manejadores mock de autenticación, usuarios y ambientes · RF-01 · RF-02 · E-01..11 · E-32
+// Manejadores mock de autenticación y usuarios · RF-01 · E-01..09 · E-45..49
 import { ROLES } from '../constants/roles';
-import { ESTADOS_AMBIENTE } from '../constants/estados';
 import { MENSAJES } from '../constants/mensajes';
-import { validarLogin, validarRegistroSolicitante, validarAmbiente } from '../validation/validadores';
-import { dbMock, guardarIdSesionMock, obtenerUsuarioActualMock, respuestaExito, respuestaError } from './estadoMock';
-
-function formatearErroresCampo(errores) {
-  return Object.fromEntries(Object.entries(errores).map(([k, v]) => [k, [v]]));
-}
+import { validarLogin, validarRegistroSolicitante } from '../validation/validadores';
+import { dbMock, guardarIdSesionMock, obtenerUsuarioActualMock, respuestaExito, respuestaError, formatearErroresCampo } from './estadoMock';
+import { obtenerPermisosDeRol } from './permisosPorRol';
 
 export function mockLogin(cuerpo = {}) {
   const val = validarLogin(cuerpo);
@@ -17,7 +13,8 @@ export function mockLogin(cuerpo = {}) {
     return respuestaError(401, MENSAJES.CREDENCIALES_INVALIDAS);
   }
   guardarIdSesionMock(usuario.id);
-  return respuestaExito(usuario, 'Sesión iniciada.');
+  const permisos = obtenerPermisosDeRol(usuario.rol);
+  return respuestaExito({ usuario, permisos }, 'Sesión iniciada.');
 }
 
 export function mockLogout() {
@@ -28,7 +25,8 @@ export function mockLogout() {
 export function mockObtenerYo() {
   const usuario = obtenerUsuarioActualMock();
   if (!usuario) return respuestaError(401, MENSAJES.CREDENCIALES_INVALIDAS);
-  return respuestaExito(usuario, 'Sesión activa.');
+  const permisos = obtenerPermisosDeRol(usuario.rol);
+  return respuestaExito({ usuario, permisos }, 'Sesión activa.');
 }
 
 export function mockRegistrarUsuario(cuerpo = {}) {
@@ -44,26 +42,13 @@ export function mockRegistrarUsuario(cuerpo = {}) {
   return respuestaExito(nuevo, MENSAJES.REGISTRO_EXITOSO_TITULO, 201);
 }
 
-export function mockListarAmbientes() {
+export function mockListarResponsables() {
   const usuario = obtenerUsuarioActualMock();
-  if (usuario?.rol === ROLES.RESPONSABLE) {
-    return respuestaExito(dbMock.ambientes.filter((a) => a.responsableId === usuario.id));
+  if (usuario && usuario.rol !== ROLES.ADMINISTRADOR) {
+    return respuestaError(403, MENSAJES.ACCESO_DENEGADO || 'No tiene permiso para realizar esta acción.');
   }
-  return respuestaExito([...dbMock.ambientes]);
+  const lista = dbMock.usuarios.filter((u) => u.activo && u.rol === ROLES.RESPONSABLE);
+  return respuestaExito(lista);
 }
 
-export function mockCrearAmbiente(cuerpo = {}) {
-  const usuario = obtenerUsuarioActualMock();
-  if (usuario && usuario.rol !== ROLES.ADMINISTRADOR) return respuestaError(403, MENSAJES.ACCION_SOLO_ADMINISTRADOR);
-  const val = validarAmbiente(cuerpo);
-  if (!val.valido) return respuestaError(400, MENSAJES.RESUMEN_ERRORES_FORMULARIO, formatearErroresCampo(val.errores));
-  const d = val.datosNormalizados;
-  const resp = dbMock.usuarios.find((u) => u.id === d.responsableId);
-  const nuevo = {
-    id: `amb-${Date.now()}`, nombre: d.nombre, tipo: d.tipo, capacidad: d.capacidad,
-    ubicacion: d.ubicacion, estado: ESTADOS_AMBIENTE.DISPONIBLE,
-    responsableId: resp?.id || '', responsableNombre: resp?.nombreCompleto || 'Sin asignar'
-  };
-  dbMock.ambientes.push(nuevo);
-  return respuestaExito(nuevo, MENSAJES.AMBIENTE_CREADO_EXITO, 201);
-}
+export { mockListarAmbientes, mockCrearAmbiente, mockActualizarAmbiente, mockCambiarEstadoAmbiente } from './manejadoresAmbientes';

@@ -1,30 +1,13 @@
-// Nielsen 5 · Norman · WCAG 2.2 AA · Selector desplegable accesible sobre CampoFormulario · E-26
+// Nielsen 5 · Norman · WCAG 2.2 AA · Selector desplegable accesible · E-26 · E-42
 import { forwardRef, useId } from 'react';
 import CampoFormulario, { construirDescribedBy } from './CampoFormulario';
 
 const SelectInput = forwardRef(function SelectInput(
   {
-    id,
-    name,
-    nombre,
-    etiqueta,
-    obligatorio = true,
-    ayuda = 'Seleccione una opción de la lista',
-    error = '',
-    value,
-    valor,
-    onChange,
-    alCambiar,
-    onBlur,
-    alSalir,
-    opciones = [],
-    placeholder,
-    textoPlaceholder = 'Seleccione una opción',
-    incluirVacio = true,
-    readOnly = false,
-    soloLectura = false,
-    className = '',
-    ...props
+    id, name, nombre, etiqueta, obligatorio = true, ayuda = '',
+    error = '', value, valor, onChange, alCambiar, onBlur, alSalir, opciones = [],
+    placeholder, textoPlaceholder = 'Seleccione una opción', incluirVacio = true,
+    readOnly = false, soloLectura = false, className = '', mostrarOpcional = false, ...props
   },
   ref
 ) {
@@ -40,7 +23,7 @@ const SelectInput = forwardRef(function SelectInput(
   const tieneError = Boolean(error);
 
   return (
-    <CampoFormulario id={idFinal} etiqueta={etiqueta} obligatorio={obligatorio} ayuda={ayuda} error={error} className={className}>
+    <CampoFormulario id={idFinal} etiqueta={etiqueta} obligatorio={obligatorio} ayuda={ayuda} error={error} className={className} mostrarOpcional={mostrarOpcional}>
       <select
         ref={ref}
         id={idFinal}
@@ -51,16 +34,17 @@ const SelectInput = forwardRef(function SelectInput(
         aria-readonly={esSoloLectura || undefined}
         aria-invalid={tieneError}
         aria-describedby={describedBy}
-        className={`w-full min-h-control px-3.5 py-2 rounded-control border bg-superficie text-texto text-base transition-colors ${
+        className={`w-full h-10 px-3.5 py-2 rounded-control border bg-superficie text-texto text-sm sm:text-base transition-colors ${
           esSoloLectura ? 'bg-superficie-2 pointer-events-none' : ''
-        } ${tieneError ? 'border-rechazada-texto' : 'border-borde-control'}`.trim()}
+        } ${tieneError ? 'border-rechazada-texto focus:border-rechazada-texto focus:ring-2 focus:ring-rechazada-texto/20 focus:outline-none' : 'border-borde hover:border-borde-control focus:border-primario-enlace focus:ring-2 focus:ring-primario/20 focus:outline-none'}`.trim()}
         {...props}
       >
         {incluirVacio && <option value="">{textoVacio}</option>}
         {opciones.map((op) => {
           const v = typeof op === 'object' ? op.valor : op;
           const et = typeof op === 'object' ? op.etiqueta : op;
-          return <option key={v} value={v}>{et}</option>;
+          const des = typeof op === 'object' ? Boolean(op.deshabilitada) : false;
+          return <option key={v} value={v} disabled={des}>{et}</option>;
         })}
       </select>
     </CampoFormulario>

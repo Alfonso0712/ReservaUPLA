@@ -19,6 +19,7 @@ export default {
         'lateral-fondo': 'var(--lateral-fondo)',
         'lateral-texto': 'var(--lateral-texto)',
         'lateral-activo-fondo': 'var(--lateral-activo-fondo)',
+        'lateral-hover': 'var(--lateral-hover)',
         'acento-sobre-oscuro': 'var(--acento-sobre-oscuro)',
         'anillo-foco': 'var(--anillo-foco)',
         'pendiente-texto': 'var(--pendiente-texto)',

@@ -5,11 +5,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Logging;
 using ReservaUpla.Api.Extensions;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
+using ReservaUpla.Domain.Constants;
+using ReservaUpla.Domain.Enums;
+using ReservaUpla.Domain.Security;
 
 namespace ReservaUpla.Api.Controllers;
 
@@ -17,20 +22,59 @@ namespace ReservaUpla.Api.Controllers;
 [Route("api/auth")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private const int Status499ClientClosedRequest = 499;
 
-    public AuthController(IAuthService authService)
+    private readonly IAuthService _authService;
+    private readonly ILogger<AuthController> _logger;
+
+    public AuthController(IAuthService authService, ILogger<AuthController> logger)
     {
         _authService = authService;
+        _logger = logger;
     }
 
-    // E-07 · E-08 · E-09
+    // Nielsen 5 · Nielsen 9 · RV-08 · RV-10 · RV-11 · E-04 · E-05 · E-07 · E-08 · E-09 · E-13 · E-15
     [HttpPost("login")]
     [EnableRateLimiting(ApiExtensions.LoginRateLimiterPolicy)]
-    public async Task<ActionResult<UsuarioDto>> Login([FromBody] LoginDto loginDto, CancellationToken ct)
+    public async Task<IActionResult> Login([FromBody] LoginDto loginDto, CancellationToken ct)
     {
-        var usuario = await _authService.LoginAsync(loginDto, ct);
+        try
+        {
+            var usuario = await _authService.LoginAsync(loginDto, ct);
+            var rol = Enum.Parse<RolUsuario>(usuario.Rol, true);
+            var permisos = PoliticaDeAcceso.ObtenerPermisos(rol);
 
+            var principal = CrearClaimsPrincipal(usuario);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return Ok(new { usuario, permisos });
+        }
+        catch (UnauthorizedAccessException)
+        {
+            // RV-10 · E-04 · E-13: Mismo 401 y mismo mensaje ante correo inexistente, clave erronea o usuario inactivo
+            return Problem(
+                statusCode: StatusCodes.Status401Unauthorized,
+                title: MensajesValidacion.CredencialesNoValidasTitulo,
+                detail: MensajesValidacion.CredencialesNoValidasDetalle);
+        }
+        catch (OperationCanceledException)
+        {
+            // E-14: Cancelacion de solicitud
+            return StatusCode(Status499ClientClosedRequest);
+        }
+        catch (Exception ex)
+        {
+            // E-15: 500 con detalle tecnico solo en log y mensaje generico al usuario
+            _logger.LogError(ex, "Error no controlado durante la autenticacion para {Correo}: {Message}", loginDto.Correo, ex.Message);
+            return Problem(
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: MensajesValidacion.ErrorInternoTitulo,
+                detail: MensajesValidacion.ErrorInternoDetalle);
+        }
+    }
+
+    private static ClaimsPrincipal CrearClaimsPrincipal(UsuarioDto usuario)
+    {
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
@@ -40,11 +84,7 @@ public class AuthController : ControllerBase
         };
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-        return Ok(usuario);
+        return new ClaimsPrincipal(identity);
     }
 
     [HttpPost("logout")]
@@ -57,7 +97,7 @@ public class AuthController : ControllerBase
 
     [HttpGet("yo")]
     [Authorize]
-    public ActionResult<UsuarioDto> ObtenerUsuarioActual()
+    public IActionResult ObtenerUsuarioActual()
     {
         var id = User.GetUserId();
         if (id == Guid.Empty)
@@ -65,8 +105,10 @@ public class AuthController : ControllerBase
 
         var nombre = User.FindFirstValue(ClaimTypes.Name) ?? string.Empty;
         var correo = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty;
-        var rol = User.GetUserRole().ToString();
+        var rol = User.GetUserRole();
+        var usuario = new UsuarioDto(id, nombre, correo, rol.ToString(), true);
+        var permisos = PoliticaDeAcceso.ObtenerPermisos(rol);
 
-        return Ok(new UsuarioDto(id, nombre, correo, rol, true));
+        return Ok(new { usuario, permisos });
     }
 }

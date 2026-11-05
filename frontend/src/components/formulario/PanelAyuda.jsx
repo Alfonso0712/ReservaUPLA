@@ -20,7 +20,7 @@ export default function PanelAyuda({ alRellenarDemo = null, deshabilitado = fals
             type="button"
             disabled={deshabilitado}
             onClick={() => alRellenarDemo(cuenta)}
-            className="py-1 px-1 rounded-control border border-borde bg-superficie text-texto hover:bg-fondo text-[11px] font-semibold transition-colors text-center cursor-pointer whitespace-nowrap"
+            className="py-1.5 px-1 rounded-control border border-borde bg-superficie text-texto hover:border-primario-enlace hover:text-primario hover:-translate-y-0.5 active:translate-y-0 hover:shadow-sm text-[11px] font-semibold transition-all duration-200 ease-out text-center cursor-pointer whitespace-nowrap disabled:transform-none"
           >
             {cuenta.etiqueta}
           </button>

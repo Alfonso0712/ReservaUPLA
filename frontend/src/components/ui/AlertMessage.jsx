@@ -12,7 +12,8 @@ const CONFIG_VARIANTE = {
 const AlertMessage = forwardRef(function AlertMessage(
   {
     variante = 'error', titulo = '', mensaje = '', children, accion = null,
-    role, rol, enfocarAlAparecer = false, alCerrar = null, className = '', ...props
+    role, rol, enfocarAlAparecer = false, alCerrar = null, className = '',
+    compacto = false, modoToast = false, ...props
   },
   refExterna
 ) {
@@ -29,6 +30,10 @@ const AlertMessage = forwardRef(function AlertMessage(
 
   const config = CONFIG_VARIANTE[variante] || CONFIG_VARIANTE.error;
   const rolFinal = rol || role || config.rolDefecto;
+  const estiloBase = modoToast
+    ? 'flex items-center justify-between gap-3 p-3 sm:p-3.5 rounded-control border border-borde bg-superficie shadow-lg text-sm text-texto max-w-md w-full transition-all'
+    : `flex flex-wrap items-start justify-between ${compacto ? 'gap-2 p-2 sm:p-2.5 text-xs sm:text-sm' : 'gap-3 py-3 px-4 text-base'} rounded-control border outline-none ${config.clases}`;
+  const estiloIcono = modoToast ? (variante === 'error' ? 'text-rechazada-texto' : 'text-aprobada-texto') : '';
 
   return (
     <div
@@ -39,12 +44,12 @@ const AlertMessage = forwardRef(function AlertMessage(
       }}
       role={rolFinal}
       tabIndex={-1}
-      className={`flex flex-wrap items-start justify-between gap-3 p-4 rounded-control border outline-none ${config.clases} ${className}`.trim()}
+      className={`${estiloBase} ${className}`.trim()}
       {...props}
     >
-      <div className="flex items-start gap-3">
-        <Icono nombre={config.icono} className="w-5 h-5 mt-0.5 shrink-0" />
-        <div className="text-base leading-relaxed">
+      <div className={`flex items-${modoToast ? 'center' : 'start'} ${compacto || modoToast ? 'gap-2.5' : 'gap-3'} min-w-0`}>
+        <Icono nombre={config.icono} className={`${compacto ? 'w-4 h-4' : 'w-5 h-5'} ${estiloIcono} mt-0.5 shrink-0`} />
+        <div className={compacto || modoToast ? 'text-xs sm:text-sm leading-snug' : 'text-base leading-relaxed'}>
           {titulo && <strong className="block font-semibold">{titulo}</strong>}
           {textoContenido && <div>{textoContenido}</div>}
         </div>
@@ -52,7 +57,7 @@ const AlertMessage = forwardRef(function AlertMessage(
       <div className="flex items-center gap-2 shrink-0 self-center">
         {accion}
         {alCerrar && (
-          <button type="button" onClick={alCerrar} aria-label="Cerrar mensaje" className="min-h-control min-w-control p-2 inline-flex items-center justify-center rounded-control">
+          <button type="button" onClick={alCerrar} aria-label="Cerrar notificación" className="p-1 rounded text-texto-suave hover:text-texto">
             <Icono nombre="X" className="w-4 h-4" />
           </button>
         )}

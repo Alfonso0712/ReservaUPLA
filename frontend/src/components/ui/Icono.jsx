@@ -1,67 +1,35 @@
-// Shneiderman 1 · Único punto de acceso a lucide-react
+// Shneiderman 1 · Trazo uniforme 1.8 · Único punto de acceso a lucide-react
 import {
-  Clock,
-  CircleCheck,
-  CircleX,
-  Ban,
-  Monitor,
-  Presentation,
-  Users,
-  FlaskConical,
-  LayoutDashboard,
-  CalendarDays,
-  CalendarPlus,
-  Building2,
-  Sun,
-  Moon,
-  Menu,
-  X,
-  Eye,
-  EyeOff,
-  ChevronDown,
-  ChevronRight,
-  LogOut,
-  AlertTriangle,
-  Info,
-  Search,
-  Plus,
-  Check,
-  Loader2,
-  HelpCircle
+  Clock, CircleCheck, CircleX, Ban, Monitor, Presentation, Users,
+  FlaskConical, LayoutDashboard, CalendarDays, CalendarPlus, Building2,
+  Sun, Moon, Menu, X, Eye, EyeOff, ChevronDown, ChevronRight, ChevronLeft,
+  LogOut, AlertTriangle, Info, Search, Plus, Check, Loader2, HelpCircle,
+  Wrench, Sparkles, HardHat, Pencil, ArrowRightLeft, ArrowLeftRight, MoreHorizontal,
+  Power, ToggleRight
 } from 'lucide-react';
 
-const MAPA_ICONOS = {
-  Clock,
-  CircleCheck,
-  CircleX,
-  Ban,
-  Monitor,
-  Presentation,
-  Users,
-  FlaskConical,
-  LayoutDashboard,
-  CalendarDays,
-  CalendarPlus,
-  Building2,
-  Sun,
-  Moon,
-  Menu,
-  X,
-  Eye,
-  EyeOff,
-  ChevronDown,
-  ChevronRight,
-  LogOut,
-  AlertTriangle,
-  Info,
-  Search,
-  Plus,
-  Check,
-  Loader2,
-  HelpCircle
+const ICONOS = {
+  Clock, CircleCheck, CircleX, Ban, Monitor, Presentation, Users,
+  FlaskConical, LayoutDashboard, CalendarDays, CalendarPlus, Building2,
+  Sun, Moon, Menu, X, Eye, EyeOff, ChevronDown, ChevronRight, ChevronLeft,
+  LogOut, AlertTriangle, Info, Search, Plus, Check, Loader2, HelpCircle,
+  Wrench, Sparkles, HardHat, Pencil, ArrowRightLeft, ArrowLeftRight, MoreHorizontal,
+  Power, ToggleRight
 };
 
-export default function Icono({ nombre, className = 'w-5 h-5 shrink-0', ...props }) {
-  const Componente = MAPA_ICONOS[nombre] || Info;
-  return <Componente className={className} aria-hidden="true" {...props} />;
+export default function Icono({
+  nombre,
+  className = 'w-4 h-4 shrink-0',
+  strokeWidth = 1.8,
+  ...props
+}) {
+  const Componente = ICONOS[nombre] || Info;
+  return (
+    <Componente
+      className={`shrink-0 ${className}`}
+      strokeWidth={strokeWidth}
+      aria-hidden="true"
+      {...props}
+    />
+  );
 }

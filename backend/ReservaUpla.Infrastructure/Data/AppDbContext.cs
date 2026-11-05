@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ReservaUpla.Domain.Constants;
 using ReservaUpla.Domain.Entities;
 using ReservaUpla.Domain.Enums;
 
@@ -28,8 +29,8 @@ public class AppDbContext : DbContext
             b.ToTable("usuarios");
             b.HasKey(u => u.Id_Usuario);
             b.Property(u => u.Id_Usuario).HasColumnName("id_usuario");
-            b.Property(u => u.Nom_Usuario).HasColumnName("nom_usuario").HasMaxLength(150).IsRequired();
-            b.Property(u => u.Cor_Usuario).HasColumnName("cor_usuario").HasMaxLength(150).IsRequired();
+            b.Property(u => u.Nom_Usuario).HasColumnName("nom_usuario").HasMaxLength(ReglasUsuario.MaxLongitudNombre).IsRequired();
+            b.Property(u => u.Cor_Usuario).HasColumnName("cor_usuario").HasMaxLength(ReglasUsuario.CorreoMaxLength).IsRequired();
             b.Property(u => u.Has_Usuario).HasColumnName("has_usuario").IsRequired();
             b.Property(u => u.Rol_Usuario).HasColumnName("rol_usuario").HasConversion<string>().HasMaxLength(50).IsRequired();
             b.Property(u => u.Act_Usuario).HasColumnName("act_usuario").IsRequired();

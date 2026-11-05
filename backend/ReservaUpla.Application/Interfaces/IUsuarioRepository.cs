@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ReservaUpla.Domain.Entities;
@@ -11,4 +12,5 @@ public interface IUsuarioRepository
     Task<Usuario?> ObtenerPorCorreoAsync(string correo, CancellationToken ct = default);
     Task<bool> ExisteCorreoAsync(string correo, CancellationToken ct = default);
     Task AgregarAsync(Usuario usuario, CancellationToken ct = default);
+    Task<IReadOnlyList<Usuario>> ListarResponsablesAsync(CancellationToken ct = default);
 }

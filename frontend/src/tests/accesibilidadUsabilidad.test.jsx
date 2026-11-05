@@ -34,6 +34,7 @@ it('E-27, E-28 y E-29: tabla semántica única con data-label, tema oscuro y esc
   render(<MemoryRouter><AuthProvider><ControlTamanoFuente /><ConmutadorTema /><ListadoReservas /></AuthProvider></MemoryRouter>);
   const tabla = await screen.findByRole('table');
   expect(tabla).toHaveClass('tabla-responsiva');
+  await screen.findAllByText(/marco paredes/i);
   expect(tabla.querySelectorAll('tbody td[data-label]').length).toBeGreaterThan(0);
   await user.click(screen.getByRole('button', { name: /cambiar a modo oscuro/i }));
   expect(document.documentElement.getAttribute('data-tema')).toBe('oscuro');

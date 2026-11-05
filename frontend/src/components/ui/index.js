@@ -1,0 +1,20 @@
+// Barrel export unificado de componentes de UI y controles reutilizables
+export { default as TextInput } from '../formulario/TextInput';
+export { default as SelectInput } from '../formulario/SelectInput';
+export { default as DateInput } from '../formulario/DateInput';
+export { default as TimeInput } from '../formulario/TimeInput';
+export { default as Button } from './Button';
+export { default as AlertMessage } from './AlertMessage';
+export { default as ModalConfirmacion } from './ModalConfirmacion';
+export { default as TableList } from './TableList';
+export { default as CardIndicador } from './CardIndicador';
+export { default as Badge } from './Badge';
+export { default as Toast } from './Toast';
+export { default as Icono } from './Icono';
+export { default as EstadoVacio } from './EstadoVacio';
+export { default as Cargando } from './Cargando';
+export { default as PaginacionTabla } from './PaginacionTabla';
+export { default as TipoAmbienteChip } from './TipoAmbienteChip';
+export { default as EstadoBadge } from './EstadoBadge';
+export { default as EstadoAmbienteBadge } from './EstadoAmbienteBadge';
+export { default as MenuAccionesFila } from './MenuAccionesFila';

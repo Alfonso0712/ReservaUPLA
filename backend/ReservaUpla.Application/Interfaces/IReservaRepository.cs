@@ -11,6 +11,20 @@ namespace ReservaUpla.Application.Interfaces;
 public interface IReservaRepository
 {
     Task<Reserva?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default);
+
+    Task<IReadOnlyList<Reserva>> ListarAsync(
+        ParametrosConsultaReservas parametros,
+        CancellationToken ct = default);
+
+    Task<int> ContarAsync(
+        ParametrosConsultaReservas parametros,
+        CancellationToken ct = default);
+
+    Task<bool> HayConflictoAsync(
+        IntervaloHorario intervalo,
+        CancellationToken ct = default);
+
+    // Sobrecargas para retrocompatibilidad
     Task<IReadOnlyList<Reserva>> ListarAsync(
         EstadoReserva? estado,
         Guid? ambienteId,
@@ -20,6 +34,7 @@ public interface IReservaRepository
         int pagina,
         int tamanoPagina,
         CancellationToken ct = default);
+
     Task<int> ContarAsync(
         EstadoReserva? estado,
         Guid? ambienteId,
@@ -27,6 +42,7 @@ public interface IReservaRepository
         Guid? solicitanteId,
         Guid? responsableId,
         CancellationToken ct = default);
+
     Task<bool> HayConflictoAsync(
         Guid ambienteId,
         DateOnly fecha,
@@ -34,6 +50,7 @@ public interface IReservaRepository
         TimeSpan fin,
         Guid? excluirReservaId = null,
         CancellationToken ct = default);
+
     Task AgregarAsync(Reserva reserva, CancellationToken ct = default);
     Task ActualizarAsync(Reserva reserva, CancellationToken ct = default);
     Task<IReadOnlyList<Reserva>> ObtenerPorAmbienteYFechaAsync(Guid ambienteId, DateOnly fecha, CancellationToken ct = default);

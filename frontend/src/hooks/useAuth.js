@@ -1,13 +1,17 @@
-// Hook y proveedor de sesión · Nunca almacena contraseñas ni datos sensibles en el cliente · E-07..09 · E-18
+// Hook y proveedor de sesión · Permisos en memoria · E-07..09 · E-18 · E-45..49
 import { createContext, createElement, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { iniciarSesionApi, cerrarSesionApi, obtenerSesionActualApi } from '../services/authService';
 import { interpretarRespuesta } from '../validation/interpretarRespuesta';
 import { obtenerUsuarioActualMock, guardarIdSesionMock } from '../mocks/estadoMock';
+import { obtenerPermisosDeRol } from '../mocks/permisosPorRol';
 
-const ContextoAuth = createContext(null);
+export const ContextoAuth = createContext(null);
 
 export function AuthProvider({ children, usuarioInicial = null }) {
   const [usuario, setUsuario] = useState(() => usuarioInicial || obtenerUsuarioActualMock() || null);
+  const [permisos, setPermisos] = useState(() => (
+    usuarioInicial?.permisos || (usuario?.rol ? obtenerPermisosDeRol(usuario.rol) : [])
+  ));
   const [cargandoSesion, setCargandoSesion] = useState(false);
 
   useEffect(() => {
@@ -18,7 +22,12 @@ export function AuthProvider({ children, usuarioInicial = null }) {
     obtenerSesionActualApi(ctrl.signal).then((resp) => {
       if (ctrl.signal.aborted) return;
       const interp = interpretarRespuesta(resp);
-      if (interp.ok && interp.datos) setUsuario(interp.datos);
+      if (interp.ok && interp.datos) {
+        const u = interp.datos.usuario || interp.datos;
+        const p = interp.datos.permisos || obtenerPermisosDeRol(u.rol) || [];
+        setUsuario(u);
+        setPermisos(p);
+      }
       setCargandoSesion(false);
     });
     return () => ctrl.abort();
@@ -28,8 +37,11 @@ export function AuthProvider({ children, usuarioInicial = null }) {
     const resp = await iniciarSesionApi({ correo, contrasena }, signal);
     const resultado = interpretarRespuesta(resp);
     if (resultado.ok && resultado.datos) {
-      setUsuario(resultado.datos);
-      if (resultado.datos.id) guardarIdSesionMock(resultado.datos.id);
+      const u = resultado.datos.usuario || resultado.datos;
+      const p = resultado.datos.permisos || obtenerPermisosDeRol(u.rol) || [];
+      setUsuario(u);
+      setPermisos(p);
+      if (u.id) guardarIdSesionMock(u.id);
     }
     return resultado;
   }, []);
@@ -38,24 +50,27 @@ export function AuthProvider({ children, usuarioInicial = null }) {
     await cerrarSesionApi();
     guardarIdSesionMock('');
     setUsuario(null);
+    setPermisos([]);
   }, []);
+
+  const puede = useCallback((permiso) => permisos.includes(permiso), [permisos]);
 
   const valor = useMemo(() => ({
     usuario,
+    permisos,
+    puede,
     autenticado: Boolean(usuario),
     cargandoSesion,
     iniciarSesion,
     cerrarSesion,
     establecerUsuario: setUsuario
-  }), [usuario, cargandoSesion, iniciarSesion, cerrarSesion]);
+  }), [usuario, permisos, puede, cargandoSesion, iniciarSesion, cerrarSesion]);
 
   return createElement(ContextoAuth.Provider, { value: valor }, children);
 }
 
 export function useAuth() {
   const contexto = useContext(ContextoAuth);
-  if (!contexto) {
-    throw new Error('useAuth debe utilizarse dentro de un AuthProvider.');
-  }
+  if (!contexto) throw new Error('useAuth debe utilizarse dentro de un AuthProvider.');
   return contexto;
 }

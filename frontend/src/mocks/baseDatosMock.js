@@ -1,8 +1,9 @@
-// Enrutador del adaptador mock con latencia y simulación de fallos · E-04 · E-08 · E-09 · E-23 · E-24
+// Enrutador del adaptador mock con latencia y simulación de fallos · E-04 · E-08 · E-09 · E-23 · E-24 · E-39..44
 import { MENSAJES } from '../constants/mensajes';
 import { dbMock, reiniciarBaseMock, configurarFalloMock, guardarIdSesionMock, respuestaExito, respuestaError } from './estadoMock';
 import { CUENTAS_DEMO } from './datosSemilla';
-import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarAmbientes, mockCrearAmbiente } from './manejadoresAuthAmbientes';
+import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarResponsables } from './manejadoresAuthAmbientes';
+import { mockListarAmbientes, mockCrearAmbiente, mockActualizarAmbiente, mockCambiarEstadoAmbiente } from './manejadoresAmbientes';
 import { mockObtenerDisponibilidad, mockListarReservas, mockObtenerReserva, mockCrearReserva, mockCambiarEstadoReserva, mockObtenerDashboard } from './manejadoresReservasDashboard';
 
 function esperarLatencia(ms, signal) {
@@ -13,25 +14,38 @@ function esperarLatencia(ms, signal) {
   });
 }
 
+const RUTAS_ESTATICAS = {
+  'POST /api/auth/login': (_, cuerpo) => mockLogin(cuerpo),
+  'POST /api/auth/logout': () => mockLogout(),
+  'GET /api/auth/yo': () => mockObtenerYo(),
+  'POST /api/usuarios': (_, cuerpo) => mockRegistrarUsuario(cuerpo),
+  'GET /api/usuarios/responsables': () => mockListarResponsables(),
+  'GET /api/usuarios': () => respuestaExito([...dbMock.usuarios]),
+  'GET /api/ambientes': () => mockListarAmbientes(),
+  'POST /api/ambientes': (_, cuerpo) => mockCrearAmbiente(cuerpo),
+  'GET /api/reservas': (params) => mockListarReservas({
+    estado: params.get('estado') || '', tipo: params.get('tipo') || '', texto: params.get('texto') || ''
+  }),
+  'POST /api/reservas': (_, cuerpo) => mockCrearReserva(cuerpo),
+  'GET /api/dashboard': () => mockObtenerDashboard()
+};
+
+const RUTAS_DINAMICAS = [
+  { regex: /^PATCH \/api\/ambientes\/([^/]+)\/estado$/, handler: (m, _, cuerpo) => mockCambiarEstadoAmbiente(m[1], cuerpo) },
+  { regex: /^PUT \/api\/ambientes\/([^/]+)$/, handler: (m, _, cuerpo) => mockActualizarAmbiente(m[1], cuerpo) },
+  { regex: /^GET \/api\/ambientes\/([^/]+)\/disponibilidad$/, handler: (m, params) => mockObtenerDisponibilidad(m[1], params.get('fecha') || '') },
+  { regex: /^PATCH \/api\/reservas\/([^/]+)\/estado$/, handler: (m, _, cuerpo) => mockCambiarEstadoReserva(m[1], cuerpo) },
+  { regex: /^GET \/api\/reservas\/([^/]+)$/, handler: (m) => mockObtenerReserva(m[1]) }
+];
+
 function despacharRutaMock(metodo, urlLimpia, parametros, cuerpo) {
-  if (metodo === 'POST' && urlLimpia === '/api/auth/login') return mockLogin(cuerpo);
-  if (metodo === 'POST' && urlLimpia === '/api/auth/logout') return mockLogout();
-  if (metodo === 'GET' && urlLimpia === '/api/auth/yo') return mockObtenerYo();
-  if (metodo === 'POST' && urlLimpia === '/api/usuarios') return mockRegistrarUsuario(cuerpo);
-  if (metodo === 'GET' && urlLimpia === '/api/usuarios') return respuestaExito([...dbMock.usuarios]);
-  if (metodo === 'GET' && urlLimpia === '/api/ambientes') return mockListarAmbientes();
-  if (metodo === 'POST' && urlLimpia === '/api/ambientes') return mockCrearAmbiente(cuerpo);
-  const matchDisp = urlLimpia.match(/^\/api\/ambientes\/([^/]+)\/disponibilidad$/);
-  if (metodo === 'GET' && matchDisp) return mockObtenerDisponibilidad(matchDisp[1], parametros.get('fecha') || '');
-  if (metodo === 'GET' && urlLimpia === '/api/reservas') {
-    return mockListarReservas({ estado: parametros.get('estado') || '', tipo: parametros.get('tipo') || '', texto: parametros.get('texto') || '' });
+  const clave = `${metodo} ${urlLimpia}`;
+  const estatica = RUTAS_ESTATICAS[clave];
+  if (estatica) return estatica(parametros, cuerpo);
+  for (const { regex, handler } of RUTAS_DINAMICAS) {
+    const match = clave.match(regex);
+    if (match) return handler(match, parametros, cuerpo);
   }
-  if (metodo === 'POST' && urlLimpia === '/api/reservas') return mockCrearReserva(cuerpo);
-  const matchEstado = urlLimpia.match(/^\/api\/reservas\/([^/]+)\/estado$/);
-  if (metodo === 'PATCH' && matchEstado) return mockCambiarEstadoReserva(matchEstado[1], cuerpo);
-  const matchRes = urlLimpia.match(/^\/api\/reservas\/([^/]+)$/);
-  if (metodo === 'GET' && matchRes) return mockObtenerReserva(matchRes[1]);
-  if (metodo === 'GET' && urlLimpia === '/api/dashboard') return mockObtenerDashboard();
   return respuestaError(404, 'Ruta no encontrada en el adaptador mock.');
 }
 
@@ -41,9 +55,7 @@ export async function ejecutarPeticionMock(ruta, { metodo = 'GET', cuerpo = null
     const codigo = dbMock.falloSimulado;
     dbMock.falloSimulado = null;
     if (codigo === 0) return { estado: 0, datos: null };
-    if (codigo === 429) return respuestaError(429, MENSAJES.LIMITE_INTENTOS);
-    if (codigo === 500) return respuestaError(500, MENSAJES.ERROR_SERVIDOR);
-    return respuestaError(codigo, MENSAJES.ERROR_SERVIDOR);
+    return respuestaError(codigo, codigo === 429 ? MENSAJES.LIMITE_INTENTOS : MENSAJES.ERROR_SERVIDOR);
   }
   const [urlLimpia, query = ''] = ruta.split('?');
   return despacharRutaMock(metodo.toUpperCase(), urlLimpia, new URLSearchParams(query), cuerpo);

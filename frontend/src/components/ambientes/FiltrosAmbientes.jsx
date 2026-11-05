@@ -1,6 +1,5 @@
-// RF-02 · Nielsen 1 · Nielsen 6 · Filtros etiquetados de ambientes con conteo en aria-live · E-26
+// RF-02 · Nielsen 1 · Nielsen 6 · Filtros integrados de ambientes con feedback · E-26
 import { LISTA_TIPOS_AMBIENTE } from '../../constants/tiposAmbiente';
-import { MENSAJES } from '../../constants/mensajes';
 import TextInput from '../formulario/TextInput';
 import SelectInput from '../formulario/SelectInput';
 import Button from '../ui/Button';
@@ -17,17 +16,16 @@ export default function FiltrosAmbientes({
   const etiquetaConteo = totalResultados === 1 ? '1 ambiente encontrado' : `${totalResultados} ambientes encontrados`;
 
   return (
-    <section aria-label="Filtros de catálogo de ambientes" className="mb-5 p-4 rounded-tarjeta border border-borde bg-superficie space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <section aria-label="Filtros de catálogo de ambientes" className="p-3.5 rounded-tarjeta border border-borde bg-superficie space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <TextInput
           nombre="filtro-texto-ambientes"
-          etiqueta="Buscar ambiente"
+          etiqueta="Buscar"
           obligatorio={false}
           tipo="search"
           valor={texto}
           alCambiar={(e) => alCambiarTexto?.(e.target.value)}
-          placeholder="Nombre o ubicación del ambiente"
-          ayuda={MENSAJES.AYUDA_FILTRO_BUSCAR_AMBIENTE}
+          placeholder="Nombre o ubicación"
         />
         <SelectInput
           nombre="filtro-tipo-ambientes"
@@ -37,16 +35,15 @@ export default function FiltrosAmbientes({
           alCambiar={(e) => alCambiarTipo?.(e.target.value)}
           opciones={LISTA_TIPOS_AMBIENTE}
           placeholder="Todos los tipos"
-          ayuda={MENSAJES.AYUDA_FILTRO_TIPO}
         />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-borde">
-        <p role="status" aria-live="polite" className="text-sm font-semibold text-texto cifra-tabular">
+      <div className="flex items-center justify-between gap-3 pt-2 border-t border-borde/60">
+        <p role="status" aria-live="polite" className="text-xs sm:text-sm font-semibold text-texto-suave cifra-tabular">
           {etiquetaConteo}
         </p>
         {hayFiltrosActivos && (
-          <Button variante="secundario" onClick={alLimpiar}>
+          <Button variante="ghost" tamano="sm" icono="RotateCcw" onClick={alLimpiar}>
             Limpiar filtros
           </Button>
         )}

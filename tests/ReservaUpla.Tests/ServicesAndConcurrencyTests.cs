@@ -6,6 +6,7 @@ using Moq;
 using ReservaUpla.Application.DTOs;
 using ReservaUpla.Application.Interfaces;
 using ReservaUpla.Application.Services;
+using ReservaUpla.Domain.Common;
 using ReservaUpla.Domain.Constants;
 using ReservaUpla.Domain.Entities;
 using ReservaUpla.Domain.Enums;
@@ -160,8 +161,8 @@ public class ServicesAndConcurrencyTests
         var idResponsable1 = Guid.NewGuid();
         var idResponsable2 = Guid.NewGuid();
 
-        var amb1 = Ambiente.Crear("Lab R1", TipoAmbiente.LaboratorioComputo, 20, "Pab 1", idResponsable1);
-        var amb2 = Ambiente.Crear("Lab R2", TipoAmbiente.LaboratorioComputo, 25, "Pab 2", idResponsable2);
+        var amb1 = Ambiente.Crear("Lab R1", TipoAmbiente.LaboratorioComputo, 20, "Pabellon 1", idResponsable1);
+        var amb2 = Ambiente.Crear("Lab R2", TipoAmbiente.LaboratorioComputo, 25, "Pabellon 2", idResponsable2);
         await context.Ambientes.AddRangeAsync(amb1, amb2);
         await context.SaveChangesAsync();
 
@@ -169,5 +170,72 @@ public class ServicesAndConcurrencyTests
 
         Assert.Single(lista);
         Assert.Equal(amb1.Id_Ambiente, lista[0].Id_Ambiente);
+    }
+
+    [Fact]
+    public async Task ParametrosConsultaReservas_Y_IntervaloHorario_FuncionanCorrectamente()
+    {
+        var context = CrearContextoEnMemoria(nameof(ParametrosConsultaReservas_Y_IntervaloHorario_FuncionanCorrectamente));
+        var repo = new ReservaRepository(context);
+
+        var ambId = Guid.NewGuid();
+        var solId = Guid.NewGuid();
+        var fecha = new DateOnly(2026, 11, 20);
+
+        var reserva1 = Reserva.Crear(fecha, new TimeSpan(8, 0, 0), new TimeSpan(10, 0, 0), "Clase Magistral A", solId, ambId);
+        reserva1.CambiarEstado(EstadoReserva.Aprobada, new ActorReserva(Guid.NewGuid(), RolUsuario.Administrador));
+        await repo.AgregarAsync(reserva1);
+        await context.SaveChangesAsync();
+
+        // Verificar conflicto usando IntervaloHorario
+        var hayConflicto = await repo.HayConflictoAsync(new IntervaloHorario(ambId, fecha, new TimeSpan(9, 0, 0), new TimeSpan(11, 0, 0)));
+        Assert.True(hayConflicto);
+
+        var sinConflicto = await repo.HayConflictoAsync(new IntervaloHorario(ambId, fecha, new TimeSpan(10, 0, 0), new TimeSpan(12, 0, 0)));
+        Assert.False(sinConflicto);
+
+        // Verificar consulta usando ParametrosConsultaReservas
+        var paramsConsulta = new ParametrosConsultaReservas(Estado: EstadoReserva.Aprobada, AmbienteId: ambId, Fecha: fecha);
+        var total = await repo.ContarAsync(paramsConsulta);
+        var lista = await repo.ListarAsync(paramsConsulta);
+
+        Assert.Equal(1, total);
+        Assert.Single(lista);
+        Assert.Equal(reserva1.Id_Reserva, lista[0].Id_Reserva);
+    }
+
+    [Fact]
+    public async Task ReservaService_CambiarEstado_ConIActor_Y_ProteccionInvarianteDominio()
+    {
+        var context = CrearContextoEnMemoria(nameof(ReservaService_CambiarEstado_ConIActor_Y_ProteccionInvarianteDominio));
+        var userRepo = new UsuarioRepository(context);
+        var ambRepo = new AmbienteRepository(context);
+        var resRepo = new ReservaRepository(context);
+        var uow = new UnitOfWork(context);
+        var service = new ReservaService(resRepo, ambRepo, userRepo, uow);
+
+        var admin = Usuario.Crear("Admin Solid", "admin.solid@upla.edu.pe", "Hash123", RolUsuario.Administrador);
+        var solic = Usuario.Crear("Solic Solid", "solic.solid@upla.edu.pe", "Hash123", RolUsuario.Solicitante);
+        var amb = Ambiente.Crear("Aula Magna", TipoAmbiente.Auditorio, 150, "Pabellon Central");
+        await context.Usuarios.AddRangeAsync(admin, solic);
+        await context.Ambientes.AddAsync(amb);
+        await context.SaveChangesAsync();
+
+        var manana = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(1));
+        var creada = await service.CrearReservaAsync(
+            new CrearReservaDto(amb.Id_Ambiente, manana, new TimeSpan(14, 0, 0), new TimeSpan(16, 0, 0), "Evento Academico"),
+            solic.Id_Usuario);
+
+        // Rechazar usando la abstracción IActor
+        IActor actorAdmin = new ActorReserva(admin.Id_Usuario, RolUsuario.Administrador);
+        var rechazada = await service.CambiarEstadoAsync(creada.Id, EstadoReserva.Rechazada, actorAdmin);
+        Assert.Equal(EstadoReserva.Rechazada.ToString(), rechazada.Estado);
+
+        // La entidad de dominio debe impedir modificar una reserva rechazada (invariante encapsulada)
+        var ex = await Assert.ThrowsAsync<DomainException>(() =>
+            service.CambiarEstadoAsync(creada.Id, EstadoReserva.Aprobada, actorAdmin));
+
+        Assert.True(ex.EsConflicto);
+        Assert.Equal(Mensajes.ReservaRechazadaInmodificable, ex.Message);
     }
 }

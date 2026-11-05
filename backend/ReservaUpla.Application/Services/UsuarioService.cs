@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ReservaUpla.Application.DTOs;
@@ -46,6 +48,12 @@ public class UsuarioService : IUsuarioService
     {
         var usuario = await _usuarioRepo.ObtenerPorIdAsync(id, ct);
         return usuario == null ? null : UsuarioMapper.ToDto(usuario);
+    }
+
+    public async Task<IReadOnlyList<UsuarioDto>> ListarResponsablesAsync(CancellationToken ct = default)
+    {
+        var lista = await _usuarioRepo.ListarResponsablesAsync(ct);
+        return lista.Select(UsuarioMapper.ToDto).ToList();
     }
 
     private static void ValidarPrecondiciones(RegistroUsuarioDto dto)

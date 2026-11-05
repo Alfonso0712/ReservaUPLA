@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { RUTA_IMAGEN_FONDO_LOGIN } from '../constants/rutas';
 import LogoUpla from '../components/ui/LogoUpla';
 import Icono from '../components/ui/Icono';
+import RedParticulas from '../components/ui/RedParticulas';
 import ControlTamanoFuente from '../components/navegacion/ControlTamanoFuente';
 import ConmutadorTema from '../components/navegacion/ConmutadorTema';
 import SaltarAlContenido from '../components/navegacion/SaltarAlContenido';
@@ -24,6 +25,7 @@ export default function LayoutAutenticacion({ children }) {
         style={{ backgroundImage: `url(${RUTA_IMAGEN_FONDO_LOGIN})`, backgroundPosition: 'right center' }}
       >
         <div className="absolute inset-0 capa-superposicion-login pointer-events-none" aria-hidden="true" />
+        <RedParticulas />
         <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
             <LogoUpla variante="marca" />
@@ -32,9 +34,6 @@ export default function LayoutAutenticacion({ children }) {
               <p className="text-sm text-lateral-texto">Educación con valores y trascendencia</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <ControlTamanoFuente mimetizado /><ConmutadorTema mimetizado />
-          </div>
         </div>
 
         <div className="relative z-10 max-w-[340px] my-auto py-4 space-y-4">
@@ -42,7 +41,9 @@ export default function LayoutAutenticacion({ children }) {
             <span className="inline-block px-3 py-1 mb-2.5 rounded-control bg-lateral-activo-fondo text-xs font-semibold text-sobre-primario">
               Sistema institucional
             </span>
-            <p className="text-2xl sm:text-3xl font-bold text-sobre-primario mb-2">ReservaUPLA</p>
+            <p className="text-2xl sm:text-3xl font-bold text-sobre-primario mb-2">
+              Reserva<span className="text-acento-sobre-oscuro">UPLA</span>
+            </p>
             <p className="text-sm text-lateral-texto leading-relaxed">
               Plataforma oficial para la gestión, reserva y trazabilidad en tiempo real de laboratorios, auditorios y salas académicas.
             </p>
@@ -59,15 +60,14 @@ export default function LayoutAutenticacion({ children }) {
           </ul>
         </div>
 
-        <div className="relative z-10 hidden sm:flex items-center justify-between text-xs text-white p-2.5 rounded-control bg-[#071738]/85 border border-white/15 backdrop-blur-md shadow-sm">
-          <span>Universidad Peruana Los Andes © 2026</span>
-          <span className="font-semibold text-acento-sobre-oscuro">Gestión de ambientes universitarios</span>
+        <div className="relative z-10 flex items-center gap-2">
+          <ControlTamanoFuente mimetizado /><ConmutadorTema mimetizado />
         </div>
       </aside>
 
-      <div className="flex-1 lg:w-[32%] lg:h-full flex flex-col justify-center bg-superficie text-texto lg:overflow-y-auto">
-        <main id="contenido-principal" tabIndex={-1} className="flex-1 flex items-center justify-center p-6 sm:p-8 outline-none">
-          <div className="w-full max-w-[340px] my-auto">{children || <Outlet />}</div>
+      <div className="flex-1 lg:w-[32%] lg:h-full flex flex-col justify-center bg-fondo text-texto lg:overflow-y-auto">
+        <main id="contenido-principal" tabIndex={-1} className="flex-1 flex items-center justify-center p-2 sm:p-4 outline-none">
+          <div className="w-full max-w-[370px] my-auto">{children || <Outlet />}</div>
         </main>
       </div>
     </div>

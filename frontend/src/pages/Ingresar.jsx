@@ -51,23 +51,23 @@ export default function Ingresar() {
   }, [form.camposRef]);
 
   return (
-    <div className="w-full max-w-[340px] mx-auto space-y-4 sm:space-y-5">
+    <div className="w-full max-w-[360px] mx-auto p-4 sm:p-5 rounded-2xl border border-borde/70 bg-superficie text-texto shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_15px_-3px_rgba(0,0,0,0.04)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] space-y-3">
       <div className="flex flex-col items-center text-center">
-        <div className="flex flex-col items-center gap-1 mb-1.5">
-          <LogoUpla variante="libre" className="w-12 h-12" />
-          <span className="text-sm font-bold tracking-wider text-primario">UPLA</span>
+        <div className="flex flex-col items-center gap-0.5 mb-1">
+          <LogoUpla variante="libre" className="w-10 h-10" />
+          <span className="text-xs font-bold tracking-wider text-primario">UPLA</span>
         </div>
-        <h1 className="text-2xl sm:text-[26px] font-bold text-texto tracking-tight">Iniciar sesión</h1>
-        <p className="mt-1 text-sm text-texto-suave">Ingrese sus credenciales para continuar.</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-texto tracking-tight">Iniciar sesión</h1>
+        <p className="mt-0.5 text-xs sm:text-sm text-texto-suave">Ingrese sus credenciales para continuar.</p>
       </div>
       <div role="status" aria-live="polite" className="sr-only">{form.resumenEstado}</div>
-      {form.errorGeneral && <AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} enfocarAlAparecer={enfocarAlerta} />}
-      <form onSubmit={form.manejarEnvio} noValidate className="space-y-3.5 sm:space-y-4">
+      {form.errorGeneral && <AlertMessage variante="error" rol="alert" mensaje={form.errorGeneral} compacto enfocarAlAparecer={enfocarAlerta} />}
+      <form onSubmit={form.manejarEnvio} noValidate className="space-y-2.5 sm:space-y-3">
         <TextInput ref={form.registrarRef('correo')} nombre="correo" etiqueta="Correo institucional" tipo="email" obligatorio valor={form.valores.correo} alCambiar={(e) => form.cambiarValor('correo', e.target.value)} alSalir={() => form.manejarBlur('correo')} error={form.errores.correo} ayuda="" placeholder="nombre@upla.edu.pe" autoComplete="username" inputMode="email" enterKeyHint="next" soloLectura={form.enProceso} />
         <PasswordInput ref={form.registrarRef('contrasena')} nombre="contrasena" etiqueta="Contraseña" obligatorio valor={form.valores.contrasena} alCambiar={(e) => form.cambiarValor('contrasena', e.target.value)} alSalir={() => form.manejarBlur('contrasena')} error={form.errores.contrasena} ayuda="" placeholder="Ingresar contraseña" autoComplete="current-password" enterKeyHint="done" soloLectura={form.enProceso} />
         <Button tipo="submit" variante="primario" enProceso={form.enProceso} textoProceso={MENSAJES.VALIDANDO} className="w-full">Iniciar sesión</Button>
       </form>
-      <p className="text-sm text-texto-suave text-center">
+      <p className="text-xs sm:text-sm text-texto-suave text-center">
         ¿No tiene cuenta? <Link to={RUTAS.REGISTRO} className="font-semibold text-primario-enlace">Registrarse como solicitante</Link>
       </p>
       <PanelAyuda deshabilitado={form.enProceso} alRellenarDemo={(c) => { form.cambiarValores({ correo: c.correo, contrasena: c.contrasenaDemo }); form.camposRef.current.correo?.focus(); }} />

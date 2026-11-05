@@ -56,3 +56,7 @@ export function respuestaExito(data, message = 'Operación completada.', estado 
 export function respuestaError(estado, message, errors = null) {
   return { estado, datos: { success: false, message, data: null, errors } };
 }
+
+export function formatearErroresCampo(errores) {
+  return Object.fromEntries(Object.entries(errores).map(([k, v]) => [k, [v]]));
+}

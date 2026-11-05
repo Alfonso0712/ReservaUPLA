@@ -20,17 +20,20 @@ public class AmbienteService : IAmbienteService
     private readonly IReservaRepository _reservaRepo;
     private readonly IUsuarioRepository _usuarioRepo;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IUsuarioActual? _usuarioActual;
 
     public AmbienteService(
         IAmbienteRepository ambienteRepo,
         IReservaRepository reservaRepo,
         IUsuarioRepository usuarioRepo,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IUsuarioActual? usuarioActual = null)
     {
         _ambienteRepo = ambienteRepo;
         _reservaRepo = reservaRepo;
         _usuarioRepo = usuarioRepo;
         _unitOfWork = unitOfWork;
+        _usuarioActual = usuarioActual;
     }
 
     public async Task<AmbienteDto> RegistrarAmbienteAsync(CrearAmbienteDto dto, CancellationToken ct = default)
@@ -45,7 +48,13 @@ public class AmbienteService : IAmbienteService
         return AmbienteMapper.ToDto(ambiente);
     }
 
-    public async Task<IReadOnlyList<AmbienteDto>> ListarAmbientesAsync(Guid? responsableId = null, CancellationToken ct = default)
+    public async Task<IReadOnlyList<AmbienteDto>> ListarAmbientesAsync(CancellationToken ct = default)
+    {
+        Guid? respId = _usuarioActual?.Rol == RolUsuario.Responsable ? _usuarioActual.Id : null;
+        return await ListarAmbientesAsync(respId, ct);
+    }
+
+    public async Task<IReadOnlyList<AmbienteDto>> ListarAmbientesAsync(Guid? responsableId, CancellationToken ct = default)
     {
         var lista = await _ambienteRepo.ListarAsync(responsableId, ct);
         var resultado = new List<AmbienteDto>(lista.Count);

@@ -1,6 +1,6 @@
 namespace ReservaUpla.Application.DTOs;
 
-// RF-08 · E-30
+// RF-08 · E-30 · E-49
 public record DashboardEstadisticasDto(
     int TotalReservas,
     int ReservasPendientes,
@@ -8,4 +8,5 @@ public record DashboardEstadisticasDto(
     int ReservasRechazadas,
     int ReservasCanceladas,
     string AmbienteMasUtilizado,
-    int CantidadUsoAmbienteMasUtilizado);
+    int CantidadUsoAmbienteMasUtilizado,
+    string Alcance = "global");

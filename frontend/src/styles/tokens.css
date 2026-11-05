@@ -12,9 +12,12 @@
   --primario-enlace: #0B4DA2;
   --primario-suave: #E5EEF9;
   --sobre-primario: #FFFFFF;
+  --color-brand: #0A2540;
+  --color-brand-hover: #13395E;
   --lateral-fondo: #0A2540;
   --lateral-texto: #CBD5E1;
   --lateral-activo-fondo: #13395E;
+  --lateral-hover: rgb(255 255 255 / 0.08);
   --acento-sobre-oscuro: #38BDF8;
   --anillo-foco: #0B4DA2;
   --pendiente-texto: #6B3F00;
@@ -25,6 +28,37 @@
   --rechazada-fondo: #FDE2E2;
   --cancelada-texto: #3A465C;
   --cancelada-fondo: #E6EBF3;
+  --btn-success-bg: #15803D;
+  --btn-success-border: #15803D;
+  --btn-success-fg: #FFFFFF;
+  --btn-success-hover-bg: #166534;
+  --btn-success-hover-fg: #FFFFFF;
+  --btn-success-active-bg: #14532D;
+  --btn-success-active-fg: #FFFFFF;
+  --btn-danger-bg: #B91C1C;
+  --btn-danger-border: #B91C1C;
+  --btn-danger-fg: #FFFFFF;
+  --btn-danger-hover-bg: #991B1B;
+  --btn-danger-hover-fg: #FFFFFF;
+  --btn-danger-active-bg: #7F1D1D;
+  --btn-danger-active-fg: #FFFFFF;
+  --btn-danger-outline-bg: var(--superficie);
+  --btn-danger-outline-border: #B91C1C;
+  --btn-danger-outline-fg: #B91C1C;
+  --btn-danger-outline-hover-bg: #FEF2F2;
+  --btn-danger-outline-hover-fg: #991B1B;
+  --btn-danger-outline-hover-border: #991B1B;
+  --btn-danger-outline-active-bg: #FEE2E2;
+  --btn-warning-bg: #FEF3C7;
+  --btn-warning-border: #FCD34D;
+  --btn-warning-fg: #B45309;
+  --btn-warning-hover-bg: #B45309;
+  --btn-warning-hover-fg: #FFFFFF;
+  --btn-info-bg: transparent;
+  --btn-info-border: var(--borde);
+  --btn-info-fg: #0A3D91;
+  --btn-info-hover-bg: #E5EEF9;
+  --btn-info-hover-fg: #0A3D91;
   --superposicion-marca-inicio: rgba(5, 18, 48, 0.85);
   --superposicion-marca-fin: rgba(5, 18, 48, 0.0);
   --radio-control: 0.5rem;
@@ -46,9 +80,12 @@
     --primario-enlace: #8DBBFF;
     --primario-suave: #16305F;
     --sobre-primario: #FFFFFF;
+    --color-brand: #2563D6;
+    --color-brand-hover: #3B82F6;
     --lateral-fondo: #08101F;
     --lateral-texto: #C9D6EE;
     --lateral-activo-fondo: #16305F;
+    --lateral-hover: rgb(255 255 255 / 0.08);
     --acento-sobre-oscuro: #5CC8FF;
     --anillo-foco: #7DB8FF;
     --pendiente-texto: #FFD58A;
@@ -59,6 +96,37 @@
     --rechazada-fondo: #3C1517;
     --cancelada-texto: #C9D3E8;
     --cancelada-fondo: #232C3F;
+    --btn-success-bg: #22C55E;
+    --btn-success-border: #22C55E;
+    --btn-success-fg: #08101F;
+    --btn-success-hover-bg: #4ADE80;
+    --btn-success-hover-fg: #08101F;
+    --btn-success-active-bg: #16A34A;
+    --btn-success-active-fg: #08101F;
+    --btn-danger-bg: #DC2626;
+    --btn-danger-border: #DC2626;
+    --btn-danger-fg: #FFFFFF;
+    --btn-danger-hover-bg: #B91C1C;
+    --btn-danger-hover-fg: #FFFFFF;
+    --btn-danger-active-bg: #991B1B;
+    --btn-danger-active-fg: #FFFFFF;
+    --btn-danger-outline-bg: transparent;
+    --btn-danger-outline-border: #F87171;
+    --btn-danger-outline-fg: #F87171;
+    --btn-danger-outline-hover-bg: rgba(248, 113, 113, 0.12);
+    --btn-danger-outline-hover-fg: #FCA5A5;
+    --btn-danger-outline-hover-border: #FCA5A5;
+    --btn-danger-outline-active-bg: rgba(248, 113, 113, 0.20);
+    --btn-warning-bg: rgba(251, 191, 36, 0.15);
+    --btn-warning-border: rgba(251, 191, 36, 0.4);
+    --btn-warning-fg: #FBBF24;
+    --btn-warning-hover-bg: #D97706;
+    --btn-warning-hover-fg: #FFFFFF;
+    --btn-info-bg: transparent;
+    --btn-info-border: var(--borde);
+    --btn-info-fg: #60A5FA;
+    --btn-info-hover-bg: rgba(59, 130, 246, 0.15);
+    --btn-info-hover-fg: #93C5FD;
     --superposicion-marca-inicio: rgba(4, 12, 32, 0.90);
     --superposicion-marca-fin: rgba(4, 12, 32, 0.0);
   }
@@ -77,9 +145,12 @@ html[data-tema="oscuro"] {
   --primario-enlace: #8DBBFF;
   --primario-suave: #16305F;
   --sobre-primario: #FFFFFF;
+  --color-brand: #2563D6;
+  --color-brand-hover: #3B82F6;
   --lateral-fondo: #08101F;
   --lateral-texto: #C9D6EE;
   --lateral-activo-fondo: #16305F;
+  --lateral-hover: rgb(255 255 255 / 0.08);
   --acento-sobre-oscuro: #5CC8FF;
   --anillo-foco: #7DB8FF;
   --pendiente-texto: #FFD58A;
@@ -90,6 +161,55 @@ html[data-tema="oscuro"] {
   --rechazada-fondo: #3C1517;
   --cancelada-texto: #C9D3E8;
   --cancelada-fondo: #232C3F;
+  --btn-success-bg: #22C55E;
+  --btn-success-border: #22C55E;
+  --btn-success-fg: #08101F;
+  --btn-success-hover-bg: #4ADE80;
+  --btn-success-hover-fg: #08101F;
+  --btn-success-active-bg: #16A34A;
+  --btn-success-active-fg: #08101F;
+  --btn-danger-bg: #DC2626;
+  --btn-danger-border: #DC2626;
+  --btn-danger-fg: #FFFFFF;
+  --btn-danger-hover-bg: #B91C1C;
+  --btn-danger-hover-fg: #FFFFFF;
+  --btn-danger-active-bg: #991B1B;
+  --btn-danger-active-fg: #FFFFFF;
+  --btn-danger-outline-bg: transparent;
+  --btn-danger-outline-border: #F87171;
+  --btn-danger-outline-fg: #F87171;
+  --btn-danger-outline-hover-bg: rgba(248, 113, 113, 0.12);
+  --btn-danger-outline-hover-fg: #FCA5A5;
+  --btn-danger-outline-hover-border: #FCA5A5;
+  --btn-danger-outline-active-bg: rgba(248, 113, 113, 0.20);
+  --btn-warning-bg: rgba(251, 191, 36, 0.15);
+  --btn-warning-border: rgba(251, 191, 36, 0.4);
+  --btn-warning-fg: #FBBF24;
+  --btn-warning-hover-bg: #D97706;
+  --btn-warning-hover-fg: #FFFFFF;
+  --btn-info-bg: transparent;
+  --btn-info-border: var(--borde);
+  --btn-info-fg: #60A5FA;
+  --btn-info-hover-bg: rgba(59, 130, 246, 0.15);
+  --btn-info-hover-fg: #93C5FD;
   --superposicion-marca-inicio: rgba(4, 12, 32, 0.90);
   --superposicion-marca-fin: rgba(4, 12, 32, 0.0);
+}
+
+/* Nielsen 4 · Shneiderman 1 · CardIndicador hover y chip primario en tema oscuro */
+html[data-tema="oscuro"] .card-indicador:hover {
+  border-color: var(--primario-enlace);
+  box-shadow: none;
+}
+html[data-tema="oscuro"] .chip-icono-primario {
+  color: var(--primario-enlace) !important;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-tema="claro"]) .card-indicador:hover {
+    border-color: var(--primario-enlace);
+    box-shadow: none;
+  }
+  html:not([data-tema="claro"]) .chip-icono-primario {
+    color: var(--primario-enlace) !important;
+  }
 }
