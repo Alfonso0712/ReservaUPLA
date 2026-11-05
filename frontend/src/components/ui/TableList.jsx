@@ -33,8 +33,8 @@ export default function TableList({
   const datosVisibles = paginacion ? datosOrdenados.slice((paginaSegura - 1) * tamano, paginaSegura * tamano) : datosOrdenados;
 
   return (
-    <div className="w-full rounded-tarjeta border border-borde bg-superficie overflow-hidden shadow-sm">
-      <table className="w-full table-fixed border-collapse text-left tabla-responsiva">
+    <div className="w-full rounded-tarjeta border border-borde bg-superficie shadow-sm overflow-x-auto">
+      <table className="w-full table-auto border-collapse text-left tabla-responsiva">
         <caption className="sr-only">{caption}</caption>
         <thead className="bg-superficie-2 border-b border-borde">
           <tr>
@@ -42,7 +42,7 @@ export default function TableList({
               const activo = orden.clave === col.clave;
               const ariaSort = col.ordenable ? (activo ? (orden.dir === 'asc' ? 'ascending' : 'descending') : 'none') : undefined;
               return (
-                <th key={col.clave} scope="col" aria-sort={ariaSort} className={`${col.claseEncabezado?.includes('px-') ? '' : 'px-4'} py-3 text-[0.8125rem] font-semibold text-texto-suave align-middle ${col.claseEncabezado || ''}`.trim()}>
+                <th key={col.clave} scope="col" aria-sort={ariaSort} className={`whitespace-nowrap py-3 text-[0.8125rem] font-semibold text-texto-suave align-middle ${col.claseEncabezado?.includes('px-') || col.claseEncabezado?.includes('pr-') || col.claseEncabezado?.includes('pl-') ? '' : 'px-4'} ${col.claseEncabezado || ''}`.trim()}>
                   {col.ordenable ? (
                     <button type="button" onClick={() => alternar(col.clave)} className="inline-flex items-center gap-1.5 font-semibold text-texto-suave hover:text-texto focus:outline-none focus:underline" aria-label={`Ordenar por ${col.encabezado}`}>
                       <span>{col.encabezado}</span>{activo && <Icono nombre={orden.dir === 'asc' ? 'ArrowUp' : 'ArrowDown'} className="w-3.5 h-3.5 text-primario shrink-0" />}
@@ -58,7 +58,7 @@ export default function TableList({
             <tr key={`skel-${i}`} className="h-14 animate-pulse">{columnas.map((c, ci) => <td key={c.clave || ci} className="px-4 py-3"><div className="h-4 bg-superficie-2 rounded-md w-4/5" /></td>)}</tr>
           )) : datosVisibles.map((fila, indice) => (
             <tr key={fila[claveFila] ?? indice} className={`h-14 sm:h-16 hover:bg-superficie-2 transition-colors ${obtenerClaseFila ? obtenerClaseFila(fila) : ''}`.trim()}>
-              {columnas.map((col) => <td key={col.clave} data-label={col.encabezado} className={`${col.claseCelda?.includes('px-') ? '' : 'px-4'} py-3 text-[0.9375rem] text-texto align-middle ${col.claseCelda || ''}`.trim()}>{col.render ? col.render(fila) : fila[col.clave]}</td>)}
+              {columnas.map((col) => <td key={col.clave} data-label={col.encabezado} className={`py-3 text-[0.9375rem] text-texto align-middle ${col.claseCelda?.includes('px-') || col.claseCelda?.includes('pr-') || col.claseCelda?.includes('pl-') ? '' : 'px-4'} ${col.claseCelda || ''}`.trim()}>{col.render ? col.render(fila) : fila[col.clave]}</td>)}
             </tr>
           ))}
         </tbody>

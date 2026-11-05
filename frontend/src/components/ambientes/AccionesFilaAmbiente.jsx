@@ -11,7 +11,7 @@ export default function AccionesFilaAmbiente({
     const tooltipEstado = ambiente.estado === 'Disponible' ? 'Marcar como no disponible' : 'Marcar como disponible';
 
     return (
-      <div className="flex items-center justify-center gap-2">
+      <div className="inline-flex items-center justify-end gap-2">
         {puedeEditar && (
           <Button
             variante="neutral-info"

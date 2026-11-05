@@ -15,9 +15,9 @@ export default function TipoAmbienteChip({ tipo }) {
   const nombreIcono = ICONO_POR_TIPO_AMBIENTE[etiqueta] || ICONO_POR_TIPO_AMBIENTE[tipo] || 'Building2';
 
   return (
-    <span className="inline-flex items-start gap-1.5 text-sm text-texto min-w-0 max-w-full" title={etiqueta}>
-      <Icono nombre={nombreIcono} className="w-3.5 h-3.5 text-texto-suave shrink-0 mt-0.5" />
-      <span className="line-clamp-2 leading-snug break-words">{etiqueta}</span>
+    <span className="inline-flex items-center gap-1.5 text-sm text-texto whitespace-nowrap" title={etiqueta}>
+      <Icono nombre={nombreIcono} className="w-3.5 h-3.5 text-texto-suave shrink-0" />
+      <span>{etiqueta}</span>
     </span>
   );
 }

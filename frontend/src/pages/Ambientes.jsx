@@ -4,6 +4,7 @@ import { useOutletContext } from 'react-router-dom';
 import { usePermisos } from '../hooks/usePermisos';
 import { useAmbientes } from '../hooks/useAmbientes';
 import { useDebounce } from '../hooks/useDebounce';
+import { useTamanoFuente } from '../hooks/useTamanoFuente';
 import { PERMISOS } from '../constants/permisos';
 import { normalizarTexto } from '../utils/normalizarTexto';
 import EncabezadoPagina from '../components/navegacion/EncabezadoPagina';
@@ -21,6 +22,7 @@ export default function Ambientes() {
   const { puede } = usePermisos(); const outletCtx = useOutletContext();
   const mensajeGlobal = outletCtx?.mensajeGlobal; const limpiarMensajeGlobal = outletCtx?.limpiarMensajeGlobal; const abrirModalReserva = outletCtx?.abrirModalReserva;
   const { ambientes, responsables, cargando, error, registrarAmbiente, editarAmbiente, cambiarEstadoAmbiente } = useAmbientes();
+  const { tamanoFuente } = useTamanoFuente(); const esExtra = tamanoFuente === '125%';
   const [textoFiltro, setTextoFiltro] = useState(''); const textoDebounce = useDebounce(textoFiltro);
   const [tipoFiltro, setTipoFiltro] = useState(''); const [modalCrearAbierto, setModalCrearAbierto] = useState(false);
   const [ambienteParaEditar, setAmbienteParaEditar] = useState(null); const [ambienteParaCambiarEstado, setAmbienteParaCambiarEstado] = useState(null);
@@ -51,13 +53,13 @@ export default function Ambientes() {
   }, [ambientes, textoDebounce, tipoFiltro]);
 
   const columnas = [
-    { clave: 'nombre', encabezado: 'Nombre', ordenable: true, claseEncabezado: 'w-[21%] px-2.5', claseCelda: 'px-2.5', render: (a) => <span className="font-semibold text-texto line-clamp-2 leading-snug break-words block" title={a.nombre}>{a.nombre}</span> },
-    { clave: 'tipo', encabezado: 'Tipo', claseEncabezado: 'w-[14%] px-2', claseCelda: 'px-2 min-w-0', render: (a) => <TipoAmbienteChip tipo={a.tipo} /> },
-    { clave: 'capacidad', encabezado: 'Capacidad', ordenable: true, claseEncabezado: 'w-[6%] text-center px-1', claseCelda: 'text-center px-1 whitespace-nowrap cifra-tabular', render: (a) => <span className="cifra-tabular">{a.capacidad}</span> },
-    { clave: 'ubicacion', encabezado: 'Ubicación', claseEncabezado: 'w-[17%] px-2', claseCelda: 'px-2', render: (a) => <span title={a.ubicacion} className="line-clamp-2 leading-snug break-words block">{a.ubicacion}</span> },
-    { clave: 'responsable', encabezado: 'Responsable', claseEncabezado: 'w-[17%] px-2', claseCelda: 'px-2', render: (a) => <span title={a.nombreResponsable || a.responsableNombre || 'Sin asignar'} className="line-clamp-2 leading-snug break-words block">{a.nombreResponsable || a.responsableNombre || 'Sin asignar'}</span> },
-    { clave: 'estado', encabezado: 'Estado', claseEncabezado: 'w-[14%] pl-2 pr-3', claseCelda: 'pl-2 pr-3 whitespace-nowrap', render: (a) => <Badge estado={a.estado} /> },
-    { clave: 'acciones', encabezado: 'Acciones', claseEncabezado: 'w-[11%] pl-3 pr-2 text-center', claseCelda: 'pl-3 pr-2 text-center whitespace-nowrap', render: (a) => <AccionesFilaAmbiente ambiente={a} puedeEditar={puedeEditar} puedeCambiarEstado={puedeCambiarEstado} puedeCrearReserva={puedeCrearReserva} alEditar={setAmbienteParaEditar} alCambiarEstado={manejarCambioEstado} alReservar={(id) => abrirModalReserva?.(id)} /> }
+    { clave: 'nombre', encabezado: 'Nombre', ordenable: true, claseEncabezado: 'min-w-[12rem] px-3', claseCelda: 'min-w-[12rem] px-3', render: (a) => <span className="font-semibold text-texto line-clamp-2 leading-snug break-words block" title={a.nombre}>{a.nombre}</span> },
+    { clave: 'tipo', encabezado: 'Tipo', claseEncabezado: `w-[1%] whitespace-nowrap px-3 ${esExtra ? 'hidden xl:table-cell' : 'hidden lg:table-cell'}`, claseCelda: `w-[1%] whitespace-nowrap px-3 ${esExtra ? 'hidden xl:table-cell' : 'hidden lg:table-cell'}`, render: (a) => <TipoAmbienteChip tipo={a.tipo} /> },
+    { clave: 'capacidad', encabezado: 'Capacidad', ordenable: true, claseEncabezado: 'w-[1%] whitespace-nowrap text-right pr-4 pl-2', claseCelda: 'w-[1%] whitespace-nowrap text-right pr-4 pl-2 cifra-tabular', render: (a) => <span className="cifra-tabular">{a.capacidad}</span> },
+    { clave: 'ubicacion', encabezado: 'Ubicación', claseEncabezado: 'min-w-[10rem] px-3', claseCelda: 'px-3 min-w-[10rem]', render: (a) => <span title={a.ubicacion} className="line-clamp-2 leading-snug break-words block">{a.ubicacion}</span> },
+    { clave: 'responsable', encabezado: 'Responsable', claseEncabezado: `min-w-[10rem] px-3 ${esExtra ? 'hidden' : 'hidden xl:table-cell'}`, claseCelda: `px-3 min-w-[10rem] ${esExtra ? 'hidden' : 'hidden xl:table-cell'}`, render: (a) => <span title={a.nombreResponsable || a.responsableNombre || 'Sin asignar'} className="line-clamp-2 leading-snug break-words block">{a.nombreResponsable || a.responsableNombre || 'Sin asignar'}</span> },
+    { clave: 'estado', encabezado: 'Estado', claseEncabezado: 'w-[1%] whitespace-nowrap px-3', claseCelda: 'w-[1%] whitespace-nowrap px-3', render: (a) => <Badge estado={a.estado} /> },
+    { clave: 'acciones', encabezado: 'Acciones', claseEncabezado: 'w-[1%] whitespace-nowrap text-right pl-3 pr-2', claseCelda: 'w-[1%] whitespace-nowrap text-right pl-3 pr-2', render: (a) => <AccionesFilaAmbiente ambiente={a} puedeEditar={puedeEditar} puedeCambiarEstado={puedeCambiarEstado} puedeCrearReserva={puedeCrearReserva} alEditar={setAmbienteParaEditar} alCambiarEstado={manejarCambioEstado} alReservar={(id) => abrirModalReserva?.(id)} /> }
   ];
 
   return (
