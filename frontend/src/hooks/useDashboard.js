@@ -16,8 +16,17 @@ export function useDashboard(versionExterna = 0) {
     const resp = await obtenerDashboardApi(signal);
     if (signal?.aborted || idActual !== peticionActualRef.current) return;
     const resultado = interpretarRespuesta(resp);
-    if (resultado.ok) {
-      setIndicadores(resultado.datos);
+    if (resultado.ok && resultado.datos) {
+      const d = resultado.datos;
+      setIndicadores({
+        ...d,
+        total: d.total ?? d.totalReservas ?? 0,
+        pendientes: d.pendientes ?? d.reservasPendientes ?? 0,
+        aprobadas: d.aprobadas ?? d.reservasAprobadas ?? 0,
+        rechazadas: d.rechazadas ?? d.reservasRechazadas ?? 0,
+        canceladas: d.canceladas ?? d.reservasCanceladas ?? 0,
+        alcance: d.alcance ?? 'global'
+      });
     } else {
       setError(resultado.errorGeneral);
     }

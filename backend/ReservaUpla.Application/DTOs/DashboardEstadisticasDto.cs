@@ -9,4 +9,11 @@ public record DashboardEstadisticasDto(
     int ReservasCanceladas,
     string AmbienteMasUtilizado,
     int CantidadUsoAmbienteMasUtilizado,
-    string Alcance = "global");
+    string Alcance = "global")
+{
+    public int Total => TotalReservas;
+    public int Pendientes => ReservasPendientes;
+    public int Aprobadas => ReservasAprobadas;
+    public int Rechazadas => ReservasRechazadas;
+    public int Canceladas => ReservasCanceladas;
+}
