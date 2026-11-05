@@ -1,10 +1,17 @@
-// Nielsen 1 · WCAG 2.2 AA · ISO 9241-11 · Barra lateral accesible con navegación semántica
-import LogoUpla from '../ui/LogoUpla';
+// Nielsen 1 · Nielsen 2 · Nielsen 3 · Shneiderman 2 · Sidebar con navegación accesible · E-18 · E-54
+import { usePermisos } from '../../hooks/usePermisos';
+import { obtenerItemsPorPermiso, ITEMS_NAVEGACION } from '../../constants/navegacion';
+import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import ItemNavegacion from './ItemNavegacion';
-import UsuarioLateral from './UsuarioLateral';
+import LogoUpla from '../ui/LogoUpla';
 import Icono from '../ui/Icono';
+import UsuarioLateral from './UsuarioLateral';
 
-export default function Sidebar({ items = [], abiertoMovil = false, alCerrarMovil }) {
+export default function Sidebar({ abiertoMovil = false, alCerrarMovil, usuario }) {
+  const cajonRef = useTrampaFoco(abiertoMovil, alCerrarMovil);
+  const { puede } = usePermisos();
+  const items = typeof puede === 'function' ? obtenerItemsPorPermiso(puede) : ITEMS_NAVEGACION;
+
   const contenido = (
     <div className="flex flex-col h-full w-64 bg-lateral-fondo text-lateral-texto border-r border-borde">
       <div className="p-4 flex-1 flex flex-col overflow-y-auto">
@@ -17,7 +24,12 @@ export default function Sidebar({ items = [], abiertoMovil = false, alCerrarMovi
             </div>
           </div>
           {abiertoMovil && (
-            <button type="button" onClick={alCerrarMovil} aria-label="Cerrar menú lateral" className="lg:hidden h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-2 inline-flex items-center justify-center rounded-full text-lateral-texto">
+            <button
+              type="button"
+              onClick={alCerrarMovil}
+              aria-label="Cerrar menú lateral"
+              className="lg:hidden h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-2 inline-flex items-center justify-center rounded-full text-lateral-texto"
+            >
               <Icono nombre="X" className="w-5 h-5" />
             </button>
           )}
@@ -32,7 +44,7 @@ export default function Sidebar({ items = [], abiertoMovil = false, alCerrarMovi
           </ul>
         </nav>
       </div>
-      <UsuarioLateral alCerrarMenu={alCerrarMovil} />
+      <UsuarioLateral alCerrarMenu={alCerrarMovil} usuario={usuario} />
     </div>
   );
 
@@ -42,9 +54,8 @@ export default function Sidebar({ items = [], abiertoMovil = false, alCerrarMovi
         {contenido}
       </aside>
       {abiertoMovil && (
-        <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={alCerrarMovil} aria-hidden="true" />
-          <aside aria-label="Navegación lateral móvil" className="relative z-10 h-full">
+        <div className="fixed inset-0 z-40 flex lg:hidden bg-fondo">
+          <aside ref={cajonRef} id="menu-lateral-principal" role="dialog" aria-modal="true" aria-label="Menú de navegación">
             {contenido}
           </aside>
         </div>
