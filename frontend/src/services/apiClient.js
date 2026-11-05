@@ -4,9 +4,9 @@ import { ejecutarPeticionMock } from '../mocks/baseDatosMock';
 
 function usarAdaptadorMock() {
   const valor = import.meta.env?.VITE_USAR_MOCK;
-  if (valor === 'false') return false;
-  if (valor === 'true' || valor === true) return true;
-  return Boolean(import.meta.env?.DEV) || valor === undefined || valor === '';
+  return valor === 'true' || valor === true;
+
+
 }
 
 function construirUrl(ruta) {
