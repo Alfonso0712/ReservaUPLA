@@ -24,7 +24,7 @@ export default function AccionesReserva({
   const puedeRechazar = esPend && acciones.includes('rechazar');
 
   return (
-    <div className="flex items-center justify-start gap-2 w-full">
+    <div className="flex items-center gap-2 w-full">
       <Button
         variante="neutral-info"
         tamano="sm"
@@ -34,39 +34,41 @@ export default function AccionesReserva({
         aria-label="Ver detalle de reserva"
         onClick={() => navegar(RUTAS.crearDetalleReserva(reserva.id), { state: { search: window.location.search, reservaId: reserva.id } })}
       />
-      {puedeAprobar ? (
-        <Button
-          variante="success"
-          tamano="sm"
-          disabled={enProceso}
-          icono="Check"
-          tooltip="Aprobar reserva"
-          aria-label={`Aprobar reserva de ${solicitante}`}
-          className="w-auto px-3 sm:w-9 sm:px-0 sm:rounded-full xl:w-auto xl:px-3 xl:rounded-md"
-          onClick={() => alSolicitarAprobar?.(reserva)}
-        >
-          <span className="inline sm:hidden xl:inline">Aprobar</span>
-        </Button>
+      {puedeAprobar || puedeRechazar ? (
+        <div className="flex-1 flex items-center justify-center gap-2">
+          {puedeAprobar && (
+            <Button
+              variante="success"
+              tamano="sm"
+              disabled={enProceso}
+              icono="Check"
+              tooltip="Aprobar reserva"
+              aria-label={`Aprobar reserva de ${solicitante}`}
+              className="w-auto px-3 sm:w-9 sm:px-0 sm:rounded-full xl:w-auto xl:px-3 xl:rounded-md"
+              onClick={() => alSolicitarAprobar?.(reserva)}
+            >
+              <span className="inline sm:hidden xl:inline">Aprobar</span>
+            </Button>
+          )}
+          {puedeRechazar && (
+            <Button
+              variante="danger-outline"
+              tamano="sm"
+              disabled={enProceso}
+              icono="X"
+              tooltip="Rechazar reserva"
+              aria-label={`Rechazar reserva de ${solicitante}`}
+              className="w-auto px-3 sm:w-9 sm:px-0 sm:rounded-full xl:w-auto xl:px-3 xl:rounded-md"
+              onClick={() => alSolicitarRechazar?.(reserva)}
+            >
+              <span className="inline sm:hidden xl:inline">Rechazar</span>
+            </Button>
+          )}
+        </div>
       ) : (
         <div className="flex-1 hidden sm:inline-flex items-center justify-center text-xs text-texto-suave select-none whitespace-nowrap" aria-hidden="true">
           Sin acciones pendientes
         </div>
-      )}
-      {puedeRechazar ? (
-        <Button
-          variante="danger-outline"
-          tamano="sm"
-          disabled={enProceso}
-          icono="X"
-          tooltip="Rechazar reserva"
-          aria-label={`Rechazar reserva de ${solicitante}`}
-          className="w-auto px-3 sm:w-9 sm:px-0 sm:rounded-full xl:w-auto xl:px-3 xl:rounded-md"
-          onClick={() => alSolicitarRechazar?.(reserva)}
-        >
-          <span className="inline sm:hidden xl:inline">Rechazar</span>
-        </Button>
-      ) : (
-        <div className="hidden" aria-hidden="true" />
       )}
     </div>
   );
