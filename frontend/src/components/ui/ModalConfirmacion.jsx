@@ -22,6 +22,8 @@ export default function ModalConfirmacion({
   }, '[data-foco-seguro="true"], select, button, input');
 
   if (!abierto) return null;
+  const ambNombre = reserva?.ambiente?.nombre || reserva?.nombreAmbiente || '—';
+  const solNombre = reserva?.solicitante?.nombreCompleto || reserva?.nombreSolicitante || '—';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
@@ -36,8 +38,8 @@ export default function ModalConfirmacion({
         {resumen}
         {!resumen && reserva && (
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 mb-4 rounded-control border border-borde bg-superficie-2 text-sm">
-            <div><dt className="font-semibold text-texto-suave">Ambiente</dt><dd className="text-texto font-medium">{reserva.ambiente?.nombre || '—'}</dd></div>
-            <div><dt className="font-semibold text-texto-suave">Solicitante</dt><dd className="text-texto font-medium">{reserva.solicitante?.nombreCompleto || '—'}</dd></div>
+            <div><dt className="font-semibold text-texto-suave">Ambiente</dt><dd className="text-texto font-medium">{ambNombre}</dd></div>
+            <div><dt className="font-semibold text-texto-suave">Solicitante</dt><dd className="text-texto font-medium">{solNombre}</dd></div>
             <div><dt className="font-semibold text-texto-suave">Fecha</dt><dd className="text-texto cifra-tabular">{formatearFecha(reserva.fecha)}</dd></div>
             <div><dt className="font-semibold text-texto-suave">Horario</dt><dd className="text-texto cifra-tabular">{formatearRangoHorario(reserva.horaInicio, reserva.horaFin)}</dd></div>
           </dl>

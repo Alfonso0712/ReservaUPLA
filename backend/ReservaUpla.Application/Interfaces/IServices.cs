@@ -30,6 +30,9 @@ public interface IAmbienteService
     Task<IReadOnlyList<AmbienteDto>> ListarAmbientesAsync(Guid? responsableId, CancellationToken ct = default);
     // RF-04 · RN-01 · RV-14
     Task<DisponibilidadAmbienteDto> ConsultarDisponibilidadAsync(Guid ambienteId, DateOnly fecha, CancellationToken ct = default);
+    // RF-02 · RV-04 a RV-07 · E-39 a E-44
+    Task<AmbienteDto> ActualizarAmbienteAsync(Guid id, ActualizarAmbienteDto dto, CancellationToken ct = default);
+    Task<AmbienteDto> CambiarEstadoAsync(Guid id, EstadoAmbiente nuevoEstado, CancellationToken ct = default);
 }
 
 public interface IReservaService

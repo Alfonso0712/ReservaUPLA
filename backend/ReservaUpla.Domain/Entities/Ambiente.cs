@@ -38,6 +38,21 @@ public class Ambiente
         };
     }
 
+    // RF-02 · RV-04 · RV-05 · RV-06 · RV-07 · E-39 · E-40
+    public void ActualizarDatos(string nombre, TipoAmbiente tipo, int capacidad, string ubicacion, Guid? responsableId = null)
+    {
+        var nombreLimpio = nombre?.Trim() ?? string.Empty;
+        var ubicacionLimpia = ubicacion?.Trim() ?? string.Empty;
+
+        ValidarCampos(nombreLimpio, capacidad, ubicacionLimpia);
+
+        Nom_Ambiente = nombreLimpio;
+        Tip_Ambiente = tipo;
+        Cap_Ambiente = capacidad;
+        Ubi_Ambiente = ubicacionLimpia;
+        Idr_Ambiente = responsableId;
+    }
+
     public void ActualizarEstado(EstadoAmbiente nuevoEstado)
     {
         Est_Ambiente = nuevoEstado;

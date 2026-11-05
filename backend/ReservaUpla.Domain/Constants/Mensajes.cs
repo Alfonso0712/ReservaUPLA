@@ -23,6 +23,7 @@ public static class Mensajes
     public const string AmbienteUbicacionRequerida = "La ubicación es obligatoria y máximo 100 caracteres.";
     public const string AmbienteNoExiste = "El ambiente seleccionado no existe.";
     public const string AmbienteNoDisponible = "El ambiente se encuentra en mantenimiento y no admite reservas.";
+    public const string AmbienteEstadoInvalido = "El estado del ambiente no es válido.";
 
     // RV-08, RV-09, RV-10, RV-11, RV-12
     public const string FechaRequerida = "La fecha de la reserva es obligatoria.";

@@ -13,7 +13,7 @@ using ReservaUpla.Domain.Exceptions;
 
 namespace ReservaUpla.Application.Services;
 
-// RF-02 · RF-04 · RV-04 a RV-07 · RV-13 · RV-14 · E-10 · E-11
+// RF-02 · RF-04 · RV-04 a RV-07 · RV-13 · RV-14 · E-10 · E-11 · E-39 a E-44
 public class AmbienteService : IAmbienteService
 {
     private readonly IAmbienteRepository _ambienteRepo;
@@ -38,15 +38,61 @@ public class AmbienteService : IAmbienteService
 
     public async Task<AmbienteDto> RegistrarAmbienteAsync(CrearAmbienteDto dto, CancellationToken ct = default)
     {
-        var tipoStr = dto.Tipo?.Replace(" ", "").Replace("ó", "o") ?? string.Empty;
-        if (!Enum.TryParse<TipoAmbiente>(tipoStr, true, out var tipo))
-            throw new DomainException(Mensajes.AmbienteTipoInvalido);
+        var tipo = AmbienteMapper.ParsearTipo(dto.Tipo);
 
         var ambiente = Ambiente.Crear(dto.Nombre, tipo, dto.Capacidad, dto.Ubicacion, dto.ResponsableId);
         await _ambienteRepo.AgregarAsync(ambiente, ct);
         await _unitOfWork.GuardarCambiosAsync(ct);
 
-        return AmbienteMapper.ToDto(ambiente);
+        string? nombreResp = null;
+        if (ambiente.Idr_Ambiente.HasValue)
+        {
+            var resp = await _usuarioRepo.ObtenerPorIdAsync(ambiente.Idr_Ambiente.Value, ct);
+            nombreResp = resp?.Nom_Usuario;
+        }
+
+        return AmbienteMapper.ToDto(ambiente, nombreResp);
+    }
+
+    public async Task<AmbienteDto> ActualizarAmbienteAsync(Guid id, ActualizarAmbienteDto dto, CancellationToken ct = default)
+    {
+        var ambiente = await _ambienteRepo.ObtenerPorIdAsync(id, ct)
+            ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
+
+        var tipo = AmbienteMapper.ParsearTipo(dto.Tipo);
+        ambiente.ActualizarDatos(dto.Nombre, tipo, dto.Capacidad, dto.Ubicacion, dto.ResponsableId);
+
+        await _ambienteRepo.ActualizarAsync(ambiente, ct);
+        await _unitOfWork.GuardarCambiosAsync(ct);
+
+        string? nombreResp = null;
+        if (ambiente.Idr_Ambiente.HasValue)
+        {
+            var resp = await _usuarioRepo.ObtenerPorIdAsync(ambiente.Idr_Ambiente.Value, ct);
+            nombreResp = resp?.Nom_Usuario;
+        }
+
+        return AmbienteMapper.ToDto(ambiente, nombreResp);
+    }
+
+    public async Task<AmbienteDto> CambiarEstadoAsync(Guid id, EstadoAmbiente nuevoEstado, CancellationToken ct = default)
+    {
+        var ambiente = await _ambienteRepo.ObtenerPorIdAsync(id, ct)
+            ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
+
+        ambiente.ActualizarEstado(nuevoEstado);
+
+        await _ambienteRepo.ActualizarAsync(ambiente, ct);
+        await _unitOfWork.GuardarCambiosAsync(ct);
+
+        string? nombreResp = null;
+        if (ambiente.Idr_Ambiente.HasValue)
+        {
+            var resp = await _usuarioRepo.ObtenerPorIdAsync(ambiente.Idr_Ambiente.Value, ct);
+            nombreResp = resp?.Nom_Usuario;
+        }
+
+        return AmbienteMapper.ToDto(ambiente, nombreResp);
     }
 
     public async Task<IReadOnlyList<AmbienteDto>> ListarAmbientesAsync(CancellationToken ct = default)

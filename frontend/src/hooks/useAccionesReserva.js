@@ -40,14 +40,20 @@ export function useAccionesReserva() {
       return;
     }
     setEnProceso(true);
-    const res = await cambiarEstadoFn(modal.reserva.id, modal.nuevoEstado, motivo);
-    setEnProceso(false);
-    if (res?.ok) {
-      const { reserva, nuevoEstado } = modal;
-      cerrarModal();
-      onExito?.(reserva, nuevoEstado, res);
-    } else {
-      setErrorMotivo(res?.errorGeneral || 'Error al procesar la acción.');
+    try {
+      const resp = await cambiarEstadoFn(modal.reserva.id, modal.nuevoEstado, motivo);
+      const res = (resp && typeof resp.ok === 'boolean') ? resp : (resp?.estado ? (resp.estado >= 200 && resp.estado < 300 ? { ok: true, datos: resp.datos } : { ok: false, errorGeneral: resp.datos?.message || 'Error al procesar la acción.' }) : { ok: false, errorGeneral: 'Error al procesar la acción.' });
+      if (res?.ok) {
+        const { reserva, nuevoEstado } = modal;
+        cerrarModal();
+        onExito?.(reserva, nuevoEstado, res);
+      } else {
+        setErrorMotivo(res?.errorGeneral || 'Error al procesar la acción.');
+      }
+    } catch (e) {
+      setErrorMotivo(e?.message || 'Error inesperado al procesar la acción.');
+    } finally {
+      setEnProceso(false);
     }
   }, [modal, motivo, cerrarModal]);
 

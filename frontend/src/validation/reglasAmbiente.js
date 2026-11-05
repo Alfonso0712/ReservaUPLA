@@ -67,7 +67,7 @@ export function validarAmbiente({ nombre = '', tipo = '', capacidad = '', ubicac
       tipo: normalizarTexto(tipo),
       capacidad: Number(String(capacidad).trim()),
       ubicacion: normalizarTexto(ubicacion),
-      responsableId: normalizarTexto(responsableId)
+      responsableId: normalizarTexto(responsableId) || null
     }
   };
 }

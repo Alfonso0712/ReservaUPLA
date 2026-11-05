@@ -13,6 +13,7 @@ public static class PoliticaDeAcceso
         {
             Permisos.DashboardVer,
             Permisos.ReservasVer,
+            Permisos.ReservasCrear,
             Permisos.ReservasAprobar,
             Permisos.ReservasRechazar,
             Permisos.ReservasCancelarCualquiera,

@@ -8,7 +8,7 @@ export default function ModalAccionReserva({
   if (!modal) return null;
   const esApr = modal.nuevoEstado === ESTADOS_RESERVA.APROBADA;
   const esCanc = modal.nuevoEstado === ESTADOS_RESERVA.CANCELADA;
-  const solicitante = modal.reserva?.solicitante?.nombreCompleto || 'solicitante';
+  const solicitante = modal.reserva?.solicitante?.nombreCompleto || modal.reserva?.nombreSolicitante || 'solicitante';
   const titulo = esApr ? 'Confirmar aprobación' : (esCanc ? `¿Cancelar la reserva de ${solicitante}?` : 'Confirmar rechazo');
   const descripcion = esApr ? '¿Desea aprobar esta solicitud de reserva?' : (esCanc ? 'Revise los datos de la reserva antes de confirmar la cancelación.' : 'Indique el motivo del rechazo:');
   const etiquetaConfirmar = esApr ? 'Aprobar reserva' : (esCanc ? 'Cancelar reserva' : 'Rechazar reserva');

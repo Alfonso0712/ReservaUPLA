@@ -26,10 +26,15 @@ export async function crearReservaApi(datosReserva, signal) {
   });
 }
 
-export async function cambiarEstadoReservaApi(id, nuevoEstado, signal) {
+export async function cambiarEstadoReservaApi(id, nuevoEstado, motivoOSignal, signalParam) {
+  const esSignal = motivoOSignal && (typeof motivoOSignal.addEventListener === 'function' || motivoOSignal.aborted !== undefined);
+  const motivo = esSignal ? '' : (typeof motivoOSignal === 'string' ? motivoOSignal : '');
+  const signal = esSignal ? motivoOSignal : signalParam;
+  const cuerpo = { estado: nuevoEstado };
+  if (motivo) cuerpo.motivo = motivo;
   return solicitarApi(`/api/reservas/${encodeURIComponent(id)}/estado`, {
     metodo: 'PATCH',
-    cuerpo: { estado: nuevoEstado },
+    cuerpo,
     signal
   });
 }

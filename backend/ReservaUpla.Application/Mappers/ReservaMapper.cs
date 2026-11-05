@@ -46,6 +46,37 @@ public static class ReservaMapper
             reserva.Fre_Reserva);
     }
 
+    public static ReservaDetalleDto ToDetalleDto(Reserva reserva, Usuario solicitante, Ambiente ambiente)
+    {
+        var solDto = new UsuarioResumenDto(solicitante.Id_Usuario, solicitante.Nom_Usuario, solicitante.Cor_Usuario);
+        var tipoFormateado = AmbienteMapper.FormatearTipo(ambiente.Tip_Ambiente);
+        var ambDto = new AmbienteDetalleResumenDto(
+            ambiente.Id_Ambiente,
+            ambiente.Nom_Ambiente,
+            tipoFormateado,
+            ambiente.Ubi_Ambiente,
+            ambiente.Cap_Ambiente);
+
+        return new ReservaDetalleDto(
+            reserva.Id_Reserva,
+            reserva.Fec_Reserva,
+            reserva.Hin_Reserva,
+            reserva.Hfi_Reserva,
+            reserva.Mot_Reserva,
+            reserva.Est_Reserva.ToString(),
+            reserva.Idu_Reserva,
+            solicitante.Nom_Usuario,
+            solicitante.Cor_Usuario,
+            reserva.Ida_Reserva,
+            ambiente.Nom_Ambiente,
+            ambiente.Ubi_Ambiente,
+            tipoFormateado,
+            reserva.Fre_Reserva,
+            solDto,
+            ambDto,
+            ambiente.Cap_Ambiente);
+    }
+
     public static ReservaDetalleDto ToDetalleDto(
         Reserva reserva,
         string nombreSolicitante,

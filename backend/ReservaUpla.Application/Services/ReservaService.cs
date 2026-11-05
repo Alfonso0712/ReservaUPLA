@@ -166,13 +166,7 @@ public class ReservaService : IReservaService
         var solicitante = await _usuarioRepo.ObtenerPorIdAsync(reserva.Idu_Reserva, ct)
             ?? throw new DomainException(Mensajes.RecursoNoEncontrado);
 
-        return ReservaMapper.ToDetalleDto(
-            reserva,
-            solicitante.Nom_Usuario,
-            solicitante.Cor_Usuario,
-            ambiente.Nom_Ambiente,
-            ambiente.Ubi_Ambiente,
-            ambiente.Tip_Ambiente.ToString());
+        return ReservaMapper.ToDetalleDto(reserva, solicitante, ambiente);
     }
 
     public Task<ReservaDetalleDto> ObtenerDetalleAsync(Guid id, Guid usuarioId, RolUsuario rol, CancellationToken ct = default)
