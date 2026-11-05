@@ -19,15 +19,9 @@ import Cargando from '../components/ui/Cargando';
 import Button from '../components/ui/Button';
 
 export default function DetalleReserva() {
-  const { id } = useParams();
-  const navegar = useNavigate();
-  const loc = useLocation();
-  const ctx = useOutletContext() || {};
-  const { usuario } = useAuth();
-  const { puede } = usePermisos();
-  const [reserva, setReserva] = useState(null);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState('');
+  const { id } = useParams(); const navegar = useNavigate(); const loc = useLocation(); const ctx = useOutletContext() || {};
+  const { usuario } = useAuth(); const { puede } = usePermisos();
+  const [reserva, setReserva] = useState(null); const [cargando, setCargando] = useState(true); const [error, setError] = useState('');
   const accHook = useAccionesReserva();
 
   const cargarDetalle = useCallback(async (signal) => {

@@ -16,9 +16,10 @@ import PanelDisponibilidad from './PanelDisponibilidad';
 import Button from '../ui/Button';
 import AlertMessage from '../ui/AlertMessage';
 import Icono from '../ui/Icono';
+
 export default function FormularioReserva({ abierto, ambientePreseleccionadoId = '', alCerrar, alExito }) {
   const idTitulo = useId();
-  const [cat, setCat] = useState({ ambientes: [], ocupados: [], cargandoDisp: false });
+  const [catalogo, setCatalogo] = useState({ ambientes: [], ocupados: [], cargandoDisponibilidad: false });
   const form = useFormulario({
     valoresIniciales: { ambienteId: ambientePreseleccionadoId || '', fecha: '', horaInicio: '', horaFin: '', motivo: '' },
     validar: (vals) => validarReserva(vals),
@@ -31,7 +32,7 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
     }
   });
   const modalRef = useTrampaFoco(abierto, () => { if (!form.enProceso) alCerrar?.(); }, 'select, input');
-  const ambSeleccionado = cat.ambientes.find((a) => a.id === form.valores.ambienteId);
+  const ambSeleccionado = catalogo.ambientes.find((a) => a.id === form.valores.ambienteId);
   const esDisponible = ambSeleccionado?.estado === 'Disponible';
   useEffect(() => {
     if (!abierto) return undefined;
@@ -39,21 +40,21 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
     form.setErrores({}); form.setErrorGeneral('');
     const ctrl = new AbortController();
     listarAmbientesApi(ctrl.signal).then((rA) => {
-      if (!ctrl.signal.aborted) { const iA = interpretarRespuesta(rA); setCat((p) => ({ ...p, ambientes: iA.ok && Array.isArray(iA.datos) ? iA.datos : [] })); }
+      if (!ctrl.signal.aborted) { const iA = interpretarRespuesta(rA); setCatalogo((p) => ({ ...p, ambientes: iA.ok && Array.isArray(iA.datos) ? iA.datos : [] })); }
     });
     return () => ctrl.abort();
   }, [abierto, ambientePreseleccionadoId]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!abierto || !form.valores.ambienteId || !form.valores.fecha || !esDisponible) { setCat((p) => ({ ...p, ocupados: [] })); return undefined; }
+    if (!abierto || !form.valores.ambienteId || !form.valores.fecha || !esDisponible) { setCatalogo((p) => ({ ...p, ocupados: [] })); return undefined; }
     const ctrl = new AbortController();
-    setCat((p) => ({ ...p, cargandoDisp: true }));
+    setCatalogo((p) => ({ ...p, cargandoDisponibilidad: true }));
     consultarDisponibilidadApi(form.valores.ambienteId, form.valores.fecha, ctrl.signal).then((r) => {
-      if (!ctrl.signal.aborted) { const i = interpretarRespuesta(r); setCat((p) => ({ ...p, ocupados: i.ok && Array.isArray(i.datos?.ocupados) ? i.datos.ocupados : [], cargandoDisp: false })); }
+      if (!ctrl.signal.aborted) { const i = interpretarRespuesta(r); setCatalogo((p) => ({ ...p, ocupados: i.ok && Array.isArray(i.datos?.ocupados) ? i.datos.ocupados : [], cargandoDisponibilidad: false })); }
     });
     return () => ctrl.abort();
   }, [abierto, form.valores.ambienteId, form.valores.fecha, esDisponible]);
   if (!abierto) return null;
-  const opcionesAmb = cat.ambientes.map((a) => ({
+  const opcionesAmb = catalogo.ambientes.map((a) => ({
     valor: a.id, etiqueta: `${a.nombre}${a.estado === 'Disponible' ? ` (${a.capacidad} personas)` : ` (en ${a.estado.toLowerCase()})`}`,
     deshabilitada: a.estado !== 'Disponible'
   }));
@@ -67,7 +68,7 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
           <SelectInput ref={form.registrarRef('ambienteId')} nombre="ambienteId" etiqueta="Ambiente" obligatorio valor={form.valores.ambienteId} alCambiar={(e) => form.cambiarValor('ambienteId', e.target.value)} alSalir={() => form.manejarBlur('ambienteId')} opciones={opcionesAmb} placeholder="Seleccione un ambiente" ayuda={MENSAJES.AYUDA_AMBIENTE} error={form.errores.ambienteId} soloLectura={form.enProceso} />
           <DateInput ref={form.registrarRef('fecha')} nombre="fecha" etiqueta="Fecha" obligatorio min={obtenerFechaHoyIso()} valor={form.valores.fecha} alCambiar={(e) => form.cambiarValor('fecha', e.target.value)} alSalir={() => form.manejarBlur('fecha')} ayuda={MENSAJES.AYUDA_FECHA} error={form.errores.fecha} soloLectura={form.enProceso} />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"><TimeInput ref={form.registrarRef('horaInicio')} nombre="horaInicio" etiqueta="Hora de inicio" obligatorio valor={form.valores.horaInicio} alCambiar={(e) => form.cambiarValor('horaInicio', e.target.value)} alSalir={() => form.manejarBlur('horaInicio')} ayuda={MENSAJES.AYUDA_HORARIO} error={form.errores.horaInicio} soloLectura={form.enProceso} /><TimeInput ref={form.registrarRef('horaFin')} nombre="horaFin" etiqueta="Hora de fin" obligatorio valor={form.valores.horaFin} alCambiar={(e) => form.cambiarValor('horaFin', e.target.value)} alSalir={() => form.manejarBlur('horaFin')} ayuda={MENSAJES.AYUDA_HORARIO} error={form.errores.horaFin} soloLectura={form.enProceso} /></div>
-          <PanelDisponibilidad ambienteSeleccionado={Boolean(form.valores.ambienteId)} fechaSeleccionada={Boolean(form.valores.fecha)} cargando={cat.cargandoDisp} ocupados={cat.ocupados} horaInicio={form.valores.horaInicio} horaFin={form.valores.horaFin} />
+          <PanelDisponibilidad ambienteSeleccionado={Boolean(form.valores.ambienteId)} fechaSeleccionada={Boolean(form.valores.fecha)} cargando={catalogo.cargandoDisponibilidad} ocupados={catalogo.ocupados} horaInicio={form.valores.horaInicio} horaFin={form.valores.horaFin} />
           <TextAreaInput ref={form.registrarRef('motivo')} nombre="motivo" etiqueta="Motivo" obligatorio filas={3} valor={form.valores.motivo} alCambiar={(e) => form.cambiarValor('motivo', e.target.value)} alSalir={() => form.manejarBlur('motivo')} ayuda={MENSAJES.AYUDA_MOTIVO} error={form.errores.motivo} placeholder="Describa la actividad académica a realizar" soloLectura={form.enProceso} />
           <div className="flex items-center justify-end gap-3 pt-3 border-t border-borde"><Button variante="secundario" disabled={form.enProceso} onClick={alCerrar}>Cancelar</Button><Button tipo="submit" variante="primario" enProceso={form.enProceso}>Registrar solicitud</Button></div>
         </form>

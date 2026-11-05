@@ -21,34 +21,34 @@ export default function Ambientes() {
   const { puede } = usePermisos(); const outletCtx = useOutletContext();
   const mensajeGlobal = outletCtx?.mensajeGlobal; const limpiarMensajeGlobal = outletCtx?.limpiarMensajeGlobal; const abrirModalReserva = outletCtx?.abrirModalReserva;
   const { ambientes, responsables, cargando, error, registrarAmbiente, editarAmbiente, cambiarEstadoAmbiente } = useAmbientes();
-  const [texto, setTexto] = useState(''); const debTexto = useDebounce(texto);
-  const [tipo, setTipo] = useState(''); const [modalCrear, setModalCrear] = useState(false);
-  const [aEditar, setAEditar] = useState(null); const [aCambiarEstado, setACambiarEstado] = useState(null);
+  const [textoFiltro, setTextoFiltro] = useState(''); const textoDebounce = useDebounce(textoFiltro);
+  const [tipoFiltro, setTipoFiltro] = useState(''); const [modalCrearAbierto, setModalCrearAbierto] = useState(false);
+  const [ambienteParaEditar, setAmbienteParaEditar] = useState(null); const [ambienteParaCambiarEstado, setAmbienteParaCambiarEstado] = useState(null);
   const [toasts, setToasts] = useState([]);
-  const conExito = (fn) => (m) => { if (typeof window !== 'undefined') { fn(); setToasts((p) => [...p.slice(-2), { id: Date.now(), tipo: 'exito', mensaje: m }]); } };
+  const notificarExito = (callback) => (mensaje) => { if (typeof window !== 'undefined') { callback(); setToasts((prev) => [...prev.slice(-2), { id: Date.now(), tipo: 'exito', mensaje }]); } };
 
   useEffect(() => {
-    if (mensajeGlobal) { setToasts((p) => [...p.slice(-2), { id: Date.now(), tipo: 'exito', mensaje: mensajeGlobal }]); limpiarMensajeGlobal?.(); }
+    if (mensajeGlobal) { setToasts((prev) => [...prev.slice(-2), { id: Date.now(), tipo: 'exito', mensaje: mensajeGlobal }]); limpiarMensajeGlobal?.(); }
   }, [mensajeGlobal, limpiarMensajeGlobal]);
 
   useEffect(() => {
-    if (error) setToasts((p) => [...p.slice(-2), { id: Date.now(), tipo: 'error', mensaje: error }]);
+    if (error) setToasts((prev) => [...prev.slice(-2), { id: Date.now(), tipo: 'error', mensaje: error }]);
   }, [error]);
 
   const puedeCrear = puede(PERMISOS.AMBIENTES_CREAR); const puedeEditar = puede(PERMISOS.AMBIENTES_EDITAR);
   const puedeCambiarEstado = puede(PERMISOS.AMBIENTES_CAMBIAR_ESTADO); const puedeCrearReserva = puede(PERMISOS.RESERVAS_CREAR);
 
   const manejarCambioEstado = async (amb) => {
-    if ((amb.reservasFuturasActivas || 0) > 0) { setACambiarEstado(amb); return; }
+    if ((amb.reservasFuturasActivas || 0) > 0) { setAmbienteParaCambiarEstado(amb); return; }
     const nuevo = amb.estado === 'Disponible' ? 'Mantenimiento' : 'Disponible';
     const res = await cambiarEstadoAmbiente(amb.id, nuevo);
-    if (res.ok) setToasts((p) => [...p.slice(-2), { id: Date.now(), tipo: 'exito', mensaje: `Estado de ${amb.nombre} actualizado a ${nuevo}.`, alDeshacer: () => cambiarEstadoAmbiente(amb.id, amb.estado) }]);
+    if (res.ok) setToasts((prev) => [...prev.slice(-2), { id: Date.now(), tipo: 'exito', mensaje: `Estado de ${amb.nombre} actualizado a ${nuevo}.`, alDeshacer: () => cambiarEstadoAmbiente(amb.id, amb.estado) }]);
   };
 
   const filtrados = useMemo(() => {
-    const busq = normalizarTexto(debTexto).toLowerCase();
-    return ambientes.filter((amb) => (!tipo || amb.tipo === tipo) && (!busq || `${amb.nombre} ${amb.ubicacion}`.toLowerCase().includes(busq)));
-  }, [ambientes, debTexto, tipo]);
+    const busqueda = normalizarTexto(textoDebounce).toLowerCase();
+    return ambientes.filter((amb) => (!tipoFiltro || amb.tipo === tipoFiltro) && (!busqueda || `${amb.nombre} ${amb.ubicacion}`.toLowerCase().includes(busqueda)));
+  }, [ambientes, textoDebounce, tipoFiltro]);
 
   const columnas = [
     { clave: 'nombre', encabezado: 'Nombre', ordenable: true, render: (a) => <span className="font-semibold text-texto">{a.nombre}</span> },
@@ -57,18 +57,18 @@ export default function Ambientes() {
     { clave: 'ubicacion', encabezado: 'Ubicación', render: (a) => <span title={a.ubicacion} className="truncate max-w-[12rem] block">{a.ubicacion}</span> },
     { clave: 'responsable', encabezado: 'Responsable', render: (a) => <span title={a.responsableNombre || 'Sin asignar'} className="truncate max-w-[12rem] block">{a.responsableNombre || 'Sin asignar'}</span> },
     { clave: 'estado', encabezado: 'Estado', render: (a) => <Badge estado={a.estado} /> },
-    { clave: 'acciones', encabezado: 'Acciones', claseCelda: 'whitespace-nowrap', render: (a) => <AccionesFilaAmbiente ambiente={a} puedeEditar={puedeEditar} puedeCambiarEstado={puedeCambiarEstado} puedeCrearReserva={puedeCrearReserva} alEditar={setAEditar} alCambiarEstado={manejarCambioEstado} alReservar={(id) => abrirModalReserva?.(id)} /> }
+    { clave: 'acciones', encabezado: 'Acciones', claseCelda: 'whitespace-nowrap', render: (a) => <AccionesFilaAmbiente ambiente={a} puedeEditar={puedeEditar} puedeCambiarEstado={puedeCambiarEstado} puedeCrearReserva={puedeCrearReserva} alEditar={setAmbienteParaEditar} alCambiarEstado={manejarCambioEstado} alReservar={(id) => abrirModalReserva?.(id)} /> }
   ];
 
   return (
     <div className="space-y-5">
-      <EncabezadoPagina titulo="Ambientes" descripcion="Catálogo de laboratorios, auditorios y salas académicas." accionPrimaria={puedeCrear ? <Button variante="primario" icono="Plus" onClick={() => setModalCrear(true)}>Nuevo ambiente</Button> : null} />
-      <FiltrosAmbientes texto={texto} tipo={tipo} totalResultados={filtrados.length} alCambiarTexto={setTexto} alCambiarTipo={setTipo} alLimpiar={() => { setTexto(''); setTipo(''); }} />
-      <TableList caption="Catálogo de ambientes universitarios" columnas={columnas} datos={filtrados} cargando={cargando} esFiltroActivo={Boolean(texto.trim() || tipo)} alLimpiarFiltros={() => { setTexto(''); setTipo(''); }} mensajeVacio="No hay ambientes registrados aún" descripcionVacia="Puede registrar un nuevo ambiente con el botón superior." accionVacia={puedeCrear ? <Button variante="primario" icono="Plus" onClick={() => setModalCrear(true)}>Nuevo ambiente</Button> : null} />
-      <FormularioAmbiente abierto={modalCrear} modo="crear" responsables={responsables} alRegistrar={registrarAmbiente} alCerrar={() => setModalCrear(false)} alExito={conExito(() => setModalCrear(false))} />
-      <FormularioAmbiente abierto={Boolean(aEditar)} modo="editar" ambienteAEditar={aEditar} responsables={responsables} alEditar={editarAmbiente} alCerrar={() => setAEditar(null)} alExito={conExito(() => setAEditar(null))} />
-      <ModalCambiarEstadoAmbiente abierto={Boolean(aCambiarEstado)} ambiente={aCambiarEstado} alCambiarEstado={cambiarEstadoAmbiente} alCerrar={() => setACambiarEstado(null)} alExito={conExito(() => setACambiarEstado(null))} />
-      <Toast toasts={toasts} alCerrar={(id) => setToasts((p) => p.filter((t) => t.id !== id))} />
+      <EncabezadoPagina titulo="Ambientes" descripcion="Catálogo de laboratorios, auditorios y salas académicas." accionPrimaria={puedeCrear ? <Button variante="primario" icono="Plus" onClick={() => setModalCrearAbierto(true)}>Nuevo ambiente</Button> : null} />
+      <FiltrosAmbientes texto={textoFiltro} tipo={tipoFiltro} totalResultados={filtrados.length} alCambiarTexto={setTextoFiltro} alCambiarTipo={setTipoFiltro} alLimpiar={() => { setTextoFiltro(''); setTipoFiltro(''); }} />
+      <TableList caption="Catálogo de ambientes universitarios" columnas={columnas} datos={filtrados} cargando={cargando} esFiltroActivo={Boolean(textoFiltro.trim() || tipoFiltro)} alLimpiarFiltros={() => { setTextoFiltro(''); setTipoFiltro(''); }} mensajeVacio="No hay ambientes registrados aún" descripcionVacia="Puede registrar un nuevo ambiente con el botón superior." accionVacia={puedeCrear ? <Button variante="primario" icono="Plus" onClick={() => setModalCrearAbierto(true)}>Nuevo ambiente</Button> : null} />
+      <FormularioAmbiente abierto={modalCrearAbierto} modo="crear" responsables={responsables} alRegistrar={registrarAmbiente} alCerrar={() => setModalCrearAbierto(false)} alExito={notificarExito(() => setModalCrearAbierto(false))} />
+      <FormularioAmbiente abierto={Boolean(ambienteParaEditar)} modo="editar" ambienteAEditar={ambienteParaEditar} responsables={responsables} alEditar={editarAmbiente} alCerrar={() => setAmbienteParaEditar(null)} alExito={notificarExito(() => setAmbienteParaEditar(null))} />
+      <ModalCambiarEstadoAmbiente abierto={Boolean(ambienteParaCambiarEstado)} ambiente={ambienteParaCambiarEstado} alCambiarEstado={cambiarEstadoAmbiente} alCerrar={() => setAmbienteParaCambiarEstado(null)} alExito={notificarExito(() => setAmbienteParaCambiarEstado(null))} />
+      <Toast toasts={toasts} alCerrar={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
     </div>
   );
 }
