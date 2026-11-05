@@ -50,10 +50,10 @@ export default function DetalleReserva() {
   const botonesAccion = esPend ? (
     <>
       {acciones.includes('aprobar') && <Button variante="success" icono="Check" onClick={() => accHook.solicitarAprobar(reserva)}>Aprobar</Button>}
-      {acciones.includes('rechazar') && <Button variante="danger" icono="X" onClick={() => accHook.solicitarRechazar(reserva)}>Rechazar</Button>}
+      {acciones.includes('rechazar') && <Button variante="danger-outline" icono="X" onClick={() => accHook.solicitarRechazar(reserva)}>Rechazar</Button>}
     </>
   ) : esAprob ? (
-    acciones.includes('cancelar') && <Button variante="danger" icono="Ban" onClick={() => accHook.solicitarCancelar(reserva)}>Cancelar reserva</Button>
+    acciones.includes('cancelar') && <Button variante="danger-outline" icono="Ban" onClick={() => accHook.solicitarCancelar(reserva)}>Cancelar reserva</Button>
   ) : null;
 
   return (
@@ -64,7 +64,7 @@ export default function DetalleReserva() {
         <>
           <ResumenReserva reserva={reserva} esAdmin={puede(PERMISOS.RESERVAS_APROBAR)} acciones={botonesAccion} />
           {esFinal && <p className="text-sm font-medium text-texto-suave">{MENSAJES.TRANSICION_ESTADO_NO_PERMITIDA}</p>}
-          {botonesAccion && <aside aria-label="Acciones sobre la reserva" className="sm:hidden fixed bottom-0 left-0 right-0 z-30 p-3 bg-superficie border-t border-borde shadow-lg flex items-center justify-center gap-3">{botonesAccion}</aside>}
+          {botonesAccion && <aside aria-label="Acciones sobre la reserva" className="sm:hidden fixed bottom-0 left-0 right-0 z-30 p-3 bg-superficie border-t border-borde shadow-lg flex items-center justify-center gap-2">{botonesAccion}</aside>}
           <ModalAccionReserva modal={accHook.modal} motivo={accHook.motivo} alCambiarMotivo={accHook.setMotivo} errorMotivo={accHook.errorMotivo} enProceso={accHook.enProceso} alConfirmar={() => accHook.ejecutarAccion(cambiarEstadoReservaApi, alExitoAccion)} alCancelar={accHook.cerrarModal} />
         </>
       )}

@@ -24,7 +24,7 @@ export default function AccionesReserva({
   const puedeRechazar = esPend && acciones.includes('rechazar');
 
   return (
-    <div className="flex items-center justify-start gap-2 w-full">
+    <div className="flex items-center justify-start gap-2 w-full pr-4">
       <Button
         variante="neutral-info"
         tamano="sm"
@@ -42,7 +42,7 @@ export default function AccionesReserva({
           icono="Check"
           tooltip="Aprobar reserva"
           aria-label={`Aprobar reserva de ${solicitante}`}
-          className="w-auto px-2.5 sm:w-9 sm:px-0 xl:w-auto xl:px-2.5"
+          className="w-auto px-3 sm:w-9 sm:px-0 xl:w-auto xl:px-3"
           onClick={() => alSolicitarAprobar?.(reserva)}
         >
           <span className="inline sm:hidden xl:inline">Aprobar</span>
@@ -54,13 +54,13 @@ export default function AccionesReserva({
       )}
       {puedeRechazar ? (
         <Button
-          variante="danger"
+          variante="danger-outline"
           tamano="sm"
           disabled={enProceso}
           icono="X"
           tooltip="Rechazar reserva"
           aria-label={`Rechazar reserva de ${solicitante}`}
-          className="w-auto px-2.5 sm:w-9 sm:px-0 xl:w-auto xl:px-2.5"
+          className="w-auto px-3 sm:w-9 sm:px-0 xl:w-auto xl:px-3"
           onClick={() => alSolicitarRechazar?.(reserva)}
         >
           <span className="inline sm:hidden xl:inline">Rechazar</span>

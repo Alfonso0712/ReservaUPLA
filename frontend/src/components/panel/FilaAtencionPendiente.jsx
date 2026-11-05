@@ -41,7 +41,7 @@ export default function FilaAtencionPendiente({ r, conflicto, puedeAprobar, enPr
         {puedeAprobar && (
           <>
             <Button variante="success" tamano="sm" icono="CircleCheck" disabled={enProceso} onClick={() => alAprobar(r)}>Aprobar</Button>
-            <Button variante="danger" tamano="sm" icono="CircleX" disabled={enProceso} onClick={() => alRechazar(r)}>Rechazar</Button>
+            <Button variante="danger-outline" tamano="sm" icono="CircleX" disabled={enProceso} onClick={() => alRechazar(r)}>Rechazar</Button>
           </>
         )}
       </div>

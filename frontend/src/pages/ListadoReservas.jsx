@@ -61,7 +61,7 @@ export default function ListadoReservas() {
     { clave: 'ambiente', encabezado: 'Ambiente', claseEncabezado: 'w-[33%] px-2.5', claseCelda: 'px-2.5 max-w-[24rem]', render: (r) => <div className="min-w-0 max-w-[24rem]"><p className="font-semibold text-texto truncate block text-sm leading-snug">{r.ambiente?.nombre}</p>{r.ambiente?.tipo && <p className="text-xs text-texto-suave mt-0.5 truncate leading-snug">{r.ambiente.tipo}</p>}</div> },
     { clave: 'fecha', encabezado: 'Fecha y horario', ordenable: true, claseEncabezado: 'w-[13%] px-2 whitespace-nowrap', claseCelda: 'px-2 whitespace-nowrap', render: (r) => <div className="min-w-0 cifra-tabular"><span className="font-semibold text-texto block text-sm leading-snug">{formatearFecha(r.fecha)}</span><span className="text-xs text-texto-suave mt-0.5 block leading-snug">{formatearRangoHorario(r.horaInicio, r.horaFin)}</span></div> },
     { clave: 'estado', encabezado: 'Estado', claseEncabezado: 'w-[10%] px-1.5', claseCelda: 'px-1.5 whitespace-nowrap', render: (r) => <Badge estado={r.estado} /> },
-    { clave: 'acciones', encabezado: 'Acciones', claseEncabezado: 'w-[25%] px-1 text-center', claseCelda: 'px-1 text-center whitespace-nowrap', render: (r) => <AccionesReserva reserva={r} enProceso={enProcesoAccion || acciones.enProceso} alSolicitarAprobar={acciones.solicitarAprobar} alSolicitarRechazar={acciones.solicitarRechazar} /> }
+    { clave: 'acciones', encabezado: 'Acciones', claseEncabezado: 'w-[25%] px-1 pr-4 text-center', claseCelda: 'px-1 pr-4 text-center whitespace-nowrap', render: (r) => <AccionesReserva reserva={r} enProceso={enProcesoAccion || acciones.enProceso} alSolicitarAprobar={acciones.solicitarAprobar} alSolicitarRechazar={acciones.solicitarRechazar} /> }
   ];
 
   return (
