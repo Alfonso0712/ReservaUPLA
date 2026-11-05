@@ -11,6 +11,9 @@ export default function CampoFormulario({
   id, etiqueta, obligatorio = true, ayuda = '', error = '',
   contador = null, avisoExtra = null, children, className = '', mostrarOpcional = false
 }) {
+  if (!etiqueta && !ayuda && !error && !contador && !avisoExtra && !className) {
+    return children;
+  }
   return (
     <div className={`flex flex-col gap-1 w-full ${className}`.trim()}>
       {etiqueta && (

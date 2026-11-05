@@ -9,7 +9,7 @@ const TextInput = forwardRef(function TextInput(
     type, tipo, value, valor, onChange, alCambiar, onBlur, alSalir,
     readOnly = false, soloLectura = false, placeholder = '', autoComplete,
     inputMode, enterKeyHint, maxLength, className = '', icono,
-    mostrarOpcional = false, ...props
+    mostrarOpcional = false, tamano = 'md', claseInput = '', ...props
   },
   ref
 ) {
@@ -24,6 +24,7 @@ const TextInput = forwardRef(function TextInput(
   const describedBy = construirDescribedBy(idFinal, ayuda, error);
   const tieneError = Boolean(error);
   const iconoVisible = icono || (tipoCampo === 'search' ? 'Search' : null);
+  const altura = tamano === 'sm' ? 'h-9 text-xs sm:text-sm' : 'h-10 text-sm sm:text-base';
 
   return (
     <CampoFormulario id={idFinal} etiqueta={etiqueta} obligatorio={obligatorio} ayuda={ayuda} error={error} className={className} mostrarOpcional={mostrarOpcional}>
@@ -47,11 +48,11 @@ const TextInput = forwardRef(function TextInput(
           maxLength={maxLength}
           aria-invalid={tieneError}
           aria-describedby={describedBy}
-          className={`w-full h-10 ${iconoVisible ? 'pl-9 pr-3.5' : 'px-3.5'} py-2 rounded-control border text-sm sm:text-base transition-colors duration-150 read-only:bg-superficie-2 read-only:cursor-not-allowed ${
+          className={`w-full ${altura} ${iconoVisible ? 'pl-9 pr-3.5' : 'px-3.5'} py-2 rounded-control border transition-colors duration-150 read-only:bg-superficie-2 read-only:cursor-not-allowed ${
             tieneError
               ? 'border-rechazada-texto bg-superficie text-texto focus:border-rechazada-texto focus:ring-2 focus:ring-rechazada-texto/20 focus:outline-none'
               : 'border-borde bg-superficie text-texto hover:border-borde-control focus:bg-superficie focus:border-primario-enlace focus:ring-2 focus:ring-primario/20 focus:outline-none'
-          }`}
+          } ${claseInput}`.trim()}
           {...props}
         />
       </div>
