@@ -75,4 +75,5 @@ it('E-06: espacios y mayúsculas normalizados antes de enviar al servicio', asyn
   await user.type(screen.getByLabelText(/^contraseña/i), 'ClaveSegura2026');
   await user.click(screen.getByRole('button', { name: /crear cuenta de solicitante/i }));
   expect(espia).toHaveBeenCalledWith(expect.objectContaining({ nombreCompleto: 'Juan Pérez Soto', correo: 'jperez@upla.edu.pe' }));
+  expect(await screen.findByRole('heading', { level: 1, name: MENSAJES.REGISTRO_EXITOSO_TITULO })).toBeInTheDocument();
 });
