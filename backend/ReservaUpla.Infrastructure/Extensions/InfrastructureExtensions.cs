@@ -1,3 +1,4 @@
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,9 @@ public static class InfrastructureExtensions
 
         services.AddDbContext<AppDbContext>(options =>
         {
-            if (string.IsNullOrWhiteSpace(connectionString) || connectionString.Contains("TU_PASSWORD_AQUI"))
+            if (string.IsNullOrWhiteSpace(connectionString)
+                || connectionString.Contains("TU_PASSWORD_AQUI", StringComparison.OrdinalIgnoreCase)
+                || connectionString.Contains("<CONTRASENA_AQUI>", StringComparison.OrdinalIgnoreCase))
             {
                 options.UseInMemoryDatabase("ReservaUplaInMemoryDb");
             }
