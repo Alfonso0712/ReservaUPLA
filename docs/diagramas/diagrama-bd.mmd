@@ -1,0 +1,53 @@
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'fontSize': '15px',
+    'fontFamily': 'Arial, Helvetica, sans-serif'
+  },
+  'themeCSS': 'foreignObject { overflow: visible !important; }',
+  'er': {
+    'layoutDirection': 'LR',
+    'entityPadding': 12,
+    'minEntityWidth': 100,
+    'minEntityHeight': 70
+  }
+}}%%
+erDiagram
+    direction LR
+
+    usuarios {
+        uuid id_usuario PK "NOT NULL"
+        varchar_150 nom_usuario "NOT NULL"
+        varchar_254 cor_usuario UK "NOT NULL, UNIQUE (IX_usuarios_cor_usuario)"
+        text has_usuario "NOT NULL"
+        varchar_50 rol_usuario "NOT NULL"
+        boolean act_usuario "NOT NULL"
+        varchar_20 tema "NOT NULL DEFAULT 'claro', CHECK IN ('claro','oscuro')"
+        varchar_20 tamano_letra "NOT NULL DEFAULT 'normal', CHECK IN ('pequeno','normal','grande')"
+    }
+
+    ambientes {
+        uuid id_ambiente PK "NOT NULL"
+        varchar_100 nom_ambiente "NOT NULL"
+        varchar_50 tip_ambiente "NOT NULL"
+        integer cap_ambiente "NOT NULL, CHECK (cap_ambiente > 0)"
+        varchar_100 ubi_ambiente "NOT NULL"
+        varchar_30 est_ambiente "NOT NULL"
+        uuid idr_ambiente FK "NULL, ON DELETE SET NULL -> usuarios(id_usuario)"
+    }
+
+    reservas {
+        uuid id_reserva PK "NOT NULL"
+        date fec_reserva "NOT NULL, IX (ida_reserva, fec_reserva, est_reserva)"
+        interval hin_reserva "NOT NULL"
+        interval hfi_reserva "NOT NULL"
+        text mot_reserva "NOT NULL"
+        varchar_30 est_reserva "NOT NULL, IX (ida_reserva, fec_reserva, est_reserva)"
+        uuid idu_reserva FK "NOT NULL, ON DELETE RESTRICT -> usuarios(id_usuario)"
+        uuid ida_reserva FK "NOT NULL, ON DELETE RESTRICT -> ambientes(id_ambiente)"
+        timestamptz fre_reserva "NOT NULL"
+    }
+
+    usuarios |o--o{ ambientes : "idr_ambiente (SET NULL)"
+    usuarios ||--o{ reservas : "idu_reserva (RESTRICT)"
+    ambientes ||--o{ reservas : "ida_reserva (RESTRICT)"

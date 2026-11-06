@@ -1,0 +1,116 @@
+%%{init: {
+  'theme': 'neutral',
+  'themeVariables': {
+    'fontSize': '15px',
+    'fontFamily': 'Arial, Helvetica, sans-serif',
+    'noteBkgColor': '#f8fafc',
+    'noteTextColor': '#0f172a',
+    'noteBorderColor': '#94a3b8'
+  },
+  'themeCSS': 'foreignObject { overflow: visible !important; }',
+  'class': {
+    'hideEmptyMembersBox': true,
+    'padding': 10,
+    'nodeSpacing': 28,
+    'rankSpacing': 36
+  }
+}}%%
+classDiagram
+    direction LR
+
+    class Usuario {
+        +Guid Id_Usuario
+        +string Nom_Usuario
+        +string Cor_Usuario
+        +string Has_Usuario
+        +RolUsuario Rol_Usuario
+        +bool Act_Usuario
+        +string Tema
+        +string TamanoLetra
+        +Crear(string nombre, string correo, string hash, RolUsuario rol)$ Usuario
+        +ActualizarPreferencias(string? tema, string? tamanoLetra) void
+    }
+
+    class RolUsuario {
+        <<enumeration>>
+        Solicitante
+        Administrador
+        Responsable
+    }
+
+    class Ambiente {
+        +Guid Id_Ambiente
+        +string Nom_Ambiente
+        +TipoAmbiente Tip_Ambiente
+        +int Cap_Ambiente
+        +string Ubi_Ambiente
+        +EstadoAmbiente Est_Ambiente
+        +Guid? Idr_Ambiente
+        +Crear(string nombre, TipoAmbiente tipo, int cap, string ubi, Guid? respId)$ Ambiente
+        +ActualizarDatos(string nombre, TipoAmbiente tipo, int cap, string ubi, Guid? respId) void
+        +ActualizarEstado(EstadoAmbiente nuevoEstado) void
+        +AsignarResponsable(Guid? responsableId) void
+    }
+
+    class TipoAmbiente {
+        <<enumeration>>
+        LaboratorioComputo
+        Auditorio
+        SalaReuniones
+        LaboratorioEspecializado
+    }
+
+    class EstadoAmbiente {
+        <<enumeration>>
+        Disponible
+        Mantenimiento
+    }
+
+    class IActor {
+        <<interface>>
+        +Guid Id
+        +RolUsuario Rol
+        +Tiene(string permiso) bool
+    }
+
+    class ActorReserva {
+        <<record>>
+        +Guid Id
+        +RolUsuario Rol
+        +Tiene(string permiso) bool
+    }
+
+    class Reserva {
+        +Guid Id_Reserva
+        +DateOnly Fec_Reserva
+        +TimeSpan Hin_Reserva
+        +TimeSpan Hfi_Reserva
+        +string Mot_Reserva
+        +EstadoReserva Est_Reserva
+        +Guid Idu_Reserva
+        +Guid Ida_Reserva
+        +DateTime Fre_Reserva
+        +Crear(DateOnly fec, TimeSpan hin, TimeSpan hfi, string mot, Guid idu, Guid ida, DateOnly? hoy)$ Reserva
+        +CambiarEstado(EstadoReserva nuevoEstado, IActor actor) void
+        +CambiarEstado(EstadoReserva nuevoEstado, RolUsuario rolActor, Guid usuarioIdActor) void
+    }
+
+    class EstadoReserva {
+        <<enumeration>>
+        Pendiente
+        Aprobada
+        Rechazada
+        Cancelada
+    }
+
+    note for Reserva "Reglas en Reserva.cs:<br/>• RN-02: Datos obligatorios y Mot_Reserva (10..300)<br/>• RN-03: Hfi_Reserva > Hin_Reserva y Fec_Reserva >= hoy<br/>• RN-04: Horario de atención 07:00 a 22:00<br/>• RN-05: Solo Administrador aprueba o rechaza<br/>• RN-06: Rechazada y Cancelada son inmodificables"
+
+    Usuario --> "1" RolUsuario : Rol_Usuario
+    Usuario "0..1" <-- "0..*" Ambiente : Idr_Ambiente
+    Usuario "1" <-- "0..*" Reserva : Idu_Reserva
+    Ambiente --> "1" TipoAmbiente : Tip_Ambiente
+    Ambiente --> "1" EstadoAmbiente : Est_Ambiente
+    Ambiente "1" <-- "0..*" Reserva : Ida_Reserva
+    IActor <|.. ActorReserva : implementa
+    IActor <.. Reserva : valida permisos
+    Reserva --> "1" EstadoReserva : Est_Reserva
