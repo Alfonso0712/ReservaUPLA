@@ -19,6 +19,7 @@ coverage/
 appsettings.*.local.json
 .env
 .env.*
+!.env.example
 secrets.json
 *.credentials
 *.key
@@ -33,6 +34,7 @@ secrets.json
 *backup*.sql
 *datos*.sql
 !backend/scripts/*.sql
+!docker/db/*.sql
 
 ## Logs and OS artifacts
 *.log

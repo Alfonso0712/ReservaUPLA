@@ -1,0 +1,16 @@
+**/bin/
+**/obj/
+**/out/
+**/.vs/
+**/.vscode/
+**/.idea/
+*.user
+*.suo
+.env
+.env.*
+secrets.json
+*.local.json
+appsettings.*.local.json
+*.dump
+*.bak
+*.log

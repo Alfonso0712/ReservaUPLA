@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: reservaupla-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ReservasUPLA_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Configure POSTGRES_PASSWORD en su archivo .env (copie .env.example a .env)}
+      DB_APP_PASSWORD: ${DB_APP_PASSWORD:?Configure DB_APP_PASSWORD en su archivo .env para el rol reservas_app}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/db/01-esquema.sql:/docker-entrypoint-initdb.d/01-esquema.sql:ro
+      - ./backend/scripts/crear_rol_app.sql:/docker/crear_rol_app.sql:ro
+      - ./docker/db/02-crear-rol-app.sh:/docker-entrypoint-initdb.d/02-crear-rol-app.sh:ro
+    # No se publica el puerto 5432 al host para evitar colisiones con un PostgreSQL local y no exponer la BD
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ReservasUPLA_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: reservaupla-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5000
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB:-ReservasUPLA_DB};Username=${DB_APP_USER:-reservas_app};Password=${DB_APP_PASSWORD:?Configure DB_APP_PASSWORD en su archivo .env}"
+    ports:
+      - "5000:5000"
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_USAR_MOCK: ${VITE_USAR_MOCK:-false}
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:5000}
+    container_name: reservaupla-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+
+  # Perfil opcional para levantar únicamente el frontend en modo demostración con adaptador mock
+  frontend-mock:
+    profiles: ["mock"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_USAR_MOCK: "true"
+        VITE_API_URL: ""
+    container_name: reservaupla-frontend-mock
+    ports:
+      - "5173:5173"
+
+volumes:
+  pgdata:
