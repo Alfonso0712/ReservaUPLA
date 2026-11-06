@@ -37,6 +37,7 @@ describe('Guía y normativa de ambientes en cabecera', () => {
     expect(screen.getByText(/una reserva rechazada no puede modificarse/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /cerrar guía/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /entendido/i })).toBeInTheDocument();
+    expect(screen.getByText(/normativa vigente · upla/i)).toBeInTheDocument();
 
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
