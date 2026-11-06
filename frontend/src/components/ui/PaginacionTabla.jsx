@@ -10,7 +10,7 @@ function obtenerItems(actual, total) {
 
 export default function PaginacionTabla({
   paginaActual = 1, totalPaginas = 1, totalRegistros = 0,
-  tamanoPagina = 10, alCambiarPagina, alCambiarTamanoPagina
+  tamanoPagina = 5, alCambiarPagina, alCambiarTamanoPagina
 }) {
   const inicio = totalRegistros === 0 ? 0 : (paginaActual - 1) * tamanoPagina + 1;
   const fin = Math.min(paginaActual * tamanoPagina, totalRegistros);
@@ -29,7 +29,7 @@ export default function PaginacionTabla({
             aria-label="Registros por página"
             className="h-8 px-2.5 rounded-pill border border-borde bg-superficie text-texto text-xs font-semibold focus:outline-none focus:border-primario-enlace"
           >
-            {[10, 20, 50].map((n) => <option key={n} value={n}>{n} / pág.</option>)}
+            {[5, 10, 20, 50].map((n) => <option key={n} value={n}>{n} / pág.</option>)}
           </select>
         </label>
       </div>

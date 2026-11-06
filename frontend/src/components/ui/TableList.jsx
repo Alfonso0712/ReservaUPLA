@@ -9,7 +9,7 @@ import { ordenarDatos } from '../../utils/ordenarDatos';
 export default function TableList({
   caption, columnas = [], datos = [], claveFila = 'id', cargando = false,
   mensajeVacio = 'No se encontraron registros.', descripcionVacia = '',
-  accionVacia = null, paginacion = true, tamanoPaginaInicial = 10,
+  accionVacia = null, paginacion = true, tamanoPaginaInicial = 5,
   esFiltroActivo = false, alLimpiarFiltros = null, obtenerClaseFila = null
 }) {
   const [paginaActual, setPaginaActual] = useState(1);
