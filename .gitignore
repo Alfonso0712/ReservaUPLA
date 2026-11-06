@@ -34,7 +34,7 @@ secrets.json
 *backup*.sql
 *datos*.sql
 !backend/scripts/*.sql
-!docker/db/*.sql
+!docs/database/init/*.sql
 
 ## Logs and OS artifacts
 *.log
