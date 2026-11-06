@@ -14,8 +14,9 @@ export default function ModalGuiaNormativa({ abierto, alCerrar }) {
   useEffect(() => {
     if (!abierto) return undefined;
     const alClicFondo = (e) => { if (contenedorRef.current && !contenedorRef.current.contains(e.target)) alCerrar?.(); };
-    document.addEventListener('click', alClicFondo);
-    return () => document.removeEventListener('click', alClicFondo);
+    // Se difiere el registro para que el mismo clic que abrió el modal no lo cierre al burbujear hasta document
+    const timer = setTimeout(() => document.addEventListener('click', alClicFondo), 0);
+    return () => { clearTimeout(timer); document.removeEventListener('click', alClicFondo); };
   }, [abierto, alCerrar, contenedorRef]);
 
   if (!abierto) return null;
