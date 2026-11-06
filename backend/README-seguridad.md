@@ -45,3 +45,14 @@ En `Program.cs` (líneas 48–53), la aplicación invoca `dbContext.Database.Mig
   ```
 - **En tiempo de ejecución de la API**: una vez aplicadas las migraciones, `MigrateAsync()` únicamente consulta `SELECT` sobre `__EFMigrationsHistory`, verifica que no hay cambios de esquema pendientes y no ejecuta ninguna instrucción DDL. Las restricciones de integridad (`CK_ambientes_cap_ambiente`, `CK_usuarios_tema`, `CK_usuarios_tamano_letra`, `UNIQUE` y claves foráneas) y el `DatabaseSeeder` operan exclusivamente con `SELECT`, `INSERT` y `UPDATE`.
 
+## 5. Prevención de Subida de Secretos (Git Pre-Commit Hook)
+
+El repositorio incluye el hook `.githooks/pre-commit`, que inspecciona los archivos en *stage* antes de cada commit y bloquea cualquier intento de confirmar contraseñas o secretos (`Password=`, `Pwd=`, `"password":`, `apikey`, `secret`, `token`), reportando únicamente el archivo y número de línea sin exponer el valor.
+
+Para activarlo en su clon local del repositorio, ejecute:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+

@@ -1,0 +1,64 @@
+#!/usr/bin/env sh
+# Git pre-commit hook: bloquea commits con credenciales o secretos en archivos en stage
+# Nunca imprime el valor del secreto; solo reporta archivo y número de línea.
+
+set -u
+
+ARCHIVOS=$(git diff --cached --name-only --diff-filter=ACM)
+if [ -z "$ARCHIVOS" ]; then
+    exit 0
+fi
+
+HALLAZGOS=0
+
+for ARCHIVO in $ARCHIVOS; do
+    case "$ARCHIVO" in
+        *README-seguridad.md|.githooks/pre-commit)
+            continue
+            ;;
+    esac
+
+    SALIDA=$(git show ":$ARCHIVO" 2>/dev/null | awk '
+    {
+        linea = $0
+         gsub(/\r$/, "", linea)
+
+        # Ignorar líneas que contienen marcadores permitidos <...>
+        if (linea ~ /<CONTRASENA_AQUI>/ || linea ~ /<[A-Z0-9_]+>/) {
+            next
+        }
+
+        # 1. Cadenas de conexión: Password=valor o Pwd=valor (con valor no vacío ni marcador <...>)
+        if (match(linea, /[Pp](assword|wd)[[:space:]]*=[[:space:]]*[^;[:space:]"'\''<][^;[:space:]"'\'']*/)) {
+            print NR ": atributo Password/Pwd con valor incrustado"
+            next
+        }
+
+        # 2. Propiedades JSON o asignaciones: "password": "valor", apikey=valor, secret=valor, token=valor
+        if (match(linea, /"(password|secret|apikey|api_key|token)"[[:space:]]*:[[:space:]]*"[^"<]+"/)) {
+            print NR ": propiedad JSON sensible con valor incrustado"
+            next
+        }
+
+        if (match(linea, /(^|[^[:alnum:]_])(apikey|api_key|secret|token)[[:space:]]*=[[:space:]]*["'\''][^"'\''<]+["'\'']/)) {
+            print NR ": asignación de secreto/token con valor incrustado"
+            next
+        }
+    }')
+
+    if [ -n "$SALIDA" ]; then
+        while IFS= read -r REPORTE; do
+            echo "[BLOQUEADO] Posible secreto detectado en ${ARCHIVO}:${REPORTE}" >&2
+            HALLAZGOS=$((HALLAZGOS + 1))
+        done <<EOF
+$SALIDA
+EOF
+    fi
+done
+
+if [ "$HALLAZGOS" -gt 0 ]; then
+    echo "Commit abortado: se detectaron $HALLAZGOS posibles secretos en stage. Use marcadores como <CONTRASENA_AQUI> o variables de entorno." >&2
+    exit 1
+fi
+
+exit 0

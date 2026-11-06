@@ -15,10 +15,24 @@ coverage/
 *.sln.docstates
 
 ## Environment and sensitive files
+*.local.json
 appsettings.*.local.json
 .env
 .env.*
 secrets.json
+*.credentials
+*.key
+*.pem
+*.pfx
+
+## Database backups and data dumps
+*.dump
+*.bak
+*.backup
+*dump*.sql
+*backup*.sql
+*datos*.sql
+!backend/scripts/*.sql
 
 ## Logs and OS artifacts
 *.log
