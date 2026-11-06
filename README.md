@@ -61,6 +61,8 @@ El backend implementa **Clean Architecture** dividida en 4 proyectos independien
 
 ```text
 ReservaUPLA/
+├── .github/workflows/
+│   └── ci.yml                       # Pipeline de Integración Continua (backend + frontend)
 ├── backend/
 │   ├── ReservaUpla.Domain/          # Entidades ricas, Enums, Excepciones, Constantes y Políticas RBAC
 │   ├── ReservaUpla.Application/     # Casos de uso (Services), DTOs, Mappers e Interfaces de repositorios
@@ -70,6 +72,12 @@ ReservaUPLA/
 │   │   └── crear_rol_app.sql        # Creación del rol PostgreSQL reservas_app de mínimo privilegio
 │   ├── Dockerfile                   # Construcción multi-stage con ejecución bajo usuario no-root
 │   └── README-seguridad.md          # Guía de configuración segura de credenciales y privilegios
+├── docs/
+│   ├── database/
+│   │   └── init/                    # Script idempotente de migraciones e inicialización del rol restringido
+│   ├── hooks/
+│   │   └── pre-commit               # Hook que bloquea commits con contraseñas o secretos incrustados
+│   └── img/                         # Capturas de pantalla de la interfaz del sistema
 ├── frontend/
 │   ├── src/
 │   │   ├── components/              # Componentes UI accesibles, formularios, navegación, ambientes y reservas
@@ -87,16 +95,12 @@ ReservaUPLA/
 │   └── Dockerfile                   # Build estático de Vite servido con Nginx en el puerto 5173
 ├── tests/
 │   └── ReservaUpla.Tests/           # 95 pruebas unitarias, de concurrencia e integración en xUnit
-├── docker/
-│   └── db/                          # Script idempotente de migraciones e inicialización del rol restringido
-├── .githooks/
-│   └── pre-commit                   # Hook que bloquea commits con contraseñas o secretos incrustados
-├── .github/workflows/
-│   └── ci.yml                       # Pipeline de Integración Continua (backend + frontend)
-├── docker-compose.yml               # Orquestación de PostgreSQL (db), API (.NET 8) y Web (React/Nginx)
 ├── .env.example                     # Plantilla de variables de entorno con marcadores <CONTRASENA_AQUI>
+├── .gitignore                       # Exclusión de binarios, dependencias, respaldos y archivos .env
 ├── CHANGELOG.md                     # Historial de versiones en formato Keep a Changelog
-└── README.md
+├── README.md                        # Documentación principal del proyecto
+├── ReservaUpla.sln                  # Solución principal de .NET 8
+└── docker-compose.yml               # Orquestación de PostgreSQL (db), API (.NET 8) y Web (React/Nginx)
 ```
 
 ---
@@ -186,7 +190,7 @@ Al iniciar en entorno `Development` con la base de datos vacía, `DatabaseSeeder
 
 El proyecto aplica controles de seguridad en todas sus capas (detalle completo en [`backend/README-seguridad.md`](backend/README-seguridad.md)):
 
-- **Cero secretos en el repositorio**: Las cadenas de conexión se inyectan por `dotnet user-secrets` o por la variable de entorno `ConnectionStrings__DefaultConnection`. Incluye el hook [`.githooks/pre-commit`](.githooks/pre-commit) (`git config core.hooksPath .githooks`) para bloquear commits con credenciales.
+- **Cero secretos en el repositorio**: Las cadenas de conexión se inyectan por `dotnet user-secrets` o por la variable de entorno `ConnectionStrings__DefaultConnection`. Incluye el hook [`docs/hooks/pre-commit`](docs/hooks/pre-commit) (`git config core.hooksPath docs/hooks`) para bloquear commits con credenciales.
 - **Principio de menor privilegio en BD**: La API opera con el rol `reservas_app` (`SELECT`, `INSERT`, `UPDATE`), sin permisos `DELETE`, `DDL` ni `SUPERUSER`.
 - **Autenticación y sesión segura**: Hash de contraseñas con **PBKDF2 HMAC-SHA256** (sal de 128 bits, 100,000 iteraciones), mitigación contra ataques de temporización (`VerifyDummyPassword`), cookies `HttpOnly` + `SameSite=Lax` y *Rate Limiting* por IP en `/api/auth/login`.
 - **Manejo centralizado de errores**: Respuestas uniformes RFC 7807 (`ProblemDetails`) sin exponer *stack traces* al cliente.

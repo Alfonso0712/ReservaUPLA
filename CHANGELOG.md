@@ -32,7 +32,7 @@ y este proyecto adhiere a [Versionado Semántico (SemVer)](https://semver.org/la
 ### Seguridad
 - Extracción de credenciales de conexión del repositorio (`appsettings.json`, `appsettings.Development.json` y `AppDbContextFactory.cs`) hacia `dotnet user-secrets` y variables de entorno (`5649671`).
 - Creación del script SQL [`backend/scripts/crear_rol_app.sql`](backend/scripts/crear_rol_app.sql) para el rol de mínimo privilegio `reservas_app` (`SELECT`, `INSERT`, `UPDATE`, sin `DELETE`, `DDL` ni `SUPERUSER`) (`fddad31`).
-- Incorporación del hook [`.githooks/pre-commit`](.githooks/pre-commit) y reglas en `.gitignore` para bloquear la subida accidental de secretos y respaldos de base de datos (`831c2ff`).
+- Incorporación del hook [`docs/hooks/pre-commit`](docs/hooks/pre-commit) y reglas en `.gitignore` para bloquear la subida accidental de secretos y respaldos de base de datos (`831c2ff`).
 - Restricción `CHECK (cap_ambiente > 0)` (`CK_ambientes_cap_ambiente`) y restricciones `CHECK` para preferencias de usuario en PostgreSQL (`f710f60`, `62d63ff`).
 - Revocación del permiso de creación de reservas para el rol `Administrador` en backend y frontend, garantizando separación de funciones (`2d7c71a`).
 

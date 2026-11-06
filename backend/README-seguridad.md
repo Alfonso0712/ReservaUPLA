@@ -33,7 +33,7 @@ En producción, la cadena de conexión **debe incluir obligatoriamente `SslMode=
 
 ## 4. Rol de Base de Datos de Menor Privilegio (`reservas_app`) y Migraciones
 
-La API en tiempo de ejecución **no debe conectarse con el superusuario `postgres`**. Debe utilizar el rol restringido `reservas_app` definido en `backend/scripts/crear_rol_app.sql`, el cual cuenta únicamente con `CONNECT`, `USAGE` sobre `public` y `SELECT, INSERT, UPDATE` sobre las tablas (sin `DELETE`, sin `DDL` ni `SUPERUSER`).
+La API en tiempo de ejecución **no debe conectarse con el superusuario `postgres`**. Debe utilizar el rol restringido `reservas_app` definido en [`backend/scripts/crear_rol_app.sql`](scripts/crear_rol_app.sql), el cual cuenta únicamente con `CONNECT`, `USAGE` sobre `public` y `SELECT, INSERT, UPDATE` sobre las tablas (sin `DELETE`, sin `DDL` ni `SUPERUSER`).
 
 ### Separación entre ejecución de migraciones y ejecución de la API
 
@@ -44,19 +44,17 @@ En `Program.cs` (líneas 48–53), la aplicación invoca `dbContext.Database.Mig
   ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=ReservasUPLA_DB;Username=postgres;Password=<CONTRASENA_AQUI>" dotnet ef database update --project backend/ReservaUpla.Infrastructure --startup-project backend/ReservaUpla.Api
   ```
 - **En tiempo de ejecución de la API**: una vez aplicadas las migraciones, `MigrateAsync()` únicamente consulta `SELECT` sobre `__EFMigrationsHistory`, verifica que no hay cambios de esquema pendientes y no ejecuta ninguna instrucción DDL. Las restricciones de integridad (`CK_ambientes_cap_ambiente`, `CK_usuarios_tema`, `CK_usuarios_tamano_letra`, `UNIQUE` y claves foráneas) y el `DatabaseSeeder` operan exclusivamente con `SELECT`, `INSERT` y `UPDATE`.
-- **Regeneración del esquema idempotente para Docker (`docker/db/01-esquema.sql`)**: cuando se agregue una nueva migración de EF Core, actualice el script montado en `/docker-entrypoint-initdb.d/` ejecutando:
+- **Regeneración del esquema idempotente para Docker ([`docs/database/init/01-esquema.sql`](../docs/database/init/01-esquema.sql))**: cuando se agregue una nueva migración de EF Core, actualice el script montado en `/docker-entrypoint-initdb.d/` ejecutando:
   ```bash
-  ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=ReservasUPLA_DB;Username=reservas_app;Password=PlaceholderScript" dotnet ef migrations script --idempotent --project backend/ReservaUpla.Infrastructure --startup-project backend/ReservaUpla.Api -o docker/db/01-esquema.sql
+  ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=ReservasUPLA_DB;Username=reservas_app;Password=PlaceholderScript" dotnet ef migrations script --idempotent --project backend/ReservaUpla.Infrastructure --startup-project backend/ReservaUpla.Api -o docs/database/init/01-esquema.sql
   ```
 
 ## 5. Prevención de Subida de Secretos (Git Pre-Commit Hook)
 
-El repositorio incluye el hook `.githooks/pre-commit`, que inspecciona los archivos en *stage* antes de cada commit y bloquea cualquier intento de confirmar contraseñas o secretos (`Password=`, `Pwd=`, `"password":`, `apikey`, `secret`, `token`), reportando únicamente el archivo y número de línea sin exponer el valor.
+El repositorio incluye el hook [`docs/hooks/pre-commit`](../docs/hooks/pre-commit), que inspecciona los archivos en *stage* antes de cada commit y bloquea cualquier intento de confirmar contraseñas o secretos (`Password=`, `Pwd=`, `"password":`, `apikey`, `secret`, `token`), reportando únicamente el archivo y número de línea sin exponer el valor.
 
 Para activarlo en su clon local del repositorio, ejecute:
 
 ```bash
-git config core.hooksPath .githooks
+git config core.hooksPath docs/hooks
 ```
-
-

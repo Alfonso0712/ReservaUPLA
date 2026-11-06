@@ -13,7 +13,7 @@ HALLAZGOS=0
 
 for ARCHIVO in $ARCHIVOS; do
     case "$ARCHIVO" in
-        *README-seguridad.md|.githooks/pre-commit)
+        *README-seguridad.md|docs/hooks/pre-commit)
             continue
             ;;
     esac
