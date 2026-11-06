@@ -1,4 +1,5 @@
 // Nielsen 3 · Nielsen 4 · Nielsen 7 · Cabecera accesible con menú de usuario y controles · E-29 · E-37 · E-38
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
@@ -7,12 +8,14 @@ import ControlTamanoFuente from './ControlTamanoFuente';
 import ConmutadorTema from './ConmutadorTema';
 import MenuUsuario from './MenuUsuario';
 import MigasDePan from './MigasDePan';
+import ModalGuiaNormativa from './ModalGuiaNormativa';
 import Icono from '../ui/Icono';
 
 export default function Header({ menuAbierto = false, alAlternarMenu, botonMenuRef }) {
   const { usuario, cerrarSesion } = useAuth();
   const navegar = useNavigate();
   const esMayorOIgual480 = useMediaQuery('(min-width: 480px)');
+  const [guiaAbierta, setGuiaAbierta] = useState(false);
 
   const manejarCerrarSesion = async () => {
     await cerrarSesion?.();
@@ -41,6 +44,15 @@ export default function Header({ menuAbierto = false, alAlternarMenu, botonMenuR
       <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
         {esMayorOIgual480 && (
           <>
+            <button
+              type="button"
+              onClick={() => setGuiaAbierta(true)}
+              aria-haspopup="dialog"
+              className="h-[38px] inline-flex items-center gap-1.5 px-3 rounded-pill border border-borde bg-superficie text-texto hover:bg-superficie-2 text-xs font-semibold transition-colors cursor-pointer"
+            >
+              <Icono nombre="HelpCircle" className="w-3.5 h-3.5" />
+              <span>Guía</span>
+            </button>
             <ControlTamanoFuente />
             <ConmutadorTema />
             <div className="w-px h-6 bg-borde shrink-0" aria-hidden="true" />
@@ -54,6 +66,7 @@ export default function Header({ menuAbierto = false, alAlternarMenu, botonMenuR
           incluirControlesAccesibilidad={!esMayorOIgual480}
         />
       </div>
+      <ModalGuiaNormativa abierto={guiaAbierta} alCerrar={() => setGuiaAbierta(false)} />
     </header>
   );
 }
