@@ -1,7 +1,7 @@
 // Pruebas automatizadas E-10 a E-17: Ambientes, solicitudes de reserva y disponibilidad
 import { render, screen, within, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { vi, it, expect, beforeEach } from 'vitest';
+import { vi, it, expect, beforeEach, afterEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../hooks/useAuth';
 import Ambientes from '../pages/Ambientes';
@@ -10,7 +10,11 @@ import { reiniciarBaseMock, guardarIdSesionMock } from '../mocks/baseDatosMock';
 import { validarCapacidadAmbiente, validarHorarioReserva, validarFechaReserva } from '../validation/validadores';
 import { MENSAJES } from '../constants/mensajes';
 
-beforeEach(() => { reiniciarBaseMock(); sessionStorage.clear(); localStorage.clear(); });
+beforeEach(() => {
+  vi.useFakeTimers({ shouldAdvanceTime: true }); vi.setSystemTime(new Date('2026-11-05T10:00:00-05:00'));
+  reiniciarBaseMock(); sessionStorage.clear(); localStorage.clear();
+});
+afterEach(() => { vi.useRealTimers(); });
 const renderModalReserva = (alExito = () => {}) => render(
   <MemoryRouter><AuthProvider><FormularioReserva abierto alCerrar={() => {}} alExito={alExito} /></AuthProvider></MemoryRouter>,
 );
@@ -67,9 +71,12 @@ it('E-17: solape con reserva aprobada se rechaza y horario consecutivo es permit
   await user.type(screen.getByLabelText(/hora de fin/i), '13:00');
   await user.type(screen.getByLabelText(/^motivo/i), 'Intento de horario con solape sobre reserva aprobada.');
   await user.click(screen.getByRole('button', { name: /registrar solicitud/i }));
-  expect(await screen.findAllByText(MENSAJES.RESERVA_SOLAPE_HORARIO)).not.toHaveLength(0);
+  await vi.waitFor(() => {
+    expect(screen.getAllByText(MENSAJES.RESERVA_SOLAPE_HORARIO)).not.toHaveLength(0);
+    expect(screen.getByLabelText(/hora de fin/i)).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByLabelText(/hora de inicio/i)).not.toHaveAttribute('readonly');
+  });
   fireEvent.change(screen.getByLabelText(/hora de inicio/i), { target: { value: '12:00' } });
-  const botonReenvio = await screen.findByRole('button', { name: /registrar solicitud/i });
-  await user.click(botonReenvio);
+  await user.click(await screen.findByRole('button', { name: /registrar solicitud/i }));
   await vi.waitFor(() => expect(alExito).toHaveBeenCalled(), { timeout: 12000 });
 }, 15000);
