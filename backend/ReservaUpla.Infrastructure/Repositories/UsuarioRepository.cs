@@ -59,4 +59,42 @@ public class UsuarioRepository : IUsuarioRepository
             .OrderBy(u => u.Nom_Usuario)
             .ToListAsync(ct);
     }
+
+    public async Task<IReadOnlyList<Usuario>> ListarAsync(
+        string? busqueda = null,
+        RolUsuario? rol = null,
+        bool? activo = null,
+        CancellationToken ct = default)
+    {
+        var query = _context.Usuarios.AsNoTracking().AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(busqueda))
+        {
+            var busquedaNormalizada = busqueda.Trim().ToLower();
+            query = query.Where(u =>
+                u.Nom_Usuario.ToLower().Contains(busquedaNormalizada) ||
+                u.Cor_Usuario.ToLower().Contains(busquedaNormalizada));
+        }
+
+        if (rol.HasValue)
+        {
+            query = query.Where(u => u.Rol_Usuario == rol.Value);
+        }
+
+        if (activo.HasValue)
+        {
+            query = query.Where(u => u.Act_Usuario == activo.Value);
+        }
+
+        return await query
+            .OrderBy(u => u.Nom_Usuario)
+            .ToListAsync(ct);
+    }
+
+    public async Task<int> ContarAmbientesAsignadosAsync(Guid usuarioId, CancellationToken ct = default)
+    {
+        return await _context.Ambientes
+            .AsNoTracking()
+            .CountAsync(a => a.Idr_Ambiente == usuarioId, ct);
+    }
 }
