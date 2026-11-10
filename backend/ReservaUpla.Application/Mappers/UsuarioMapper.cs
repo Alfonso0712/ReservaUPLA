@@ -5,7 +5,7 @@ namespace ReservaUpla.Application.Mappers;
 
 public static class UsuarioMapper
 {
-    public static UsuarioDto ToDto(Usuario usuario)
+    public static UsuarioDto ToDto(Usuario usuario, int ambientesAsignados = 0)
     {
         return new UsuarioDto(
             usuario.Id_Usuario,
@@ -14,6 +14,7 @@ public static class UsuarioMapper
             usuario.Rol_Usuario.ToString(),
             usuario.Act_Usuario,
             usuario.Tema,
-            usuario.TamanoLetra);
+            usuario.TamanoLetra,
+            ambientesAsignados);
     }
 }

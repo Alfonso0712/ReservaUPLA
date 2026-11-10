@@ -9,4 +9,5 @@ public record UsuarioDto(
     string Rol,
     bool Activo,
     string Tema = "claro",
-    string TamanoLetra = "normal");
+    string TamanoLetra = "normal",
+    int AmbientesAsignados = 0);

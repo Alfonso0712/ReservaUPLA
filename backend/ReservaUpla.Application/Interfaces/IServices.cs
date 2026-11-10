@@ -21,6 +21,12 @@ public interface IUsuarioService
     Task<UsuarioDto?> ObtenerPorIdAsync(Guid id, CancellationToken ct = default);
     Task<IReadOnlyList<UsuarioDto>> ListarResponsablesAsync(CancellationToken ct = default);
     Task<UsuarioDto> ActualizarPreferenciasAsync(Guid usuarioId, ActualizarPreferenciasDto dto, CancellationToken ct = default);
+
+    // Módulo Usuarios (Admin)
+    Task<UsuarioDto> RegistrarPorAdminAsync(CrearUsuarioAdminDto dto, CancellationToken ct = default);
+    Task<IReadOnlyList<UsuarioDto>> ListarUsuariosAdminAsync(string? busqueda = null, RolUsuario? rol = null, bool? activo = null, CancellationToken ct = default);
+    Task<UsuarioDto> ActualizarUsuarioAsync(Guid id, ActualizarUsuarioDto dto, CancellationToken ct = default);
+    Task<UsuarioDto> CambiarEstadoUsuarioAsync(Guid id, bool activo, Guid idOperador, CancellationToken ct = default);
 }
 
 public interface IAmbienteService
