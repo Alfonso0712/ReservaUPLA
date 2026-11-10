@@ -29,6 +29,19 @@ describe('Landing Page pública de ReservaUPLA', () => {
     expect(encabezadosH1[0]).toHaveTextContent(/gestión y reserva eficiente de ambientes universitarios/i);
   });
 
+  it('el logo institucional "ReservaUPLA" en la barra de navegación dirige al inicio (#inicio)', () => {
+    render(
+      <MemoryRouter>
+        <AuthProvider>
+          <LandingPage />
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    const enlaceInicio = screen.getByRole('link', { name: /reservaupla - inicio/i });
+    expect(enlaceInicio).toHaveAttribute('href', '#inicio');
+  });
+
   it('renderiza todos los enlaces de ancla definidos en la barra de navegación', () => {
     render(
       <MemoryRouter>

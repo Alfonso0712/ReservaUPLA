@@ -10,13 +10,26 @@ export default function FooterLanding() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-borde">
           {/* Marca */}
-          <div className="flex items-center gap-3">
+          <a
+            href="#inicio"
+            onClick={(e) => {
+              e.preventDefault();
+              const el = document.getElementById('inicio');
+              if (el?.scrollIntoView) {
+                el.scrollIntoView({ behavior: 'smooth' });
+              } else if (typeof window !== 'undefined' && window.scrollTo) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            className="flex items-center gap-3 no-underline group focus-visible:outline-primario cursor-pointer"
+            aria-label="ReservaUPLA - Volver al inicio"
+          >
             <LogoUpla variante="lateral" />
             <div>
-              <span className="block text-base font-bold text-texto">ReservaUPLA</span>
-              <span className="block text-xs">Universidad Peruana Los Andes</span>
+              <span className="block text-base font-bold text-texto group-hover:text-primario transition-colors">ReservaUPLA</span>
+              <span className="block text-xs text-texto-suave">Universidad Peruana Los Andes</span>
             </div>
-          </div>
+          </a>
 
           {/* Enlaces de ancla */}
           <nav aria-label="Navegación secundaria del pie" className="flex flex-wrap items-center justify-center gap-6 text-sm">

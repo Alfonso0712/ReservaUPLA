@@ -14,9 +14,18 @@ export default function NavbarLanding() {
     <header className="sticky top-0 z-40 w-full border-b border-borde bg-superficie/95 backdrop-blur-md transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Marca institucional */}
-        <Link
-          to="/"
-          className="flex items-center gap-3 rounded-control focus-visible:outline-primario"
+        <a
+          href="#inicio"
+          onClick={(e) => {
+            e.preventDefault();
+            const el = document.getElementById('inicio');
+            if (el?.scrollIntoView) {
+              el.scrollIntoView({ behavior: 'smooth' });
+            } else if (typeof window !== 'undefined' && window.scrollTo) {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+          className="flex items-center gap-3 rounded-control focus-visible:outline-primario cursor-pointer no-underline"
           aria-label="ReservaUPLA - Inicio"
         >
           <LogoUpla variante="lateral" />
@@ -24,7 +33,7 @@ export default function NavbarLanding() {
             <span className="block text-base font-bold text-texto tracking-tight">ReservaUPLA</span>
             <span className="block text-xs text-texto-suave">Gestión académica</span>
           </div>
-        </Link>
+        </a>
 
         {/* Enlaces de ancla (escritorio) */}
         <nav aria-label="Navegación de secciones" className="hidden md:flex items-center gap-6">

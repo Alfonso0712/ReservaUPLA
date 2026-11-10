@@ -6,7 +6,7 @@ import Icono from '../ui/Icono';
 
 export default function HeroLanding() {
   return (
-    <section aria-labelledby="titulo-hero" className="relative py-16 sm:py-24 overflow-hidden">
+    <section id="inicio" aria-labelledby="titulo-hero" className="relative py-16 sm:py-24 overflow-hidden scroll-mt-20">
       {/* Fondo sutil con gradiente institucional */}
       <div
         className="absolute inset-0 -z-10 opacity-30 dark:opacity-20 pointer-events-none"
