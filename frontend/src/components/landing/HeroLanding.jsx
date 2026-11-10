@@ -3,18 +3,22 @@ import { Link } from 'react-router-dom';
 import { RUTAS } from '../../constants/rutas';
 import { INSIGNIAS_HERO } from '../../constants/datosLanding';
 import Icono from '../ui/Icono';
+import heroBg from '../../assets/hero-bg.jpg';
 
 export default function HeroLanding() {
   return (
     <section id="inicio" aria-labelledby="titulo-hero" className="relative py-16 sm:py-24 overflow-hidden scroll-mt-20">
-      {/* Fondo sutil con gradiente institucional */}
+      {/* Fondo con imagen institucional y degradado de contraste adaptativo */}
       <div
-        className="absolute inset-0 -z-10 opacity-30 dark:opacity-20 pointer-events-none"
+        className="absolute inset-0 -z-10 pointer-events-none bg-cover bg-center bg-no-repeat"
         style={{
-          background: 'radial-gradient(circle at 50% 20%, var(--primario-suave), transparent 70%)'
+          backgroundImage: `url(${heroBg})`
         }}
         aria-hidden="true"
-      />
+      >
+        <div className="absolute inset-0 bg-fondo/80 dark:bg-fondo/85 backdrop-blur-[0.5px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-fondo/90 via-fondo/40 to-fondo" />
+      </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
         {/* Etiqueta superior */}
