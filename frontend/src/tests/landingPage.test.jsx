@@ -106,6 +106,26 @@ describe('Landing Page pública de ReservaUPLA', () => {
     expect(screen.getByLabelText(/correo institucional/i)).toBeInTheDocument();
   });
 
+  it('desde el login (/ingresar) al hacer clic en ReservaUPLA o el logo institucional navega al landing page (/)', async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter initialEntries={['/ingresar']}>
+        <AuthProvider>
+          <RutasApp />
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('heading', { level: 1, name: /iniciar sesión/i })).toBeInTheDocument();
+
+    const enlacesReservaUPLA = screen.getAllByRole('link', { name: /ir a la página principal de reservaupla/i });
+    expect(enlacesReservaUPLA.length).toBeGreaterThanOrEqual(1);
+
+    await user.click(enlacesReservaUPLA[0]);
+
+    expect(await screen.findByRole('heading', { level: 1, name: /gestión y reserva eficiente de ambientes universitarios/i })).toBeInTheDocument();
+  });
+
   it('usuario con sesión activa que accede a "/" es redirigido automáticamente a su panel (/panel)', async () => {
     const usuarioAutenticado = {
       id: 'usr-admin',
