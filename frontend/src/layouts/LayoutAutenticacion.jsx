@@ -1,5 +1,5 @@
 // Nielsen 4 · WCAG 2.2 AA · Layout de dos paneles para acceso institucional · E-25 · E-29
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import { RUTA_IMAGEN_FONDO_LOGIN } from '../constants/rutas';
 import LogoUpla from '../components/ui/LogoUpla';
 import Icono from '../components/ui/Icono';
@@ -27,13 +27,17 @@ export default function LayoutAutenticacion({ children }) {
         <div className="absolute inset-0 capa-superposicion-login pointer-events-none" aria-hidden="true" />
         <RedParticulas />
         <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="flex items-center gap-3 no-underline group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acento-sobre-oscuro rounded"
+            aria-label="Ir a la página principal de ReservaUPLA"
+          >
             <LogoUpla variante="marca" />
             <div>
-              <p className="text-base font-bold text-sobre-primario leading-tight">Universidad Peruana Los Andes</p>
+              <p className="text-base font-bold text-sobre-primario leading-tight group-hover:text-acento-sobre-oscuro transition-colors">Universidad Peruana Los Andes</p>
               <p className="text-sm text-lateral-texto">Educación con valores y trascendencia</p>
             </div>
-          </div>
+          </Link>
         </div>
 
         <div className="relative z-10 max-w-[340px] my-auto py-4 space-y-4">
@@ -41,9 +45,13 @@ export default function LayoutAutenticacion({ children }) {
             <span className="inline-block px-3 py-1 mb-2.5 rounded-pill bg-lateral-activo-fondo text-xs font-semibold text-sobre-primario">
               Sistema institucional
             </span>
-            <p className="text-2xl sm:text-3xl font-bold text-sobre-primario mb-2">
+            <Link
+              to="/"
+              className="inline-block text-2xl sm:text-3xl font-bold text-sobre-primario mb-2 no-underline hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acento-sobre-oscuro rounded"
+              aria-label="Ir a la página principal de ReservaUPLA"
+            >
               Reserva<span className="text-acento-sobre-oscuro">UPLA</span>
-            </p>
+            </Link>
             <p className="text-sm text-lateral-texto leading-relaxed">
               Plataforma oficial para la gestión, reserva y trazabilidad en tiempo real de laboratorios, auditorios y salas académicas.
             </p>

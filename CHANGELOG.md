@@ -10,6 +10,8 @@ y este proyecto adhiere a [Versionado Semántico (SemVer)](https://semver.org/la
 ## [Sin publicar]
 
 ### Añadido
+- Landing page pública institucional en la ruta `/` (`LandingPage.jsx`) con navegación responsive, selector de tema, Hero con accesos a login y registro de solicitantes, secciones de pilares, flujo en 3 pasos, catálogo de ambientes, normativa institucional y footer semántico.
+- Suite de pruebas automatizadas de renderizado, accesibilidad y redirección para la landing page (`landingPage.test.jsx`).
 - Módulo de Administración de Usuarios exclusivo para el rol Administrador (/usuarios), con búsqueda reactiva, filtros por rol y estado, alta con contraseña inicial, edición de nombre y rol con validación de asignación de ambientes, y activación/desactivación lógica con confirmación accesible.
 - Endpoints de gestión administrativa de usuarios en Web API: GET /api/usuarios/admin, POST /api/usuarios/admin, PUT /api/usuarios/{id} y PATCH /api/usuarios/{id}/estado.
 - Suites de pruebas automatizadas para el módulo de usuarios: 13 pruebas de backend en xUnit (ModuloUsuariosTests.cs) y 6 pruebas de frontend en Vitest (moduloUsuarios.test.jsx).

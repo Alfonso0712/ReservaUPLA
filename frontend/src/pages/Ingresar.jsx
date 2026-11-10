@@ -53,10 +53,14 @@ export default function Ingresar() {
   return (
     <div className="w-full max-w-[360px] mx-auto p-4 sm:p-5 rounded-tarjeta border border-borde/70 bg-superficie text-texto shadow-[0_10px_35px_-5px_rgba(0,0,0,0.08),0_4px_15px_-3px_rgba(0,0,0,0.04)] dark:shadow-[0_10px_35px_-5px_rgba(0,0,0,0.4)] space-y-3">
       <div className="flex flex-col items-center text-center">
-        <div className="flex flex-col items-center gap-0.5 mb-1">
-          <LogoUpla variante="libre" className="w-10 h-10" />
+        <Link
+          to="/"
+          className="flex flex-col items-center gap-0.5 mb-1 no-underline group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primario rounded"
+          aria-label="Ir a la página principal de ReservaUPLA"
+        >
+          <LogoUpla variante="libre" className="w-10 h-10 group-hover:scale-105 transition-transform" />
           <span className="text-xs font-bold tracking-wider text-primario">UPLA</span>
-        </div>
+        </Link>
         <h1 className="text-xl sm:text-2xl font-bold text-texto tracking-tight">Iniciar sesión</h1>
         <p className="mt-0.5 text-xs sm:text-sm text-texto-suave">Ingrese sus credenciales para continuar.</p>
       </div>
