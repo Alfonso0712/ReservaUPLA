@@ -20,7 +20,11 @@ public static class PoliticaDeAcceso
             Permisos.AmbientesCrear,
             Permisos.AmbientesEditar,
             Permisos.AmbientesCambiarEstado,
-            Permisos.UsuariosListarResponsables
+            Permisos.UsuariosListarResponsables,
+            Permisos.UsuariosListar,
+            Permisos.UsuariosCrear,
+            Permisos.UsuariosEditar,
+            Permisos.UsuariosCambiarEstado
         },
         [RolUsuario.Responsable] = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {

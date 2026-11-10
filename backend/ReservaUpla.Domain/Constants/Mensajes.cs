@@ -16,6 +16,14 @@ public static class Mensajes
     public const string ContrasenaRequerida = MensajesValidacion.ContrasenaVacia;
     public const string ContrasenaLongitud = "La contraseña debe tener al menos 8 caracteres.";
 
+    // Gestión de Usuarios (Admin)
+    public const string UsuarioNoExiste = "El usuario seleccionado no existe.";
+    public const string UsuarioAdminNoModificable = "Las cuentas con rol Administrador no se pueden modificar ni desactivar desde este módulo.";
+    public const string UsuarioNoPuedeDesactivarseASiMismo = "Un administrador no puede desactivarse a sí mismo.";
+    public const string ResponsableConAmbientesNoPuedeCambiarRol = "No se puede cambiar el rol a Solicitante porque el usuario tiene ambientes asignados. Reasigne esos ambientes primero.";
+    public const string RolNoAsignable = "Solo se pueden asignar los roles Responsable o Solicitante.";
+    public const string RolInvalido = "El rol especificado no es válido.";
+
     // RV-04, RV-05, RV-06, RV-07, RV-13
     public const string AmbienteNombreRequerido = "El nombre del ambiente es obligatorio y máximo 100 caracteres.";
     public const string AmbienteTipoInvalido = "El tipo de ambiente no es válido.";
