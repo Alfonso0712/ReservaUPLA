@@ -52,10 +52,12 @@ export async function crearUsuarioAdminApi({ nombreCompleto, correo, rol, contra
   });
 }
 
-export async function actualizarUsuarioAdminApi(id, { nombreCompleto, rol }, signal) {
+export async function actualizarUsuarioAdminApi(id, { nombreCompleto, rol, contrasena }, signal) {
+  const cuerpo = { nombreCompleto, rol };
+  if (contrasena) cuerpo.contrasena = contrasena;
   return solicitarApi(`/api/usuarios/${encodeURIComponent(id)}`, {
     metodo: 'PUT',
-    cuerpo: { nombreCompleto, rol },
+    cuerpo,
     signal
   });
 }

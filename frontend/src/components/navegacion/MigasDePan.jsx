@@ -14,6 +14,9 @@ function construirMigasPorRuta(pathname) {
   if (pathname.startsWith(RUTAS.AMBIENTES)) {
     return [...base, { etiqueta: 'Ambientes' }];
   }
+  if (pathname.startsWith(RUTAS.USUARIOS)) {
+    return [...base, { etiqueta: 'Usuarios' }];
+  }
   if (pathname === RUTAS.PANEL || pathname === '/') {
     return [{ etiqueta: 'Inicio' }];
   }

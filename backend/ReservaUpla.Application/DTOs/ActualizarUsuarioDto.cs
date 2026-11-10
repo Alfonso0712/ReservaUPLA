@@ -11,4 +11,6 @@ public record ActualizarUsuarioDto(
     string NombreCompleto,
 
     [Required(ErrorMessage = Mensajes.RolInvalido)]
-    RolUsuario Rol);
+    RolUsuario Rol,
+
+    string? Contrasena = null);

@@ -1,5 +1,6 @@
 // Modal accesible para registrar o editar usuario exclusivo de Administrador
 import { useEffect, useId, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useFormulario } from '../../hooks/useFormulario';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import { validarCrearUsuarioAdmin, validarEditarUsuarioAdmin } from '../../validation/validadores';
@@ -87,7 +88,7 @@ export default function FormularioUsuario({
 
   if (!abierto) return null;
 
-  return (
+  const modalElement = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div
         ref={modalRef}
@@ -187,35 +188,35 @@ export default function FormularioUsuario({
             />
           )}
 
-          {!esEdicion && (
-            <div>
-              <div className="relative">
-                <TextInput
-                  id="campo-contrasena-usuario"
-                  nombre="contrasena"
-                  etiqueta="Contraseña inicial"
-                  tipo={mostrarContrasena ? 'text' : 'password'}
-                  obligatorio
-                  valor={form.valores.contrasena}
-                  error={form.errores.contrasena}
-                  alCambiar={manejarCambio('contrasena')}
-                  placeholder="Mínimo 8 caracteres"
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setMostrarContrasena((prev) => !prev)}
-                  className="absolute right-3 top-[2.4rem] text-texto-suave hover:text-texto"
-                  aria-label={mostrarContrasena ? 'Ocultar contraseña' : 'Ver contraseña'}
-                >
-                  <Icono nombre={mostrarContrasena ? 'EyeOff' : 'Eye'} className="w-4 h-4" />
-                </button>
-              </div>
-              <p className="mt-1 text-xs text-texto-suave">
-                La contraseña debe tener al menos 8 caracteres.
-              </p>
+          <div>
+            <div className="relative">
+              <TextInput
+                id="campo-contrasena-usuario"
+                nombre="contrasena"
+                etiqueta={esEdicion ? 'Nueva contraseña (opcional)' : 'Contraseña inicial'}
+                tipo={mostrarContrasena ? 'text' : 'password'}
+                obligatorio={!esEdicion}
+                valor={form.valores.contrasena}
+                error={form.errores.contrasena}
+                alCambiar={manejarCambio('contrasena')}
+                placeholder={esEdicion ? 'Dejar en blanco para no cambiarla' : 'Mínimo 8 caracteres'}
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                onClick={() => setMostrarContrasena((prev) => !prev)}
+                className="absolute right-3 top-[2.4rem] text-texto-suave hover:text-texto"
+                aria-label={mostrarContrasena ? 'Ocultar contraseña' : 'Ver contraseña'}
+              >
+                <Icono nombre={mostrarContrasena ? 'EyeOff' : 'Eye'} className="w-4 h-4" />
+              </button>
             </div>
-          )}
+            <p className="mt-1 text-xs text-texto-suave">
+              {esEdicion
+                ? 'Si desea cambiarla, ingrese al menos 8 caracteres. Déjela en blanco para mantener la actual.'
+                : 'La contraseña debe tener al menos 8 caracteres.'}
+            </p>
+          </div>
 
           <div className="flex justify-end gap-3 pt-3 border-t border-borde">
             <Button
@@ -239,4 +240,6 @@ export default function FormularioUsuario({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalElement, document.body) : modalElement;
 }

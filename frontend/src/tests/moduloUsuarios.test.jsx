@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../hooks/useAuth';
 import RutasApp from '../routes/rutas.jsx';
 import Sidebar from '../components/navegacion/Sidebar';
+import Header from '../components/navegacion/Header';
 import Usuarios from '../pages/Usuarios';
 import { guardarIdSesionMock, reiniciarBaseMock, dbMock } from '../mocks/baseDatosMock';
 import { obtenerPermisosDeRol } from '../mocks/permisosPorRol';
@@ -58,6 +59,22 @@ describe('Módulo de Administración de Usuarios', () => {
     );
     expect(screen.queryByRole('link', { name: /usuarios/i })).not.toBeInTheDocument();
     u3();
+  });
+
+  it('en la ruta /usuarios la miga de pan muestra Inicio > Usuarios', () => {
+    const admin = crearContextoUsuario('usr-admin');
+    render(
+      <MemoryRouter initialEntries={['/usuarios']}>
+        <AuthProvider usuarioInicial={admin}>
+          <Header />
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    const nav = screen.getByRole('navigation', { name: /ruta de navegación/i });
+    expect(nav).toHaveTextContent('Inicio');
+    expect(nav).toHaveTextContent('Usuarios');
+    expect(nav).not.toHaveTextContent('Página no encontrada');
   });
 
   it('ruta protegida /usuarios: deniega acceso a Solicitante y redirige a /panel', async () => {
@@ -148,6 +165,40 @@ describe('Módulo de Administración de Usuarios', () => {
 
     expect(await screen.findByText('Usuario registrado con éxito.')).toBeInTheDocument();
     expect(await screen.findByText('Nuevo Docente Prueba')).toBeInTheDocument();
+  });
+
+  it('editar usuario: permite modificar el nombre y actualizar la contraseña opcional', async () => {
+    const admin = crearContextoUsuario('usr-admin');
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <AuthProvider usuarioInicial={admin}>
+          <Usuarios />
+        </AuthProvider>
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText('Elena Huamán Rojas')).toBeInTheDocument();
+
+    const botonEditar = screen.getByRole('button', { name: 'Editar usuario Elena Huamán Rojas' });
+    await user.click(botonEditar);
+
+    const modal = await screen.findByRole('dialog', { name: /editar usuario/i });
+    expect(modal).toBeInTheDocument();
+
+    const campoNombre = screen.getByLabelText(/nombre completo/i);
+    await user.clear(campoNombre);
+    await user.type(campoNombre, 'Elena Huamán Actualizada');
+
+    const campoClave = screen.getByLabelText(/nueva contraseña/i);
+    await user.type(campoClave, 'NuevaClave2026*');
+
+    await user.click(screen.getByRole('button', { name: 'Guardar cambios' }));
+
+    expect(await screen.findByText('Usuario actualizado con éxito.')).toBeInTheDocument();
+    expect(await screen.findByText('Elena Huamán Actualizada')).toBeInTheDocument();
+    expect(dbMock.claves['responsable@upla.edu.pe']).toBe('NuevaClave2026*');
   });
 
   it('desactivación con advertencia de ambientes asignados y confirmación en modal', async () => {

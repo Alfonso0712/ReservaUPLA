@@ -1,5 +1,6 @@
 // Nielsen 3 · Norman · WCAG 2.2 AA · Modal de confirmación con resumen y motivo opcional
 import { useId } from 'react';
+import { createPortal } from 'react-dom';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import Button from './Button';
 import Icono from './Icono';
@@ -25,7 +26,7 @@ export default function ModalConfirmacion({
   const ambNombre = reserva?.ambiente?.nombre || reserva?.nombreAmbiente || '—';
   const solNombre = reserva?.solicitante?.nombreCompleto || reserva?.nombreSolicitante || '—';
 
-  return (
+  const modalElement = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={contenedorRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-lg p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
         <div className={`flex items-center justify-between gap-3 ${mostrarBotonCerrar ? 'pb-3 mb-4 border-b border-borde' : 'mb-2'}`}>
@@ -58,17 +59,19 @@ export default function ModalConfirmacion({
         )}
         {esIrreversible && (
           <p className="p-3 mb-4 rounded-control border border-rechazada-texto bg-rechazada-fondo text-rechazada-texto text-sm font-medium">
-            Atención: esta acción establece un estado final e irreversible. La reserva no podrá modificarse después.
+            Esta acción es irreversible y afectará el flujo regular de la reserva.
           </p>
         )}
         {children}
         {!sinBotones && (
-          <div className="flex flex-wrap items-center justify-end gap-3 pt-3 border-t border-borde">
-            <Button variante={varianteCancelar} data-foco-seguro="true" disabled={enProceso} onClick={alCancelar}>{etiquetaCancelar}</Button>
-            <Button variante={varianteConfirmar} enProceso={enProceso} disabled={deshabilitarConfirmar} onClick={alConfirmar}>{etiquetaConfirmar}</Button>
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-borde">
+            <Button variante={varianteCancelar} disabled={enProceso} onClick={alCancelar}>{etiquetaCancelar}</Button>
+            <Button variante={varianteConfirmar} disabled={deshabilitarConfirmar} enProceso={enProceso} onClick={alConfirmar}>{etiquetaConfirmar}</Button>
           </div>
         )}
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalElement, document.body) : modalElement;
 }

@@ -1,5 +1,6 @@
 // RF-02 · RV-04..07 · Modal accesible para registrar o editar ambiente · E-10..11 · E-39..40
 import { useEffect, useId } from 'react';
+import { createPortal } from 'react-dom';
 import { useFormulario } from '../../hooks/useFormulario';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import { validarAmbiente } from '../../validation/validadores';
@@ -49,7 +50,7 @@ export default function FormularioAmbiente({
   if (!abierto) return null;
   const opcionesResp = responsables.map((r) => ({ valor: r.id, etiqueta: `${r.nombreCompleto} (${r.correo})` }));
 
-  return (
+  const modalElement = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
         <div className="flex items-center justify-between gap-3 pb-3 mb-4 border-b border-borde">
@@ -74,4 +75,6 @@ export default function FormularioAmbiente({
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalElement, document.body) : modalElement;
 }

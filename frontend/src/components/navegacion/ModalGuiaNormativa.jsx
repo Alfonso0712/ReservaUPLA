@@ -1,5 +1,6 @@
 // Modal accesible con normativa y reglas visuales del sistema de reservas
 import { useId, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { BookOpen, Info, X, Clock, CalendarCheck, Layers, ClipboardList, ShieldCheck, Lock } from 'lucide-react';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import { INTRODUCCION_GUIA, REGLAS_NORMATIVA } from '../../constants/guiaNormativa';
@@ -21,7 +22,7 @@ export default function ModalGuiaNormativa({ abierto, alCerrar }) {
 
   if (!abierto) return null;
 
-  return (
+  const modalElement = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={contenedorRef} role="dialog" tabIndex={-1} aria-modal="true" aria-labelledby={idTitulo} aria-describedby={idSubtitulo} className="w-full max-w-2xl max-h-[90vh] flex flex-col p-6 rounded-tarjeta border border-borde bg-superficie text-texto shadow-xl">
         <div className="flex items-start justify-between gap-3 pb-3 border-b border-borde">
@@ -69,4 +70,6 @@ export default function ModalGuiaNormativa({ abierto, alCerrar }) {
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalElement, document.body) : modalElement;
 }

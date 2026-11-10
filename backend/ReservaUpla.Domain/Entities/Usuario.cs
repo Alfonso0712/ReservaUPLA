@@ -48,7 +48,7 @@ public class Usuario
         return Crear(nombre, correo, hashContrasena, rol);
     }
 
-    public void ActualizarDatos(string nombre, RolUsuario nuevoRol, bool tieneAmbientesAsignados = false)
+    public void ActualizarDatos(string nombre, RolUsuario nuevoRol, bool tieneAmbientesAsignados = false, string? nuevoHash = null)
     {
         if (Rol_Usuario == RolUsuario.Administrador)
             throw new DomainException(Mensajes.UsuarioAdminNoModificable);
@@ -68,6 +68,22 @@ public class Usuario
 
         Nom_Usuario = nombreLimpio;
         Rol_Usuario = nuevoRol;
+
+        if (!string.IsNullOrWhiteSpace(nuevoHash))
+        {
+            Has_Usuario = nuevoHash;
+        }
+    }
+
+    public void ActualizarContrasena(string nuevoHash)
+    {
+        if (Rol_Usuario == RolUsuario.Administrador)
+            throw new DomainException(Mensajes.UsuarioAdminNoModificable);
+
+        if (string.IsNullOrWhiteSpace(nuevoHash))
+            throw new DomainException(Mensajes.ContrasenaRequerida);
+
+        Has_Usuario = nuevoHash;
     }
 
     public void Desactivar(Guid idOperador)

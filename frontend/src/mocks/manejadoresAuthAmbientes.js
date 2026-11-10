@@ -150,7 +150,7 @@ export function mockActualizarUsuarioAdmin(id, cuerpo = {}) {
   const val = validarEditarUsuarioAdmin(cuerpo);
   if (!val.valido) return respuestaError(400, MENSAJES.RESUMEN_ERRORES_FORMULARIO, formatearErroresCampo(val.errores));
 
-  const { nombreCompleto, rol } = val.datosNormalizados;
+  const { nombreCompleto, rol, contrasena } = val.datosNormalizados;
   const ambientesAsignados = (dbMock.ambientes || []).filter((a) => a.responsableId === id).length;
 
   if (usuario.rol === ROLES.RESPONSABLE && rol === ROLES.SOLICITANTE && ambientesAsignados > 0) {
@@ -159,6 +159,9 @@ export function mockActualizarUsuarioAdmin(id, cuerpo = {}) {
 
   usuario.nombreCompleto = nombreCompleto;
   usuario.rol = rol;
+  if (contrasena) {
+    dbMock.claves[usuario.correo] = contrasena;
+  }
 
   return respuestaExito({ ...usuario, ambientesAsignados }, 'Usuario actualizado.');
 }

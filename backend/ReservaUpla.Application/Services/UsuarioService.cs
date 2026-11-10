@@ -128,7 +128,15 @@ public class UsuarioService : IUsuarioService
             tieneAmbientes = (await _usuarioRepo.ContarAmbientesAsignadosAsync(id, ct)) > 0;
         }
 
-        usuario.ActualizarDatos(dto.NombreCompleto, dto.Rol, tieneAmbientes);
+        string? nuevoHash = null;
+        if (!string.IsNullOrWhiteSpace(dto.Contrasena))
+        {
+            if (dto.Contrasena.Length < 8)
+                throw new DomainException(Mensajes.ContrasenaLongitud);
+            nuevoHash = _hasher.HashPassword(dto.Contrasena);
+        }
+
+        usuario.ActualizarDatos(dto.NombreCompleto, dto.Rol, tieneAmbientes, nuevoHash);
 
         await _usuarioRepo.ActualizarAsync(usuario, ct);
         await _unitOfWork.GuardarCambiosAsync(ct);

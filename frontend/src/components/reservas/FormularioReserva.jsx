@@ -1,5 +1,6 @@
 // RF-03 · RF-04 · RN-01..04 · RV-08..14 · Modal accesible de nueva reserva · E-12..17 · E-22 · E-42
 import { useState, useEffect, useId } from 'react';
+import { createPortal } from 'react-dom';
 import { useFormulario } from '../../hooks/useFormulario';
 import { useTrampaFoco } from '../../hooks/useTrampaFoco';
 import { validarReserva } from '../../validation/validadores';
@@ -58,7 +59,8 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
     valor: a.id, etiqueta: `${a.nombre}${a.estado === 'Disponible' ? ` (${a.capacidad} personas)` : ` (en ${a.estado.toLowerCase()})`}`,
     deshabilitada: a.estado !== 'Disponible'
   }));
-  return (
+
+  const modalElement = (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 fondo-modal">
       <div ref={modalRef} role="dialog" aria-modal="true" aria-labelledby={idTitulo} className="w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 rounded-tarjeta border border-borde bg-superficie text-texto">
         <div className="flex items-center justify-between gap-3 pb-3 mb-4 border-b border-borde"><h2 id={idTitulo} className="text-xl font-semibold text-texto">Nueva reserva</h2><button type="button" onClick={alCerrar} disabled={form.enProceso} aria-label="Cerrar ventana de nueva reserva" className="h-9 w-9 min-h-[2.25rem] min-w-[2.25rem] p-2 inline-flex items-center justify-center rounded-full text-texto-suave hover:bg-superficie-2"><Icono nombre="X" className="w-5 h-5" /></button></div>
@@ -75,4 +77,6 @@ export default function FormularioReserva({ abierto, ambientePreseleccionadoId =
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(modalElement, document.body) : modalElement;
 }
