@@ -40,6 +40,71 @@ public class Usuario
         };
     }
 
+    public static Usuario CrearPorAdmin(string nombre, string correo, string hashContrasena, RolUsuario rol)
+    {
+        if (rol != RolUsuario.Responsable && rol != RolUsuario.Solicitante)
+            throw new DomainException(Mensajes.RolNoAsignable);
+
+        return Crear(nombre, correo, hashContrasena, rol);
+    }
+
+    public void ActualizarDatos(string nombre, RolUsuario nuevoRol, bool tieneAmbientesAsignados = false, string? nuevoHash = null)
+    {
+        if (Rol_Usuario == RolUsuario.Administrador)
+            throw new DomainException(Mensajes.UsuarioAdminNoModificable);
+
+        if (nuevoRol != RolUsuario.Responsable && nuevoRol != RolUsuario.Solicitante)
+            throw new DomainException(Mensajes.RolNoAsignable);
+
+        if (Rol_Usuario == RolUsuario.Responsable && nuevoRol == RolUsuario.Solicitante && tieneAmbientesAsignados)
+            throw new DomainException(Mensajes.ResponsableConAmbientesNoPuedeCambiarRol);
+
+        var nombreLimpio = nombre?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(nombreLimpio) || nombreLimpio.Length < ReglasUsuario.MinLongitudNombre || nombreLimpio.Length > ReglasUsuario.MaxLongitudNombre)
+            throw new DomainException(Mensajes.NombreLongitud);
+
+        if (!ReglasUsuario.RegexNombre.IsMatch(nombreLimpio))
+            throw new DomainException(Mensajes.NombreFormato);
+
+        Nom_Usuario = nombreLimpio;
+        Rol_Usuario = nuevoRol;
+
+        if (!string.IsNullOrWhiteSpace(nuevoHash))
+        {
+            Has_Usuario = nuevoHash;
+        }
+    }
+
+    public void ActualizarContrasena(string nuevoHash)
+    {
+        if (Rol_Usuario == RolUsuario.Administrador)
+            throw new DomainException(Mensajes.UsuarioAdminNoModificable);
+
+        if (string.IsNullOrWhiteSpace(nuevoHash))
+            throw new DomainException(Mensajes.ContrasenaRequerida);
+
+        Has_Usuario = nuevoHash;
+    }
+
+    public void Desactivar(Guid idOperador)
+    {
+        if (Rol_Usuario == RolUsuario.Administrador)
+            throw new DomainException(Mensajes.UsuarioAdminNoModificable);
+
+        if (Id_Usuario == idOperador)
+            throw new DomainException(Mensajes.UsuarioNoPuedeDesactivarseASiMismo);
+
+        Act_Usuario = false;
+    }
+
+    public void Activar()
+    {
+        if (Rol_Usuario == RolUsuario.Administrador)
+            throw new DomainException(Mensajes.UsuarioAdminNoModificable);
+
+        Act_Usuario = true;
+    }
+
     public void ActualizarPreferencias(string? tema, string? tamanoLetra)
     {
         if (tema == null && tamanoLetra == null)

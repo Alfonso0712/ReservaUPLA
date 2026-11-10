@@ -10,5 +10,6 @@ export const RUTAS = {
   RESERVAS: '/reservas',
   DETALLE_RESERVA: '/reservas/:id',
   AMBIENTES: '/ambientes',
+  USUARIOS: '/usuarios',
   crearDetalleReserva: (id) => `/reservas/${id}`
 };

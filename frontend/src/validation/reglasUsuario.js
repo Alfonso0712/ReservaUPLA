@@ -70,3 +70,54 @@ export function validarRegistroSolicitante({ nombreCompleto = '', correo = '', c
     }
   };
 }
+
+const ROLES_ADMIN_ASIGNABLES = ['Responsable', 'Solicitante'];
+
+// Módulo de Usuarios (Admin)
+export function validarCrearUsuarioAdmin({ nombreCompleto = '', correo = '', rol = '', contrasena = '' } = {}) {
+  const errores = {};
+  const errorNombre = validarNombreCompleto(nombreCompleto);
+  const errorCorreo = validarCorreoInstitucional(correo);
+  const errorContrasena = validarContrasenaRegistro(contrasena);
+  if (errorNombre) errores.nombreCompleto = errorNombre;
+  if (errorCorreo) errores.correo = errorCorreo;
+  if (!ROLES_ADMIN_ASIGNABLES.includes(rol)) {
+    errores.rol = 'Debe seleccionar un rol válido (Responsable o Solicitante).';
+  }
+  if (errorContrasena) errores.contrasena = errorContrasena;
+  return {
+    valido: Object.keys(errores).length === 0,
+    errores,
+    datosNormalizados: {
+      nombreCompleto: normalizarTexto(nombreCompleto),
+      correo: normalizarCorreo(correo),
+      rol,
+      contrasena
+    }
+  };
+}
+
+export function validarEditarUsuarioAdmin({ nombreCompleto = '', rol = '', contrasena = '' } = {}) {
+  const errores = {};
+  const errorNombre = validarNombreCompleto(nombreCompleto);
+  if (errorNombre) errores.nombreCompleto = errorNombre;
+  if (!ROLES_ADMIN_ASIGNABLES.includes(rol)) {
+    errores.rol = 'Debe seleccionar un rol válido (Responsable o Solicitante).';
+  }
+  if (contrasena && contrasena.trim().length > 0) {
+    const errorContrasena = validarContrasenaRegistro(contrasena);
+    if (errorContrasena) errores.contrasena = errorContrasena;
+  }
+  const datosNormalizados = {
+    nombreCompleto: normalizarTexto(nombreCompleto),
+    rol
+  };
+  if (contrasena && contrasena.trim().length > 0) {
+    datosNormalizados.contrasena = contrasena;
+  }
+  return {
+    valido: Object.keys(errores).length === 0,
+    errores,
+    datosNormalizados
+  };
+}

@@ -16,6 +16,13 @@ p { max-width: 70ch; line-height: 1.6; margin: 0; }
 }
 .fondo-modal {
   background-color: rgba(11, 18, 32, 0.7);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
 }
 :focus-visible { outline: 0.125rem solid var(--anillo-foco); outline-offset: 0.125rem; }
 .barra-lateral :focus-visible { outline: 0.125rem solid var(--acento-sobre-oscuro); outline-offset: 0.125rem; }

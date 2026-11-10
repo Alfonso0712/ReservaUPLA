@@ -17,7 +17,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test-setup.js',
     env: {
-      TZ: 'America/Lima'
+      TZ: 'America/Lima',
+      VITE_USAR_MOCK: 'true'
     }
   }
 });

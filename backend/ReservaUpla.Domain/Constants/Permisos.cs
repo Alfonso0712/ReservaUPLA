@@ -17,6 +17,12 @@ public static class Permisos
     public const string AmbientesCambiarEstado = "ambientes.cambiarEstado";
     public const string UsuariosListarResponsables = "usuarios.listarResponsables";
 
+    // Gestión de Usuarios (Admin)
+    public const string UsuariosListar = "usuarios.listar";
+    public const string UsuariosCrear = "usuarios.crear";
+    public const string UsuariosEditar = "usuarios.editar";
+    public const string UsuariosCambiarEstado = "usuarios.cambiarEstado";
+
     public static readonly IReadOnlyList<string> Todos = new[]
     {
         DashboardVer,
@@ -30,6 +36,10 @@ public static class Permisos
         AmbientesCrear,
         AmbientesEditar,
         AmbientesCambiarEstado,
-        UsuariosListarResponsables
+        UsuariosListarResponsables,
+        UsuariosListar,
+        UsuariosCrear,
+        UsuariosEditar,
+        UsuariosCambiarEstado
     };
 }

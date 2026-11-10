@@ -24,6 +24,13 @@ export const ITEMS_NAVEGACION = Object.freeze([
     ruta: RUTAS.AMBIENTES,
     icono: 'Building2',
     permiso: PERMISOS.AMBIENTES_VER
+  },
+  {
+    id: 'usuarios',
+    etiqueta: 'Usuarios',
+    ruta: RUTAS.USUARIOS,
+    icono: 'Users',
+    permiso: PERMISOS.USUARIOS_LISTAR
   }
 ]);
 
@@ -36,6 +43,7 @@ export function obtenerItemsPorPermiso(puede) {
 export function obtenerGruposPorRol(rol) {
   const permisos = obtenerPermisosDeRol(rol);
   const tieneNueva = permisos.includes(PERMISOS.RESERVAS_CREAR);
+  const tieneUsuarios = permisos.includes(PERMISOS.USUARIOS_LISTAR);
   return [
     {
       id: 'principal',
@@ -44,7 +52,8 @@ export function obtenerGruposPorRol(rol) {
         { id: 'panel', etiqueta: 'Inicio', ruta: RUTAS.PANEL, permiso: PERMISOS.DASHBOARD_VER },
         { id: 'listado-reservas', etiqueta: 'Reservas', ruta: RUTAS.RESERVAS, permiso: PERMISOS.RESERVAS_VER },
         ...(tieneNueva ? [{ id: 'nueva-reserva', etiqueta: 'Nueva reserva', permiso: PERMISOS.RESERVAS_CREAR }] : []),
-        { id: 'ambientes', etiqueta: 'Ambientes', ruta: RUTAS.AMBIENTES, permiso: PERMISOS.AMBIENTES_VER }
+        { id: 'ambientes', etiqueta: 'Ambientes', ruta: RUTAS.AMBIENTES, permiso: PERMISOS.AMBIENTES_VER },
+        ...(tieneUsuarios ? [{ id: 'usuarios', etiqueta: 'Usuarios', ruta: RUTAS.USUARIOS, permiso: PERMISOS.USUARIOS_LISTAR }] : [])
       ]
     }
   ];

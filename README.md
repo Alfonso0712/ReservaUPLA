@@ -24,6 +24,7 @@ La coordinación manual de laboratorios y auditorios universitarios genera cruce
 | **RF-06** | Detalle de reserva | Vista detallada de la solicitud con información del ambiente, solicitante, horario, estado actual y alerta de posibles conflictos. |
 | **RF-07** | Aprobación, rechazo y cancelación | Flujo de decisión con confirmación para aprobar o rechazar solicitudes (`Administrador`) y cancelación de solicitudes propias (`Solicitante`). |
 | **RF-08** | Panel de indicadores (Dashboard) | Resumen operativo con total de reservas, pendientes, aprobadas, rechazadas, tasa de aprobación, ambiente más utilizado y reservas por día. |
+| **Módulo Usuarios** | Gestión de usuarios (Exclusivo Administrador) | Listado con búsqueda por nombre/correo, filtros por rol y estado, alta con clave inicial, edición de nombre/rol y activación/desactivación lógica. |
 
 ---
 
@@ -86,15 +87,15 @@ ReservaUPLA/
 │   │   ├── hooks/                   # Hooks de sesión (useAuth), permisos, formularios, debounce y trampa de foco
 │   │   ├── layouts/                 # Layouts de autenticación y panel administrativo
 │   │   ├── mocks/                   # Adaptador mock en memoria para pruebas aisladas (VITE_USAR_MOCK)
-│   │   ├── pages/                   # Vistas: Ingresar, Registro, Panel, ListadoReservas, DetalleReserva, Ambientes
+│   │   ├── pages/                   # Vistas: Ingresar, Registro, Panel, ListadoReservas, DetalleReserva, Ambientes, Usuarios
 │   │   ├── services/                # Cliente HTTP con AbortController y servicios REST por módulo
 │   │   ├── styles/                  # Tokens de diseño CSS y configuración de temas
-│   │   ├── tests/                   # 23 suites de pruebas automatizadas (Vitest + Testing Library)
+│   │   ├── tests/                   # 24 suites de pruebas automatizadas (Vitest + Testing Library)
 │   │   ├── utils/                   # Formateadores de fechas, horas, iniciales y ordenamiento tabular
 │   │   └── validation/              # Validadores de cliente alineados con las reglas RN-01..RN-06
 │   └── Dockerfile                   # Build estático de Vite servido con Nginx en el puerto 5173
 ├── tests/
-│   └── ReservaUpla.Tests/           # 95 pruebas unitarias, de concurrencia e integración en xUnit
+│   └── ReservaUpla.Tests/           # 108 pruebas unitarias, de concurrencia e integración en xUnit
 ├── .env.example                     # Plantilla de variables de entorno con marcadores <CONTRASENA_AQUI>
 ├── .gitignore                       # Exclusión de binarios, dependencias, respaldos y archivos .env
 ├── CHANGELOG.md                     # Historial de versiones en formato Keep a Changelog
@@ -158,12 +159,12 @@ npm run dev
 
 Las suites de pruebas se ejecutan en memoria y con adaptador simulado, por lo que **no requieren tener PostgreSQL en ejecución**:
 
-### Backend (95 pruebas en xUnit)
+### Backend (108 pruebas en xUnit)
 ```bash
 dotnet test ReservaUpla.sln
 ```
 
-### Frontend (83 pruebas en 23 suites con Vitest + Linter de Accesibilidad)
+### Frontend (89 pruebas en 24 suites con Vitest + Linter de Accesibilidad)
 ```bash
 npm --prefix frontend run lint
 VITE_USAR_MOCK=true npm --prefix frontend test -- --run
@@ -183,6 +184,17 @@ Al iniciar en entorno `Development` con la base de datos vacía, `DatabaseSeeder
 | **Solicitante** | `solicitante@upla.edu.pe` | Creación de solicitudes de reserva, consulta de disponibilidad y cancelación de reservas propias. |
 
 > **Nota de seguridad**: Por política de seguridad del repositorio, **las contraseñas de prueba no se publican en este documento**. Consulte la sección de credenciales de prueba en el **Informe Técnico** entregado al docente.
+
+---
+
+
+### Endpoints de Gestión de Usuarios (Exclusivo Administrador)
+| Método | Ruta | Descripción | Rol Requerido |
+| :--- | :--- | :--- | :--- |
+| GET | /api/usuarios/admin | Listado paginado con búsqueda por nombre/correo y filtros de rol y estado | Administrador |
+| POST | /api/usuarios/admin | Alta administrativa de usuario (Responsable o Solicitante) con clave inicial | Administrador |
+| PUT | /api/usuarios/{id} | Edición de nombre completo y rol (con validación de ambientes asignados) | Administrador |
+| PATCH | /api/usuarios/{id}/estado | Activación o desactivación lógica de usuario | Administrador |
 
 ---
 

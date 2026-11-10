@@ -11,5 +11,11 @@ export const PERMISOS = Object.freeze({
   AMBIENTES_CREAR: 'ambientes.crear',
   AMBIENTES_EDITAR: 'ambientes.editar',
   AMBIENTES_CAMBIAR_ESTADO: 'ambientes.cambiarEstado',
-  USUARIOS_LISTAR_RESPONSABLES: 'usuarios.listarResponsables'
+  USUARIOS_LISTAR_RESPONSABLES: 'usuarios.listarResponsables',
+
+  // Gestión de Usuarios (Admin)
+  USUARIOS_LISTAR: 'usuarios.listar',
+  USUARIOS_CREAR: 'usuarios.crear',
+  USUARIOS_EDITAR: 'usuarios.editar',
+  USUARIOS_CAMBIAR_ESTADO: 'usuarios.cambiarEstado'
 });

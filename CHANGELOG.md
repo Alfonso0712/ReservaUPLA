@@ -10,6 +10,9 @@ y este proyecto adhiere a [Versionado Semántico (SemVer)](https://semver.org/la
 ## [Sin publicar]
 
 ### Añadido
+- Módulo de Administración de Usuarios exclusivo para el rol Administrador (/usuarios), con búsqueda reactiva, filtros por rol y estado, alta con contraseña inicial, edición de nombre y rol con validación de asignación de ambientes, y activación/desactivación lógica con confirmación accesible.
+- Endpoints de gestión administrativa de usuarios en Web API: GET /api/usuarios/admin, POST /api/usuarios/admin, PUT /api/usuarios/{id} y PATCH /api/usuarios/{id}/estado.
+- Suites de pruebas automatizadas para el módulo de usuarios: 13 pruebas de backend en xUnit (ModuloUsuariosTests.cs) y 6 pruebas de frontend en Vitest (moduloUsuarios.test.jsx).
 - Integración relacional con PostgreSQL (`ReservasUPLA_DB`) mediante Entity Framework Core y Npgsql (`a9e33d2`).
 - `DatabaseSeeder` con usuarios de demostración por rol, 20 ambientes del campus UPLA y reservas iniciales (`739411b`).
 - Persistencia de preferencias de interfaz por usuario (`tema` claro/oscuro y `tamano_letra` A-/A/A+) en base de datos, backend (`PATCH /api/usuarios/preferencias`) y caché local (`f710f60`).
@@ -30,6 +33,8 @@ y este proyecto adhiere a [Versionado Semántico (SemVer)](https://semver.org/la
 - Alineación de propiedades de indicadores entre la API y el Panel, mapeo de responsables en relaciones de reservas y visualización de acciones según rol (`59dbd47`, `cbe6e7c`, `187a13e`, `dc574bd`).
 
 ### Seguridad
+- Nuevos permisos RBAC exclusivos para Administrador: usuarios.listar, usuarios.crear, usuarios.editar y usuarios.cambiarEstado.
+- Restricción de seguridad que impide al Administrador auto-desactivarse o crear/modificar cuentas con rol Administrador desde el módulo.
 - Extracción de credenciales de conexión del repositorio (`appsettings.json`, `appsettings.Development.json` y `AppDbContextFactory.cs`) hacia `dotnet user-secrets` y variables de entorno (`5649671`).
 - Creación del script SQL [`backend/scripts/crear_rol_app.sql`](backend/scripts/crear_rol_app.sql) para el rol de mínimo privilegio `reservas_app` (`SELECT`, `INSERT`, `UPDATE`, sin `DELETE`, `DDL` ni `SUPERUSER`) (`fddad31`).
 - Incorporación del hook [`docs/hooks/pre-commit`](docs/hooks/pre-commit) y reglas en `.gitignore` para bloquear la subida accidental de secretos y respaldos de base de datos (`831c2ff`).
@@ -37,6 +42,9 @@ y este proyecto adhiere a [Versionado Semántico (SemVer)](https://semver.org/la
 - Revocación del permiso de creación de reservas para el rol `Administrador` en backend y frontend, garantizando separación de funciones (`2d7c71a`).
 
 ---
+
+### Pendiente
+- Cambio de correo institucional y actualización de contraseña por parte del administrador.
 
 ## [0.9.0] - 2026-11-04
 
