@@ -12,6 +12,7 @@ import Panel from '../pages/Panel';
 import ListadoReservas from '../pages/ListadoReservas';
 import DetalleReserva from '../pages/DetalleReserva';
 import Ambientes from '../pages/Ambientes';
+import Usuarios from '../pages/Usuarios';
 import NoEncontrada from '../pages/NoEncontrada';
 
 export default function RutasApp() {
@@ -28,6 +29,7 @@ export default function RutasApp() {
           <Route path={RUTAS.RESERVAS} element={<RutaProtegida permiso={PERMISOS.RESERVAS_VER}><ListadoReservas /></RutaProtegida>} />
           <Route path={RUTAS.DETALLE_RESERVA} element={<RutaProtegida permiso={PERMISOS.RESERVAS_VER}><DetalleReserva /></RutaProtegida>} />
           <Route path={RUTAS.AMBIENTES} element={<RutaProtegida permiso={PERMISOS.AMBIENTES_VER}><Ambientes /></RutaProtegida>} />
+          <Route path={RUTAS.USUARIOS} element={<RutaProtegida permiso={PERMISOS.USUARIOS_LISTAR}><Usuarios /></RutaProtegida>} />
           <Route path="*" element={<NoEncontrada />} />
         </Route>
       </Route>

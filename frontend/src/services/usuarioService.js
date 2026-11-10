@@ -30,3 +30,40 @@ export async function actualizarPreferenciasApi({ tema, tamanoLetra }, signal) {
     signal
   });
 }
+
+// Módulo de Usuarios (Admin)
+export async function listarUsuariosAdminApi({ busqueda, rol, activo } = {}, signal) {
+  const params = new URLSearchParams();
+  if (busqueda) params.append('busqueda', busqueda);
+  if (rol) params.append('rol', rol);
+  if (activo !== undefined && activo !== null && activo !== '') params.append('activo', activo);
+  const query = params.toString() ? `?${params.toString()}` : '';
+  return solicitarApi(`/api/usuarios/admin${query}`, {
+    metodo: 'GET',
+    signal
+  });
+}
+
+export async function crearUsuarioAdminApi({ nombreCompleto, correo, rol, contrasena }, signal) {
+  return solicitarApi('/api/usuarios/admin', {
+    metodo: 'POST',
+    cuerpo: { nombreCompleto, correo, rol, contrasena },
+    signal
+  });
+}
+
+export async function actualizarUsuarioAdminApi(id, { nombreCompleto, rol }, signal) {
+  return solicitarApi(`/api/usuarios/${encodeURIComponent(id)}`, {
+    metodo: 'PUT',
+    cuerpo: { nombreCompleto, rol },
+    signal
+  });
+}
+
+export async function cambiarEstadoUsuarioAdminApi(id, activo, signal) {
+  return solicitarApi(`/api/usuarios/${encodeURIComponent(id)}/estado`, {
+    metodo: 'PATCH',
+    cuerpo: { activo },
+    signal
+  });
+}

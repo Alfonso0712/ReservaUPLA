@@ -2,7 +2,12 @@
 import { MENSAJES } from '../constants/mensajes';
 import { dbMock, reiniciarBaseMock, configurarFalloMock, guardarIdSesionMock, respuestaExito, respuestaError } from './estadoMock';
 import { CUENTAS_DEMO } from './datosSemilla';
-import { mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario, mockListarResponsables, mockActualizarPreferencias } from './manejadoresAuthAmbientes';
+import {
+  mockLogin, mockLogout, mockObtenerYo, mockRegistrarUsuario,
+  mockListarResponsables, mockActualizarPreferencias,
+  mockListarUsuariosAdmin, mockCrearUsuarioAdmin,
+  mockActualizarUsuarioAdmin, mockCambiarEstadoUsuarioAdmin
+} from './manejadoresAuthAmbientes';
 import { mockListarAmbientes, mockCrearAmbiente, mockActualizarAmbiente, mockCambiarEstadoAmbiente } from './manejadoresAmbientes';
 import { mockObtenerDisponibilidad, mockListarReservas, mockObtenerReserva, mockCrearReserva, mockCambiarEstadoReserva, mockObtenerDashboard } from './manejadoresReservasDashboard';
 
@@ -21,6 +26,8 @@ const RUTAS_ESTATICAS = {
   'POST /api/usuarios': (_, cuerpo) => mockRegistrarUsuario(cuerpo),
   'PATCH /api/usuarios/preferencias': (_, cuerpo) => mockActualizarPreferencias(cuerpo),
   'GET /api/usuarios/responsables': () => mockListarResponsables(),
+  'GET /api/usuarios/admin': (params) => mockListarUsuariosAdmin(params),
+  'POST /api/usuarios/admin': (_, cuerpo) => mockCrearUsuarioAdmin(cuerpo),
   'GET /api/usuarios': () => respuestaExito([...dbMock.usuarios]),
   'GET /api/ambientes': () => mockListarAmbientes(),
   'POST /api/ambientes': (_, cuerpo) => mockCrearAmbiente(cuerpo),
@@ -36,7 +43,9 @@ const RUTAS_DINAMICAS = [
   { regex: /^PUT \/api\/ambientes\/([^/]+)$/, handler: (m, _, cuerpo) => mockActualizarAmbiente(m[1], cuerpo) },
   { regex: /^GET \/api\/ambientes\/([^/]+)\/disponibilidad$/, handler: (m, params) => mockObtenerDisponibilidad(m[1], params.get('fecha') || '') },
   { regex: /^PATCH \/api\/reservas\/([^/]+)\/estado$/, handler: (m, _, cuerpo) => mockCambiarEstadoReserva(m[1], cuerpo) },
-  { regex: /^GET \/api\/reservas\/([^/]+)$/, handler: (m) => mockObtenerReserva(m[1]) }
+  { regex: /^GET \/api\/reservas\/([^/]+)$/, handler: (m) => mockObtenerReserva(m[1]) },
+  { regex: /^PUT \/api\/usuarios\/([^/]+)$/, handler: (m, _, cuerpo) => mockActualizarUsuarioAdmin(m[1], cuerpo) },
+  { regex: /^PATCH \/api\/usuarios\/([^/]+)\/estado$/, handler: (m, _, cuerpo) => mockCambiarEstadoUsuarioAdmin(m[1], cuerpo) }
 ];
 
 function despacharRutaMock(metodo, urlLimpia, parametros, cuerpo) {
