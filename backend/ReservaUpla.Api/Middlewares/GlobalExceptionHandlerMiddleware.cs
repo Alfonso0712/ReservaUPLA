@@ -32,7 +32,7 @@ public class GlobalExceptionHandlerMiddleware
         {
             context.Response.ContentType = "application/json";
 
-            if (ex.Message == Mensajes.RecursoNoEncontrado)
+            if (ex.Message == Mensajes.RecursoNoEncontrado || ex.Message == Mensajes.UsuarioNoExiste || ex.Message == Mensajes.AmbienteNoExiste)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
             }
@@ -59,30 +59,27 @@ public class GlobalExceptionHandlerMiddleware
         }
         catch (UnauthorizedAccessException ex)
         {
-            context.Response.ContentType = "application/problem+json";
+            context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            var problem = new ProblemDetails
-            {
-                Status = StatusCodes.Status401Unauthorized,
-                Title = MensajesValidacion.CredencialesNoValidasTitulo,
-                Detail = string.IsNullOrWhiteSpace(ex.Message) ? MensajesValidacion.CredencialesNoValidasDetalle : ex.Message
-            };
-            var payload = JsonSerializer.Serialize(problem);
+            var payload = JsonSerializer.Serialize(new { error = ex.Message, mensaje = ex.Message });
             await context.Response.WriteAsync(payload);
         }
         catch (Exception ex)
         {
-            // E-15: Detalle tecnico exclusivamente en el logger, respuesta uniforme ProblemDetails
-            _logger.LogError(ex, "Excepcion no controlada en la API: {Message}", ex.Message);
-            context.Response.ContentType = "application/problem+json";
+            _logger.LogError(ex, "Error no controlado procesando la solicitud en {Path}", context.Request.Path);
+
+            context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            var problem = new ProblemDetails
+
+            var problemDetails = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
-                Title = MensajesValidacion.ErrorInternoTitulo,
-                Detail = MensajesValidacion.ErrorInternoDetalle
+                Title = "Error interno del servidor",
+                Detail = MensajesValidacion.ErrorInternoDetalle,
+                Instance = context.Request.Path
             };
-            var payload = JsonSerializer.Serialize(problem);
+
+            var payload = JsonSerializer.Serialize(problemDetails);
             await context.Response.WriteAsync(payload);
         }
     }
