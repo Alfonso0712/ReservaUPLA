@@ -24,6 +24,7 @@ La coordinación manual de laboratorios y auditorios universitarios genera cruce
 | **RF-06** | Detalle de reserva | Vista detallada de la solicitud con información del ambiente, solicitante, horario, estado actual y alerta de posibles conflictos. |
 | **RF-07** | Aprobación, rechazo y cancelación | Flujo de decisión con confirmación para aprobar o rechazar solicitudes (`Administrador`) y cancelación de solicitudes propias (`Solicitante`). |
 | **RF-08** | Panel de indicadores (Dashboard) | Resumen operativo con total de reservas, pendientes, aprobadas, rechazadas, tasa de aprobación, ambiente más utilizado y reservas por día. |
+| **Landing Page** | Portal institucional público | Portada pública en `/` con presentación del sistema, accesos directos a inicio de sesión y registro de solicitantes, flujo en 3 pasos, catálogo de ambientes y normativa institucional. |
 | **Módulo Usuarios** | Gestión de usuarios (Exclusivo Administrador) | Listado con búsqueda por nombre/correo, filtros por rol y estado, alta con clave inicial, edición de nombre/rol y activación/desactivación lógica. |
 
 ---
@@ -81,13 +82,13 @@ ReservaUPLA/
 │   └── img/                         # Capturas de pantalla de la interfaz del sistema
 ├── frontend/
 │   ├── src/
-│   │   ├── components/              # Componentes UI accesibles, formularios, navegación, ambientes y reservas
+│   │   ├── components/              # Componentes UI accesibles, landing institucional, formularios, navegación, ambientes y reservas
 │   │   ├── constants/               # Reglas, estados, mensajes, permisos, rutas y normativa institucional
 │   │   ├── context/                 # Contexto de preferencias de usuario (tema claro/oscuro y escala A-/A/A+)
 │   │   ├── hooks/                   # Hooks de sesión (useAuth), permisos, formularios, debounce y trampa de foco
 │   │   ├── layouts/                 # Layouts de autenticación y panel administrativo
 │   │   ├── mocks/                   # Adaptador mock en memoria para pruebas aisladas (VITE_USAR_MOCK)
-│   │   ├── pages/                   # Vistas: Ingresar, Registro, Panel, ListadoReservas, DetalleReserva, Ambientes, Usuarios
+│   │   ├── pages/                   # Vistas: LandingPage, Ingresar, Registro, Panel, ListadoReservas, DetalleReserva, Ambientes, Usuarios
 │   │   ├── services/                # Cliente HTTP con AbortController y servicios REST por módulo
 │   │   ├── styles/                  # Tokens de diseño CSS y configuración de temas
 │   │   ├── tests/                   # 24 suites de pruebas automatizadas (Vitest + Testing Library)
@@ -220,6 +221,9 @@ El proyecto aplica controles de seguridad en todas sus capas (detalle completo e
 ---
 
 ## 12. Capturas del Sistema
+
+### Landing Page Institucional
+![Landing Page](docs/img/landing.png)
 
 ### Panel de Indicadores (Dashboard)
 ![Panel de Indicadores](docs/img/dashboard.png)
