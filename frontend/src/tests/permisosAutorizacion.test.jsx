@@ -14,7 +14,7 @@ describe('Permisos y Autorización (E-45..E-47)', () => {
     const puedeResp = (p) => obtenerPermisosDeRol('Responsable').includes(p);
     const puedeSolic = (p) => obtenerPermisosDeRol('Solicitante').includes(p);
 
-    expect(obtenerItemsPorPermiso(puedeAdmin).map((i) => i.id)).toEqual(['panel', 'reservas', 'ambientes']);
+    expect(obtenerItemsPorPermiso(puedeAdmin).map((i) => i.id)).toEqual(['panel', 'reservas', 'ambientes', 'usuarios']);
     expect(obtenerItemsPorPermiso(puedeResp).map((i) => i.id)).toEqual(['panel', 'reservas', 'ambientes']);
     expect(obtenerItemsPorPermiso(puedeSolic).map((i) => i.id)).toEqual(['panel', 'reservas', 'ambientes']);
 
