@@ -1,11 +1,12 @@
 // Definición declarativa de rutas protegidas por permisos · E-25 · E-45 · E-48
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { RUTAS } from '../constants/rutas';
 import { PERMISOS } from '../constants/permisos';
 import RutaProtegida from './RutaProtegida';
 import LayoutAutenticacion from '../layouts/LayoutAutenticacion';
 import LayoutPrincipal from '../layouts/LayoutPrincipal';
 import FormularioReserva from '../components/reservas/FormularioReserva';
+import LandingPage from '../pages/LandingPage';
 import Ingresar from '../pages/Ingresar';
 import RegistroSolicitante from '../pages/RegistroSolicitante';
 import Panel from '../pages/Panel';
@@ -18,7 +19,7 @@ import NoEncontrada from '../pages/NoEncontrada';
 export default function RutasApp() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={RUTAS.INGRESAR} replace />} />
+      <Route path="/" element={<LandingPage />} />
       <Route element={<LayoutAutenticacion />}>
         <Route path={RUTAS.INGRESAR} element={<Ingresar />} />
         <Route path={RUTAS.REGISTRO} element={<RegistroSolicitante />} />
